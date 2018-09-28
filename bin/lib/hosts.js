@@ -2,15 +2,17 @@
 var fs = require('fs');
 var path = require('path');
 
-var HOSTS = path.join(
-	process.env.SystemRoot || path.join(process.env.SystemDrive || 'C:', 'Windows'),
-	'/System32/drivers/etc/hosts'
-);
+exports.HOSTS = process.platform !== 'win32'
+    ? '/etc/hosts'
+    : path.join(
+        process.env.SystemRoot || path.join(process.env.SystemDrive || 'C:', 'Windows'),
+        '/System32/drivers/etc/hosts',
+    );
 
 exports.get = function () {
 	var lines = [];
 	try {
-		fs.readFileSync(HOSTS, {encoding: 'utf8'})
+		fs.readFileSync(exports.HOSTS, {encoding: 'utf8'})
 		.replace(/\r?\n$/, '')
 		.split(/\r?\n/)
 		.forEach(function (line) {
@@ -79,12 +81,12 @@ exports.writeFile = function (lines) {
 	// Get mode (or set to rw-rw-rw-); check read-only
 	var mode;
 	try {
-		mode = fs.statSync(HOSTS).mode;
-		if (!(mode & 128)) { // 0200 (owner, write)
+		mode = fs.statSync(exports.HOSTS).mode;
+        if (!(mode & 128)) { // 0200 (owner, write)
 			// FIXME generate fake EACCES
 			var err = new Error('EACCES: Permission denied');
 			err.code = 'EACCES';
-			err.path = HOSTS;
+			err.path = exports.HOSTS;
 			throw err;
 		}
 	} catch (e) {
@@ -96,5 +98,5 @@ exports.writeFile = function (lines) {
 	}
 
 	// Write file
-	fs.writeFileSync(HOSTS, data, {mode: mode});
+	fs.writeFileSync(exports.HOSTS, data, {mode: mode});
 };
