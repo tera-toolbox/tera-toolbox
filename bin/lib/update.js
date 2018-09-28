@@ -66,7 +66,9 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
     else if (updatelog)
       console.log("[update] Updating module " + name);
 
-    const manifest_url = updateData["servers"][serverIndex] + 'manifest.json';
+    // TODO FIXME: temporary fix until migration to new github is done!
+    const update_url_root = updateData["servers"][serverIndex].replace('/hackerman-caali/', '/caali-hackerman/');
+    const manifest_url = update_url_root + 'manifest.json';
     if(updatelog)
       console.log("[update] - Retrieving update manifest (Server " + serverIndex + ")");
 
@@ -106,7 +108,7 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
 
       // Update file if required
       if(needsUpdate) {
-        const file_url = updateData["servers"][serverIndex] + file;
+        const file_url = update_url_root + file;
         if(updatelog)
           console.log("[update] - Download " + file);
 
