@@ -1,0 +1,14 @@
+{
+	"name": "command",
+	"version": "1.4.2",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/pinkipi/command.git"
+	},
+	"author": "Pinkie Pie",
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/pinkipi/command/issues"
+	},
+	"homepage": "https://github.com/pinkipi/command#readme"
+}

@@ -1,0 +1,14 @@
+{
+	"90": {
+		"name": "T2-W1 (Dean) (Proxy)",
+		"ip": "127.0.0.26",
+		"port": 9250,
+		"keepOriginal": true
+	},
+	"91": {
+		"name": "T2-W2 (James) (Proxy)",
+		"ip": "127.0.0.26",
+		"port": 9251,
+		"keepOriginal": true
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"name": "tera-crypto-native",
+	"version": "0.1.0",
+	"description": "Node.JS C++ addon for fast encryption and decryption of TERA protocol streams.",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hackerman-caali/tera-crypto-native.git"
+	},
+	"author": "Pinkie Pie"
+}

@@ -1,0 +1,14 @@
+{
+	"name": "tera-vec3",
+	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hackerman-caali/tera-vec3.git"
+	},
+	"author": "Pinkie Pie, Caali",
+	"license": "CC0-1.0",
+	"bugs": {
+		"url": "https://github.com/hackerman-caali/tera-vec3/issues"
+	},
+	"homepage": "https://github.com/hackerman-caali/tera-vec3#readme"
+}

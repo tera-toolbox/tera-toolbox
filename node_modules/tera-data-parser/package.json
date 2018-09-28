@@ -1,0 +1,47 @@
+{
+  "author": {
+    "name": "meishu"
+  },
+  "bugs": {
+    "url": "https://github.com/hackerman-caali/tera-data-parser-js/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "baldera-logger": "^0.1.0",
+    "long": "^3.2.0",
+    "tera-vec3": "github:hackerman-caali/tera-vec3"
+  },
+  "deprecated": false,
+  "description": "tera-data-parser",
+  "devDependencies": {
+    "coveralls": "^2.11.16",
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "sinon": "^2.1.0",
+    "tap": "^10.2.0",
+    "tera-data": "github:hackerman-caali/tera-data"
+  },
+  "files": [
+    "lib/"
+  ],
+  "homepage": "https://github.com/hackerman-caali/tera-data-parser-js#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "name": "tera-data-parser",
+  "optionalDependencies": {
+    "baldera-logger": "^0.1.0"
+  },
+  "peerDependencies": {
+    "tera-data": "1.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hackerman-caali/tera-data-parser-js.git"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "tap test/*.js"
+  },
+  "version": "0.3.0"
+}
