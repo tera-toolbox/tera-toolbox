@@ -32,6 +32,7 @@ const REGIONS = require("./regions");
 const currentRegion = REGIONS[REGION];
 const REGION_SHORT = REGION.toLowerCase().split('-')[0];
 const isConsole = currentRegion["console"];
+const isWindows = process.platform === "win32";
 const { customServers, listenHostname, hostname } = currentRegion;
 const altHostnames = currentRegion.altHostnames || [];
 const fs = require("fs");
@@ -78,12 +79,8 @@ const net = require("net");
 const dns = require("dns");
 const hosts = require("./hosts");
 
-if (!isConsole) {
-  try {
-    hosts.remove(listenHostname, hostname);
-    for (let x of altHostnames)
-      hosts.remove(listenHostname, x);
-  } catch (e) {
+function handleWindowsWriteError(e) {
+  if (isWindows) {
     switch (e.code) {
      case "EACCES":
       console.error(`ERROR: Hosts file is set to read-only.
@@ -112,8 +109,17 @@ if (!isConsole) {
      default:
       throw e;
     }
+  }
+}
 
-    return;
+let cannotWrite = false;
+if (!isConsole) {
+  cannotWrite = hosts.cannotWrite();
+  if (isWindows) {
+    if (cannotWrite) {
+      handleWindowsWriteError(cannotWrite);
+      return;
+    }
   }
 }
 
@@ -156,11 +162,44 @@ function listenHandler(err) {
   }
 
   if (!isConsole) {
-    hosts.set(listenHostname, hostname);
+    let toSet = [[listenHostname, hostname]];
     for (let x of altHostnames)
-      hosts.set(listenHostname, x);
+      toSet.push(listenHostname, x);
 
-    console.log("[sls] server list overridden");
+    const lines = hosts.get();
+    let toWrite = [];
+    for (let elem of toSet) {
+      let exists = false;
+      for (let line of lines) {
+        if (Array.isArray(line) && line[0] == elem[0] && line[1] == elem[1]) {
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        toWrite.push(elem);
+      }
+    }
+
+    if (toWrite.length) {
+      if (cannotWrite) {
+        // Need to write but can't. Also not on Windows.
+        let e = cannotWrite;
+        console.error(`ERROR:${e.code}: Unable to write to "${hosts.HOSTS}".\n`);
+        if (e.code === 'EACCES')
+            console.error(`  * Try running with \`sudo\``);
+        console.error(`  * Add the following to the file manually:\n`);
+        for (let elem of toWrite)
+          console.error(`    ${elem[0]}\t${elem[1]}`);
+        process.exit();
+      }
+      for (let elem of toWrite)
+        hosts.set(elem[0], elem[1]);
+
+      console.log("[sls] server list overridden");
+    } else {
+      console.log("[sls] server list was already overridden");
+    }
   }
 
   for (let i = servers.entries(), step; !(step = i.next()).done; ) {
@@ -380,8 +419,6 @@ autoUpdate(moduleBase, modules, UPDATE_LOG, true, REGION_SHORT).then((updateResu
 }).catch((e) => {
   console.log("ERROR: Unable to auto-update: %s", e);
 })
-
-const isWindows = process.platform === "win32";
 
 function cleanExit() {
   console.log("terminating...");

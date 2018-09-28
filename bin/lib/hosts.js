@@ -81,8 +81,8 @@ exports.writeFile = function (lines) {
 	// Get mode (or set to rw-rw-rw-); check read-only
 	var mode;
 	try {
-		mode = fs.statSync(exports.HOSTS).mode;
-        if (!(mode & 128)) { // 0200 (owner, write)
+		mode = fs.statSync(HOSTS).mode;
+		if (!(mode & 0o200)) { // 0200 (owner, write)
 			// FIXME generate fake EACCES
 			var err = new Error('EACCES: Permission denied');
 			err.code = 'EACCES';
@@ -91,7 +91,7 @@ exports.writeFile = function (lines) {
 		}
 	} catch (e) {
 		if (e.code === 'ENOENT') {
-			mode = 33206; // 0100666 (regular file, rw-rw-rw-)
+			mode = 0o100666; // 0100666 (regular file, rw-rw-rw-)
 		} else {
 			throw e;
 		}
@@ -100,3 +100,13 @@ exports.writeFile = function (lines) {
 	// Write file
 	fs.writeFileSync(exports.HOSTS, data, {mode: mode});
 };
+
+exports.cannotWrite = function() {
+	try {
+		let fd = fs.openSync(exports.HOSTS, 'w+'); // don't set mode (0o100666) to respect umask
+		fs.close(fd);
+		return false;
+	} catch (e) {
+		return e;
+	}
+}
