@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const fs = require("fs");
 const path = require("path");
 
-const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/hackerman-caali/tera-data/master/";
+const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/caali-hackerman/tera-data/master/";
 const DiscordURL = "https://tinyurl.com/caaliproxy";
 
 function forcedirSync(dir) {
