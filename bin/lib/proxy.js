@@ -1,4 +1,4 @@
-const DiscordURL = "https://tinyurl.com/caaliproxy";
+const DiscordURL = "https://tinyurl.com/caalitera";
 
 
 const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => {
@@ -23,7 +23,7 @@ if (REGION === "TW") {
   console.log("EME (NA Tera's publisher) has DMCA'd my discord server and my GitHub repositories.")
   console.log("          Feel free to join my Slack server for future information!")
 }
-console.log("             >>> https://tinyurl.com/caaliproxy <<<")
+console.log("             >>> https://tinyurl.com/caalitera <<<")
 console.log("---------------------------------------------------------------------")
 if (REGION == "NA")
     process.exit(1);
@@ -342,7 +342,7 @@ function startProxy() {
         console.log("EME (NA Tera's publisher) has DMCA'd my discord server and my GitHub repositories.")
         console.log("          Feel free to join my Slack server for future information!")
       }
-      console.log("             >>> https://tinyurl.com/caaliproxy <<<")
+      console.log("             >>> https://tinyurl.com/caalitera <<<")
       console.log("---------------------------------------------------------------------")
     });
   } else {

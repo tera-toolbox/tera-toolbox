@@ -3,7 +3,7 @@ This software in this repository does not work in combination with the NA versio
 
 ### Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
 * It will auto-update your opcode mappings, packet definitions, and compatible installed modules. You no longer need do manually update _anything_!
-* Feel free to visit my Slack server at https://tinyurl.com/caaliproxy
+* Feel free to visit my Slack server at https://tinyurl.com/caalitera
 
 ### Installation instructions
 * Download and run the setup from the #proxy channel in the Slack server linked above. A manual installation is possible, but not recommended!
@@ -12,32 +12,31 @@ This software in this repository does not work in combination with the NA versio
 * Run `TeraProxy.bat` *as Administrator*, then start the game
 
 ### Popular and fully compatible modules
-Almost all tera-proxy modules are compatible with my proxy. For an always up-to-date list, check out [my slack server](https://tinyurl.com/caaliproxy)!
+Almost all tera-proxy modules are compatible with my proxy. For an always up-to-date list, check out [my slack server](https://tinyurl.com/caalitera)!
 * [Skill Prediction (SaltyMonkey's fork, included with the proxy by default)](https://github.com/SaltyMonkey/skill-prediction)
 * [FPS Utils (included with the proxy by default)](https://github.com/codeagon/fps-utils)
-* [Xigncode Bypass (optionally installed by default)](https://github.com/hackerman-caali/xigncode-bypass)
 * [Arborean Apparel](https://github.com/codeagon/arborean-apparel)
 * [Astral Tera](https://github.com/codeagon/Astral-TERA)
-* [True Everful Nostrum (my fork)](https://github.com/hackerman-caali/true-everful-nostrum)
+* [True Everful Nostrum (my fork)](https://github.com/caali-hackerman/true-everful-nostrum)
 * [Instant Soulbind](https://github.com/beng-mods/instant-soulbind)
-* [Instant Enchant (my fork)](https://github.com/hackerman-caali/instant-enchant)
+* [Instant Enchant (my fork)](https://github.com/caali-hackerman/instant-enchant)
 * [Socialize](https://github.com/Leyki/Socialize/)
 * [Settings Saver](https://github.com/Kaseaa/Tera-Settings-Saver)
 * [Command / Chat-Sanitizer / Swim-Fix (included with the proxy by default)](https://github.com/pinkipi/tera-proxy)
-* [CaaliLogger / CaaliStateTracker](https://github.com/hackerman-caali/data-logger)
+* [CaaliLogger / CaaliStateTracker](https://github.com/caali-hackerman/data-logger)
 * [Ghillieglade Auto-Reset](https://github.com/Snugglez/GG-Reset)
-* [No Custom Loading Screens](https://github.com/hackerman-caali/no-custom-loadingscreens)
+* [No Custom Loading Screens](https://github.com/caali-hackerman/no-custom-loadingscreens)
 * [Library](https://github.com/Kaseaa/library/)
 * [FPS-Booster 2000](https://github.com/Kaseaa/fps-booster-2000)
 * [Tuwanguide](https://github.com/Snugglez/Tuwanguide)
 * [Ping Compensation](https://github.com/Mister-Kay/ping-compensation)
 * [No More Noctenium Lag](https://github.com/Mister-Kay/no-more-noctenium-lag)
 * [RK-9 Guide](https://github.com/Shinoyx/rk9guide)
-* [Battle Notify (my fork)](https://github.com/hackerman-caali/battle-notify)
+* [Battle Notify (my fork)](https://github.com/caali-hackerman/battle-notify)
 * [Dress Up Your Friends](https://github.com/SerenTera/DressUpYourFriends)
 * [Monster Marker](https://github.com/SerenTera/monster-marker)
 * [No More Motes](https://github.com/Snugglez/No-More-Motes)
-* [Skill Resets (my fork)](https://github.com/hackerman-caali/skill-resets)
+* [Skill Resets (my fork)](https://github.com/caali-hackerman/skill-resets)
 * [Auto-Vanguard (Seraphinush's fork)](https://github.com/seraphinush-gaming/auto-vanguard)
 * [Harrowhold P4 firewall markers](https://github.com/soler91/HH-Firewall-Markers)
 * [Boss Ping Remover (Kourinn's fork)](https://github.com/Mister-Kay/boss-ping-remover)
@@ -78,15 +77,15 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 * [Mount Prediction](https://github.com/Snugglez/mount-prediction)
 * [No More Wasted Grim Strikes](https://github.com/Owyn/no_more_wasted_grim-strikes)
 * [Rainbow](https://github.com/codeagon/rainbow)
-* [Demon's Wheel Guide (my fork)](https://github.com/hackerman-caali/dw-guide/blob/master/README.md)
+* [Demon's Wheel Guide (my fork)](https://github.com/caali-hackerman/dw-guide/blob/master/README.md)
 * Bern's scripts
 * Kasea's Ping Remover
 * ... and many more
 
 ### Developers: Adding auto-update compatibility to your module
 * You'll need to create two files in your root update directory (called UpdateRoot from now on): `module.json` and `manifest.json`.
-* `module.json` contains the UpdateRoot URL and optional other data. See [here](https://github.com/hackerman-caali/data-logger/blob/master/update/CaaliLogger/module.json) for an example. If you're distributing paid modules, you can add a `drmKey` parameter representing a unique per-user key (string) there as well. It'll be sent as a HTTP GET parameter when `manifest.json` is requested.
-* `manifest.json` contains a list of all files required for your module (relative to its root directory) and their corresponding SHA256 hashes. Furthermore, you must specify a list of all packet definitions and versions required by your module here. See [here](https://github.com/hackerman-caali/data-logger/blob/master/update/CaaliLogger/manifest.json) for an example. If you have files that shouldn't be overwritten, you can use `{"overwrite": false, "hash": [file hash]}` instead of just a string on a per-file basis. You can also specify for which game regions a file is downloaded.
+* `module.json` contains the UpdateRoot URL and optional other data. See [here](https://github.com/caali-hackerman/data-logger/blob/master/update/CaaliLogger/module.json) for an example. If you're distributing paid modules, you can add a `drmKey` parameter representing a unique per-user key (string) there as well. It'll be sent as a HTTP GET parameter when `manifest.json` is requested.
+* `manifest.json` contains a list of all files required for your module (relative to its root directory) and their corresponding SHA256 hashes. Furthermore, you must specify a list of all packet definitions and versions required by your module here. See [here](https://github.com/caali-hackerman/data-logger/blob/master/update/CaaliLogger/manifest.json) for an example. If you have files that shouldn't be overwritten, you can use `{"overwrite": false, "hash": [file hash]}` instead of just a string on a per-file basis. You can also specify for which game regions a file is downloaded.
 * That's it! All you need to do now is tell your users to delete any legacy version of your module that they have already installed, and place the `module.json` file in a new, empty directory in their `bin/node_modules/` folder. `manifest.json` must not be distributed to your users, it only has to reside in your UpdateRoot. The proxy will recognize the module as auto-updating compatible and install all files from your UpdateRoot. It will also download required packet definitions, if necessary.
 * SaltyMonkey wrote a neat tool that generates `manifest.json` automatically for you (though you might want to manually adjust stuff afterwards): https://github.com/SaltyMonkey/SHAGen/releases/
 * Whenever you push an update, remember to update `manifest.json` as well!
