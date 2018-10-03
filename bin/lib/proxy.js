@@ -162,24 +162,17 @@ function listenHandler(err) {
   }
 
   if (!isConsole) {
-    let toSet = [[listenHostname, hostname]];
-    for (let x of altHostnames)
-      toSet.push(listenHostname, x);
+    const toSet = [
+      [listenHostname, hostname],
+      ...altHostnames.map(x => [listenHostname, x])
+    ];
 
     const lines = hosts.get();
-    let toWrite = [];
-    for (let elem of toSet) {
-      let exists = false;
-      for (let line of lines) {
-        if (Array.isArray(line) && line[0] == elem[0] && line[1] == elem[1]) {
-          exists = true;
-          break;
-        }
-      }
-      if (!exists) {
-        toWrite.push(elem);
-      }
-    }
+    const toWrite = toSet.filter(elem => {
+      return !lines.find(line => {
+        return Array.isArray(line) && line[0] == elem[0] && line[1] == elem[1]
+      })
+    });
 
     if (toWrite.length) {
       if (cannotWrite) {
