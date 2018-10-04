@@ -112,8 +112,7 @@ const errorHandler = {
 
 class SlsProxy {
   constructor(opts = {}) {
-    const slsUrl = opts.url;
-    const parsed = Object.assign(url.parse(slsUrl), opts);
+    const parsed = opts.url ? Object.assign(url.parse(opts.url), opts) : opts;
 
     this.protocolInstance = (parsed.protocol == 'https:') ? https : http;
     this.protocol = parsed.protocol
