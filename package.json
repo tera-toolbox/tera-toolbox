@@ -4,24 +4,24 @@
   "description": "Easy script modding through modular network-based hooks.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hackerman-caali/tera-proxy.git"
+    "url": "git+https://github.com/caali-hackerman/tera-proxy.git"
   },
   "author": "meishu",
   "engines": {
     "node": ">=6.0.0"
   },
   "bugs": {
-    "url": "https://github.com/hackerman-caali/tera-proxy/issues"
+    "url": "https://github.com/caali-hackerman/tera-proxy/issues"
   },
-  "homepage": "https://github.com/hackerman-caali/tera-proxy#readme",
+  "homepage": "https://github.com/caali-hackerman/tera-proxy#readme",
   "dependencies": {
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "tera-data": "github:hackerman-caali/tera-data",
-    "tera-proxy-game": "github:hackerman-caali/tera-proxy-game",
-    "tera-proxy-sls": "github:hackerman-caali/tera-proxy-sls",
-    "tera-crypto-js": "github:hackerman-caali/tera-crypto-js",
-    "tera-crypto-native": "github:hackerman-caali/tera-crypto-native",
-    "tera-vec3": "github:hackerman-caali/tera-vec3"
+    "tera-data": "github:caali-hackerman/tera-data",
+    "tera-proxy-game": "github:caali-hackerman/tera-proxy-game",
+    "tera-proxy-sls": "github:caali-hackerman/tera-proxy-sls",
+    "tera-crypto-js": "github:caali-hackerman/tera-crypto-js",
+    "tera-crypto-native": "github:caali-hackerman/tera-crypto-native",
+    "tera-vec3": "github:caali-hackerman/tera-vec3"
   }
 }

@@ -3,7 +3,7 @@ This software in this repository does not work in combination with the NA versio
 
 ### Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
 * It will auto-update your opcode mappings, packet definitions, and compatible installed modules. You no longer need do manually update _anything_!
-* Feel free to visit my Slack server at https://tinyurl.com/caalitera
+* Feel free to visit my Discord server at https://discord.gg/dUNDDtw
 
 ### Installation instructions
 * Download and run the setup from the #proxy channel in the Slack server linked above. A manual installation is possible, but not recommended!
@@ -12,7 +12,7 @@ This software in this repository does not work in combination with the NA versio
 * Run `TeraProxy.bat` *as Administrator*, then start the game
 
 ### Popular and fully compatible modules
-Almost all tera-proxy modules are compatible with my proxy. For an always up-to-date list, check out [my slack server](https://tinyurl.com/caalitera)!
+Almost all tera-proxy modules are compatible with my proxy. For an always up-to-date list, check out [my Discord server](https://discord.gg/dUNDDtw)!
 * [Skill Prediction (SaltyMonkey's fork, included with the proxy by default)](https://github.com/SaltyMonkey/skill-prediction)
 * [FPS Utils (included with the proxy by default)](https://github.com/codeagon/fps-utils)
 * [Arborean Apparel](https://github.com/codeagon/arborean-apparel)

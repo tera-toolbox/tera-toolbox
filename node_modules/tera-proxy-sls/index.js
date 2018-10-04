@@ -112,7 +112,7 @@ const errorHandler = {
 
 class SlsProxy {
   constructor(opts = {}) {
-    const slsUrl = opts.url || 'http://sls.service.enmasse.com:8080/servers/list.en';
+    const slsUrl = opts.url;
     const parsed = Object.assign(url.parse(slsUrl), opts);
 
     this.protocolInstance = (parsed.protocol == 'https:') ? https : http;

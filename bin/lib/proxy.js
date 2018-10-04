@@ -1,4 +1,4 @@
-const DiscordURL = "https://tinyurl.com/caalitera";
+const DiscordURL = "https://discord.gg/dUNDDtw";
 
 
 const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => {
@@ -14,16 +14,16 @@ const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => 
 console.log("---------------------------------------------------------------------")
 if (REGION === "TW") {
   console.log("Discord因为某个不知名第三方的请求，封停了我的账号，删除了我的服务器。")
-  console.log("      如果想获得后续的帮助和技术支持，请加入我的slack服务器：")
+  console.log("      如果想获得后续的帮助和技术支持，请加入我的discord服务器：")
 } else if (REGION == "NA") {
   console.log("    EME has DMCA'd my discord server and my GitHub repositories.")
   console.log("Proxy, xigncode-bypass, Shinra, and TCC will NOT work for NA anymore!")
-  console.log("      Feel free to join my Slack server for more information.")
+  console.log("      Feel free to join my Discord server for more information.")
 } else {
   console.log("EME (NA Tera's publisher) has DMCA'd my discord server and my GitHub repositories.")
-  console.log("          Feel free to join my Slack server for future information!")
+  console.log("          Feel free to join my Discord server for future information!")
 }
-console.log("             >>> https://tinyurl.com/caalitera <<<")
+console.log("             >>> https://discord.gg/dUNDDtw <<<")
 console.log("---------------------------------------------------------------------")
 if (REGION == "NA")
     process.exit(1);
@@ -333,16 +333,16 @@ function startProxy() {
       console.log("---------------------------------------------------------------------")
       if (REGION === "TW") {
         console.log("Discord因为某个不知名第三方的请求，封停了我的账号，删除了我的服务器。")
-        console.log("      如果想获得后续的帮助和技术支持，请加入我的slack服务器：")
+        console.log("      如果想获得后续的帮助和技术支持，请加入我的discord服务器：")
       } else if (REGION == "NA") {
         console.log("    EME has DMCA'd my discord server and my GitHub repositories.")
         console.log("Proxy, xigncode-bypass, Shinra, and TCC will NOT work for NA anymore!")
-        console.log("      Feel free to join my Slack server for more information.")
+        console.log("      Feel free to join my Discord server for more information.")
       } else {
         console.log("EME (NA Tera's publisher) has DMCA'd my discord server and my GitHub repositories.")
-        console.log("          Feel free to join my Slack server for future information!")
+        console.log("          Feel free to join my Discord server for future information!")
       }
-      console.log("             >>> https://tinyurl.com/caalitera <<<")
+      console.log("             >>> https://discord.gg/dUNDDtw <<<")
       console.log("---------------------------------------------------------------------")
     });
   } else {

@@ -2,12 +2,12 @@
   "name": "tera-proxy-sls",
   "version": "0.3.0",
   "description": "TERA HTTP(s) server list proxy",
-  "homepage": "https://github.com/hackerman-caali/tera-proxy-sls#readme",
-  "bugs": "https://github.com/hackerman-caali/tera-proxy-sls/issues",
+  "homepage": "https://github.com/caali-hackerman/tera-proxy-sls#readme",
+  "bugs": "https://github.com/caali-hackerman/tera-proxy-sls/issues",
   "license": "ISC",
   "author": "meishu / Caali",
   "main": "index.js",
-  "repository": "hackerman-caali/tera-proxy-sls",
+  "repository": "caali-hackerman/tera-proxy-sls",
   "dependencies": {
     "http-proxy": "^1.15.1",
     "xmldom": "^0.1.22"

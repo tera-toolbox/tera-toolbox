@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/caali-hackerman/tera-data/master/";
-const DiscordURL = "https://tinyurl.com/caalitera";
+const DiscordURL = "https://discord.gg/dUNDDtw";
 
 function forcedirSync(dir) {
   const sep = path.sep;
