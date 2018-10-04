@@ -112,10 +112,11 @@ const errorHandler = {
 
 class SlsProxy {
   constructor(opts = {}) {
-    const parsed = opts.url ? Object.assign(url.parse(opts.url), opts) : opts;
+    const slsUrl = opts.url || 'http://web-sls.tera.gameforge.com:4566/servers/list.uk';
+    const parsed = Object.assign(url.parse(slsUrl), opts);
 
     this.protocolInstance = (parsed.protocol == 'https:') ? https : http;
-    this.protocol = parsed.protocol
+    this.protocol = parsed.protocol || 'http:';
     this.host = parsed.hostname;
     this.port = parsed.port || 80;
     this.path = parsed.pathname || '/';

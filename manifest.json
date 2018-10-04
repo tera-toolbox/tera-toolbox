@@ -41,7 +41,7 @@
     "node_modules/tera-proxy-game/package.json": "ddc2b40963fda41e566252526cc38b6d0c31043b22b09f63b71de570085cab72",
     "node_modules/tera-proxy-sls/res/private.pem": "d4a1aee78f9ece48b6821d4cd318cbf0774caba16c7a83b55e1ef8146027fbe1",
     "node_modules/tera-proxy-sls/res/public.pem": "aa3808701592075d7b5d0fa8fbbd0c04c473d54becf895fdf4a349f7a5f7f3b6",
-    "node_modules/tera-proxy-sls/index.js": "57d7f1e8356305224ac1ecd866b8c6da4a22bb77132e4856d8631921d4cc094e",
+    "node_modules/tera-proxy-sls/index.js": "4d6e8ee97de1d4fbc4c5082d5102f7b6e8097cdbaddeb10242f877448a82471a",
     "node_modules/tera-proxy-sls/package.json": "57ad7163914fb36e35d4322b64e4dd419409419ea70b36866f72bf8071d67483",
     "node_modules/tera-crypto-js/index.js": "03f623e76cea70ab9466730d9f502ea55d5a47004243db620ef7ec5d63e5a154",
     "node_modules/tera-crypto-native/binding.gyp": "5ba00e39c867bcc091ba5e375abf76cb0f3e4294bc75c0b572024112f1741fd6",
