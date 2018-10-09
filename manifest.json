@@ -2,7 +2,7 @@
   "files": {
     "bin/lib/hosts.js": "e554c3d2593be08afc60f3db74ca96644c7b267e12d546cfbf5ef61c965da99a",
     "bin/lib/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
-    "bin/lib/proxy.js": "22d3c21bb002746dc11e41c95989ff3f645b76662cf4c0e8ec0838ca19e3793b",
+    "bin/lib/proxy.js": "154fb9eb6d67c820fb29d5f4051f9e7fcd9cd0afafdb3dab15d137bc1b2b215a",
     "bin/lib/regions.js": "55978ca707c4bd92348075de262dc11c576df2b88b40cad6854322ceec8a6795",
     "bin/lib/update.js": "7d6c38813d798a640e0484fab3fe00f7e0a9287131f4f1587141032f897e89d3",
     "bin/lib/update-self.js": "fa97248d51fed2ee4d5f3be8261538c45793fa86e1d2ae1c740a792f016959d8",
@@ -34,7 +34,7 @@
     "node_modules/tera-proxy-game/lib/packetBuilder.js": "66f49a4d771a20d9bd15283e8b4933f104da9c7c68652ab154a42354776b6d68",
     "node_modules/tera-proxy-game/lib/clients/RealClient.js": "1399d90da2adc0fadcb57a5c82adecb9847a954b1ecb52d56d3e0bb6c853ff45",
     "node_modules/tera-proxy-game/lib/connection/index.js": "7dff7b78b39baf3bf3c44cd46121ac9bb2b5313ff89587364962f31e5e8aa651",
-    "node_modules/tera-proxy-game/lib/connection/dispatch/index.js": "48480020b30159f467dcbfa0c01a3c27aa9b7d318a80a3fc8afd6de5dcc763e2",
+    "node_modules/tera-proxy-game/lib/connection/dispatch/index.js": "39789bdb2d2570c7bd3f8cbe11a87449ad8fcf4b6253ae644e4905339edc654e",
     "node_modules/tera-proxy-game/lib/connection/dispatch/module.js": "f2cbdce140859b8b60b270df7e980d79b438f6db3cb44354b0ec8d25733a68ed",
     "node_modules/tera-proxy-game/lib/connection/encryption/index.js": "817e5d4fc932f910a49f2cda3db4cda38a8e72add0b883ffcd14415c6ce8758d",
     "node_modules/tera-proxy-game/lib/connection/encryption/sha0.js": "49748cdd71917d10232013990dd03ccbbd01a27dc85dfd6c534c211cffe14398",

@@ -198,6 +198,7 @@ function runServ(target, socket) {
   const { Connection, RealClient } = require("tera-proxy-game");
 
   const connection = new Connection({
+    "region": REGION_SHORT,
     "console": !!isConsole,
     "classic": !!currentRegion["classic"],
     "protocol_data": lastUpdateResult["protocol_data"],
