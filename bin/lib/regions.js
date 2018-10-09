@@ -75,15 +75,6 @@ module.exports = {
     customServers: require("./res/servers-ru-test.json"),
     listenHostname: "127.0.0.19"
   },
-  "JP-CLASSIC": {
-    classic: true,
-    url: "https://tera.pmang.jp/classic_game_launcher/server_list.xml?usn=0",
-    hostname: "tera.pmang.jp",
-    altHostnames: ["tera-hangame.pmang.jp"],
-    port: 443,
-    customServers: require("./res/servers-jp-classic.json"),
-    listenHostname: "127.0.0.20"
-  },
   "PS4-NA": {
     console: true,
     customServers: require('./res/servers-ps4-na.json')

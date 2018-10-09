@@ -54,6 +54,11 @@ if (!currentRegion) {
         migratedFile = "res/servers-th.json";
       break;
     }
+    case "JP": {
+      if (!currentRegion.customServers["5073"])
+        migratedFile = "res/servers-jp.json";
+      break;
+    }
   }
 
   if (migratedFile) {

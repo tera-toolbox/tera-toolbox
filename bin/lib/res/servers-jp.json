@@ -4,5 +4,11 @@
 		"ip": "127.0.0.24",
 		"port": 9250,
 		"keepOriginal": true
+	},
+	"5073": {
+		"name": "ヴェリック（プロキシ）",
+		"ip": "127.0.0.24",
+		"port": 9251,
+		"keepOriginal": true
 	}
 }
