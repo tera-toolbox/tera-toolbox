@@ -53,7 +53,6 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 * [TCC Stub](https://github.com/Foglio1024/tcc-stub)
 * [Box](https://github.com/ayylmar/box)
 * [Generic Box Opener / Item User](https://github.com/Owyn/generic-box-opener-item-user)
-* [Event Stars Cooldown Fix](https://github.com/ayylmar/fix-event-stars-cooldown)
 * [Abnormality Blocker](https://github.com/ayylmar/abnormality-blocker)
 * [Improved LFG](https://github.com/ayylmar/improved-lfg)
 * [No More Death Animations](https://github.com/ayylmar/no-more-death-animations)
