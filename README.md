@@ -4,6 +4,7 @@ This software in this repository does not work in combination with the NA versio
 ### Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
 * It will auto-update your opcode mappings, packet definitions, and compatible installed modules. You no longer need do manually update _anything_!
 * Feel free to visit my Discord server at https://discord.gg/dUNDDtw
+* Originally forked from https://github.com/pinkipi/tera-proxy which was DMCA'd by EME.
 
 ### Installation instructions
 * Download and run the setup from the #proxy channel in the Slack server linked above. A manual installation is possible, but not recommended!

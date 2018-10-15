@@ -1,6 +1,4 @@
 const DiscordURL = "https://discord.gg/dUNDDtw";
-
-
 const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => {
     try {
         return require("../config.json");
@@ -11,22 +9,12 @@ const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => 
     }
 })();
 
-console.log("---------------------------------------------------------------------")
-if (REGION === "TW") {
-  console.log("Discord因为某个不知名第三方的请求，封停了我的账号，删除了我的服务器。")
-  console.log("      如果想获得后续的帮助和技术支持，请加入我的discord服务器：")
-} else if (REGION == "NA") {
-  console.log("    EME has DMCA'd my discord server and my GitHub repositories.")
-  console.log("Proxy, xigncode-bypass, Shinra, and TCC will NOT work for NA anymore!")
-  console.log("      Feel free to join my Discord server for more information.")
-} else {
-  console.log("EME (NA Tera's publisher) has DMCA'd my discord server and my GitHub repositories.")
-  console.log("          Feel free to join my Discord server for future information!")
+if (REGION == "NA") {
+  console.log("EME recently took legal action against third-party software for NA.");
+  console.log("Proxy, xigncode-bypass, Shinra, and TCC will not work on NA anymore!");
+  console.log("Feel free to join %s for more information.", DiscordURL);
+  process.exit(1);
 }
-console.log("             >>> https://discord.gg/dUNDDtw <<<")
-console.log("---------------------------------------------------------------------")
-if (REGION == "NA")
-    process.exit(1);
 
 const REGIONS = require("./regions");
 const currentRegion = REGIONS[REGION];
@@ -335,21 +323,6 @@ function startProxy() {
 
       proxy.listen(listenHostname, listenHandler);
       clearTimeout(slsTimeout);
-
-      console.log("---------------------------------------------------------------------")
-      if (REGION === "TW") {
-        console.log("Discord因为某个不知名第三方的请求，封停了我的账号，删除了我的服务器。")
-        console.log("      如果想获得后续的帮助和技术支持，请加入我的discord服务器：")
-      } else if (REGION == "NA") {
-        console.log("    EME has DMCA'd my discord server and my GitHub repositories.")
-        console.log("Proxy, xigncode-bypass, Shinra, and TCC will NOT work for NA anymore!")
-        console.log("      Feel free to join my Discord server for more information.")
-      } else {
-        console.log("EME (NA Tera's publisher) has DMCA'd my discord server and my GitHub repositories.")
-        console.log("          Feel free to join my Discord server for future information!")
-      }
-      console.log("             >>> https://discord.gg/dUNDDtw <<<")
-      console.log("---------------------------------------------------------------------")
     });
   } else {
     for (let i = 0, arr = Object.keys(customServers), len = arr.length; i < len; ++i) {
