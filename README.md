@@ -77,7 +77,8 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 * [Mount Prediction](https://github.com/Snugglez/mount-prediction)
 * [No More Wasted Grim Strikes](https://github.com/Owyn/no_more_wasted_grim-strikes)
 * [Rainbow](https://github.com/codeagon/rainbow)
-* [Demon's Wheel Guide (my fork)](https://github.com/caali-hackerman/dw-guide/blob/master/README.md)
+* [Demon's Wheel Guide (my fork)](https://github.com/caali-hackerman/dw-guide)
+* [Grotto of Lost Souls Guide](https://github.com/valkyr1e-tera/gls-guide)
 * Bern's scripts
 * Kasea's Ping Remover
 * ... and many more
