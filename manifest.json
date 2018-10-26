@@ -7,7 +7,7 @@
     "bin/lib/update.js": "7d6c38813d798a640e0484fab3fe00f7e0a9287131f4f1587141032f897e89d3",
     "bin/lib/update-self.js": "fa97248d51fed2ee4d5f3be8261538c45793fa86e1d2ae1c740a792f016959d8",
     "bin/lib/res/servers-eu.json": {"overwrite": false, "hash": "fe961a1205ad1e0cee690e447692b00f82cbda0425878a9a047a5e74297a1374"},
-    "bin/lib/res/servers-eu-test.json": {"overwrite": false, "hash": "3d246de5b38e3d5fb7d7ad64c1055725e4d65dbf66434c3a4aac5fcc4325991b"},
+    "bin/lib/res/servers-eu-test.json": {"overwrite": false, "hash": "dfe01c75882cce6d4454319fbaff9cdf3575c165696d01d4df9e2c8d0fc6f473"},
     "bin/lib/res/servers-jp.json": {"overwrite": false, "hash": "a89e62d09444fdfa20cb270614d2e0f16085ea62c9a5b0a6e9b1a98630c45e44"},
     "bin/lib/res/servers-kr.json": {"overwrite": false, "hash": "d7c276eb311ac4121473da0856dfbf111bf713099755636acd3b4ce5431ad9d9"},
     "bin/lib/res/servers-kr-test.json": {"overwrite": false, "hash": "46bdf430c8b7b439b66db118265b469c5b0090c1bfeba11f09dc436da36b644b"},
