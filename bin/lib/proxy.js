@@ -38,7 +38,7 @@ if (!currentRegion) {
       break;
     }
     case "TH": {
-      if (currentRegion.customServers["1"] || currentRegion.customServers["2"])
+      if (currentRegion.customServers["2"] || !currentRegion.customServers["1"])
         migratedFile = "res/servers-th.json";
       break;
     }

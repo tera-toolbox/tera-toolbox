@@ -1,13 +1,13 @@
 {
 	"7": {
 		"name": "Elinu (Proxy)",
-		"ip": "127.0.0.28",
+		"ip": "127.0.0.30",
 		"port": 7801,
 		"keepOriginal": true
 	},
 	"1": {
 		"name": "SEA (Proxy)",
-		"ip": "127.0.0.28",
+		"ip": "127.0.0.30",
 		"port": 7802,
 		"keepOriginal": true
 	}

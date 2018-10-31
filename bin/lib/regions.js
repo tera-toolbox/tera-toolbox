@@ -52,6 +52,14 @@ module.exports = {
     customServers: require("./res/servers-th.json"),
     listenHostname: "127.0.0.18"
   },
+  SE: {
+    url: "http://terasls.playwith.in.th/list.xml",
+    hostname: "terasls.playwith.in.th",
+    address: "103.80.216.189",
+    port: 80,
+    customServers: require("./res/servers-se.json"),
+    listenHostname: "127.0.0.21"
+  },
   "EU-TEST": {
     hostname: "devt2-web-sls.tera.gfsrv.net",
     address: "79.110.95.152",
