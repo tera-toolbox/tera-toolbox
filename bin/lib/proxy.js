@@ -18,6 +18,11 @@ if (REGION == "NA") {
 
 const REGIONS = require("./regions");
 const currentRegion = REGIONS[REGION];
+if (!currentRegion) {
+  console.error("Invalid region: " + REGION);
+  return;
+}
+
 const REGION_SHORT = REGION.toLowerCase().split('-')[0];
 const isConsole = currentRegion["console"];
 const { customServers, listenHostname, hostname } = currentRegion;
@@ -25,43 +30,38 @@ const altHostnames = currentRegion.altHostnames || [];
 const fs = require("fs");
 const path = require("path");
 
-if (!currentRegion) {
-  console.error("Unsupported region: " + REGION);
-  return;
-} else {
-  // Region migration
-  let migratedFile = null;
-  switch(REGION) {
-    case "EU": {
-      if (currentRegion.customServers["30"] || currentRegion.customServers["31"] || currentRegion.customServers["32"] || currentRegion.customServers["33"] || currentRegion.customServers["34"] || currentRegion.customServers["35"])
-        migratedFile = "res/servers-eu.json";
-      break;
-    }
-    case "TH": {
-      if (currentRegion.customServers["2"] || !currentRegion.customServers["1"])
-        migratedFile = "res/servers-th.json";
-      break;
-    }
-    case "JP": {
-      if (!currentRegion.customServers["5073"])
-        migratedFile = "res/servers-jp.json";
-      break;
-    }
-  }
-
-  if (migratedFile) {
-    try {
-      fs.unlinkSync(path.join(__dirname, migratedFile));
-      console.log(`Due to a change in the server list by the publisher, your server configuration for region ${REGION} was reset. Please restart proxy for the changes to take effect!`);
-    } catch (e) {
-      console.log(`ERROR: Unable to migrate server list for region ${REGION}: ${e}`);
-    }
-    return;
-  }
-
-  // No migration required
-  console.log(`[sls] Tera-Proxy configured for region ${REGION}!`);
+// Region migration
+let migratedFile = null;
+switch(REGION) {
+ case "EU": {
+   if (currentRegion.customServers["30"] || currentRegion.customServers["31"] || currentRegion.customServers["32"] || currentRegion.customServers["33"] || currentRegion.customServers["34"] || currentRegion.customServers["35"])
+     migratedFile = "res/servers-eu.json";
+   break;
+ }
+ case "TH": {
+   if (currentRegion.customServers["2"] || !currentRegion.customServers["1"])
+     migratedFile = "res/servers-th.json";
+   break;
+ }
+ case "JP": {
+   if (!currentRegion.customServers["5073"])
+     migratedFile = "res/servers-jp.json";
+   break;
+ }
 }
+
+if (migratedFile) {
+ try {
+   fs.unlinkSync(path.join(__dirname, migratedFile));
+   console.log(`Due to a change in the server list by the publisher, your server configuration for region ${REGION} was reset. Please restart proxy for the changes to take effect!`);
+ } catch (e) {
+   console.log(`ERROR: Unable to migrate server list for region ${REGION}: ${e}`);
+ }
+ return;
+}
+
+// No migration required
+console.log(`[sls] Tera-Proxy configured for region ${REGION}!`);
 
 let why;
 try { why = require("why-is-node-running"); }
