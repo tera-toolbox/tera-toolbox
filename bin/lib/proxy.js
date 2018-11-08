@@ -1,4 +1,10 @@
 const DiscordURL = "https://discord.gg/dUNDDtw";
+
+if(['11.0.0', '11.1.0'].includes(process.versions.node)) {
+  console.error('Error: Node.JS 11.x contains a critical bug preventing timers from working properly. Please install a 10.x version!')
+  process.exit()
+}
+
 const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => {
     try {
         return require("../config.json");
@@ -8,13 +14,6 @@ const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => 
         process.exit(1);
     }
 })();
-
-if (REGION == "NA") {
-  console.log("EME recently took legal action against third-party software for NA.");
-  console.log("Proxy, xigncode-bypass, Shinra, and TCC will not work on NA anymore!");
-  console.log("Feel free to join %s for more information.", DiscordURL);
-  process.exit(1);
-}
 
 const REGIONS = require("./regions");
 const currentRegion = REGIONS[REGION];

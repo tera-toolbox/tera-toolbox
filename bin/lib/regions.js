@@ -1,4 +1,12 @@
 module.exports = {
+  NA: {
+    url: "http://sls.service.enmasse.com:8080/servers/list.en",
+    hostname: "sls.service.enmasse.com",
+    address: "208.67.49.148",
+    port: 8080,
+    customServers: require("./res/servers-na.json"),
+    listenHostname: "127.0.0.10"
+  },
   EU: {
     hostname: "web-sls.tera.gameforge.com",
     address: "79.110.94.195",

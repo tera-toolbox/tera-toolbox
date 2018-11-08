@@ -1,13 +1,10 @@
-### NOTICE REGARDING ENMASSE ENTERTAINMENT (NA) TERA
-This software in this repository does not work in combination with the NA version of TERA hosted by EME (neither PC, nor PS4/XB1 servers). It contains no intellectual property belonging to them.
-
 ### Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
 * It will auto-update your opcode mappings, packet definitions, and compatible installed modules. You no longer need do manually update _anything_!
 * Feel free to visit my Discord server at https://discord.gg/dUNDDtw
 * Originally forked from https://github.com/pinkipi/tera-proxy which was DMCA'd by EME.
 
 ### Installation instructions
-* Download and run the setup from the #proxy channel in the Slack server linked above. A manual installation is possible, but not recommended!
+* Download and run the setup from the #proxy channel in the Discord server linked above. A manual installation is possible, but not recommended!
 * The first auto-update after installing the proxy or new mods may take a few seconds. This is because all required files will be downloaded automatically.
 * The most popular modules are already pre-installed for your convenience - check out `bin/node_modules/`. If you don't want to use a particular mod, just delete the corresponding folder or prefix its folder name with an underscore (`_`).
 * Run `TeraProxy.bat` *as Administrator*, then start the game
