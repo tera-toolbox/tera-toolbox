@@ -1,10 +1,26 @@
 const DiscordURL = "https://discord.gg/dUNDDtw";
 
+// Check node/electron version
+let BigIntSupported = false;
+try { BigIntSupported = eval('1234n === 1234n'); } catch (_) {}
+
 if(['11.0.0', '11.1.0'].includes(process.versions.node)) {
-  console.error('Error: Node.JS 11.x contains a critical bug preventing timers from working properly. Please install a 10.x version!')
-  process.exit()
+  console.error('ERROR: Node.JS 11.0 and 11.1 contain a critical bug preventing timers from working properly. Please install version 11.2 or later!');
+  process.exit();
+} else if(process.versions.modules < 64 || !BigIntSupported) {
+  if(!!process.versions.electron) {
+    console.error('ERROR: Your version of Electron is too old to run tera-proxy!');
+    console.error('ERROR: If you are using Arborean Apparel, download the latest release from:');
+    console.error('ERROR: https://github.com/iribae/arborean-apparel/releases');
+    console.error('ERROR: Otherwise, please ask in the #help channel of %s!', DiscordURL);
+  } else {
+    console.error('ERROR: Your installed version of Node.JS is too old to run tera-proxy!');
+    console.error('ERROR: Please install the latest version from https://nodejs.org/en/download/current/');
+  }
+  process.exit();
 }
 
+// Load and validate configuration
 const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => {
     try {
         return require("../config.json");

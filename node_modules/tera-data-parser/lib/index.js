@@ -1,3 +1,5 @@
+require('long'); // Shim
+
 /* eslint-disable global-require */
 module.exports = {
   protocol: require('./protocol'),
