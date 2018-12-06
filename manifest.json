@@ -24,7 +24,7 @@
     "bin/lib/res/servers-xbone-na.json": {"overwrite": false, "hash": "4042486ead0a16dc7afbdf751acd631758e4d871983d86967ff2147db6b30da7"},
     "node_modules/long/package.json": "cb152cbdcca98dad4e3dd2a8ad0007e6d0b362437b5b4be8fd0b42fd916652a5",
     "node_modules/long/index.js": "246b9723d5ed996bb89456a5be2ce2e8bf9428b49241a94c41b22b50f6200bd5",
-    "node_modules/tera-data-parser/package.json": "703db3d38930af4e6c38f4a4e449b53e413a66a0314c8f6a60f0e331df699eba",
+    "node_modules/tera-data-parser/package.json": "709841545349824533cbf4dfa112982d31cdfff8e3f881ff6a5cfe0fe70b4534",
     "node_modules/tera-data-parser/lib/index.js": "d0a339467c56fefb09401559671a6cdda33d83bca787b8d6c8dffa10df5c1123",
     "node_modules/tera-data-parser/lib/parsers/def.js": "6ae4466d8f41cd996c56770d90617e6f01e70843b5b6df413ec83b09289f31c6",
     "node_modules/tera-data-parser/lib/parsers/map.js": "72c3461d2fbfaf43d1bcfe03a59a3789a103da946195e6d64558453d4cd703dd",
