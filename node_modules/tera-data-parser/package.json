@@ -8,7 +8,7 @@
   "bundleDependencies": false,
   "dependencies": {
     "baldera-logger": "^0.1.0",
-    "tera-vec3": "github:hackerman-caali/tera-vec3"
+    "tera-vec3": "github:caali-hackerman/tera-vec3"
   },
   "deprecated": false,
   "description": "tera-data-parser",
@@ -19,7 +19,7 @@
     "eslint-plugin-import": "^2.2.0",
     "sinon": "^2.1.0",
     "tap": "^10.2.0",
-    "tera-data": "github:hackerman-caali/tera-data"
+    "tera-data": "github:caali-hackerman/tera-data"
   },
   "files": [
     "lib/"
