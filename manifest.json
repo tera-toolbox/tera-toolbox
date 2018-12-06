@@ -1,5 +1,6 @@
 {
   "files": {
+    "TeraProxy.bat": "c92e8db47a2d955d839b9d662889d1b9170654bfd17355855d1db41740e691a7",
     "bin/lib/hosts.js": "e554c3d2593be08afc60f3db74ca96644c7b267e12d546cfbf5ef61c965da99a",
     "bin/lib/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
     "bin/lib/proxy.js": "98c952a68978ce123f0d367aa4b30caee5ab20ef9d3e2921ebde06885298f0c3",
