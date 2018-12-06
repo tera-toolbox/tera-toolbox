@@ -31,6 +31,35 @@ const {region: REGION, updatelog: UPDATE_LOG, dnsservers: DNS_SERVERS} = (() => 
     }
 })();
 
+// Migrate module folder
+const fs = require("fs");
+const path = require("path");
+const ModuleFolderOld = path.join(__dirname, "..", "node_modules");
+const ModuleFolder = path.join(__dirname, "..", "..", "mods");
+
+if(fs.existsSync(ModuleFolderOld)){
+  try {
+    fs.renameSync(ModuleFolderOld, ModuleFolder);
+    console.log("-------------------------------------------------------");
+    console.log("--------------- IMPORTANT INFORMATION -----------------");
+    console.log("-------------------------------------------------------");
+    console.log("Proxy's folder containing installed mods was moved from");
+    console.log("          [proxy folder]/bin/node_modules/             ");
+    console.log("                        to                             ");
+    console.log("               [proxy folder]/mods/                    ");
+    console.log("-------------------------------------------------------");
+    console.log("  All installed mods were automatically moved for you. ");
+    console.log("        No further manual action is required.          ");
+    console.log("-------------------------------------------------------");
+  } catch(e) {
+    console.log("ERROR: Unable to migrate modules folder!");
+    console.log("ERROR: Try to fix it yourself or ask in the #help channel of %s!", DiscordURL);
+    console.log(e)
+    process.exit(1);
+  }
+}
+
+// Load region and config
 const REGIONS = require("./regions");
 const currentRegion = REGIONS[REGION];
 if (!currentRegion) {
@@ -42,9 +71,6 @@ const REGION_SHORT = REGION.toLowerCase().split('-')[0];
 const isConsole = currentRegion["console"];
 const { customServers, listenHostname, hostname } = currentRegion;
 const altHostnames = currentRegion.altHostnames || [];
-const fs = require("fs");
-const path = require("path");
-const ModuleFolder = path.join(__dirname, "..", "node_modules");
 
 // Region migration
 let migratedFile = null;
@@ -76,7 +102,7 @@ if (migratedFile) {
  return;
 }
 
-// No migration required
+// No region migration required
 console.log(`[sls] Tera-Proxy configured for region ${REGION}!`);
 
 let why;
