@@ -1,7 +1,8 @@
 const request = require('request-promise-native');
 const crypto = require('crypto');
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
+const { listModules } = require('tera-proxy-game');
 
 const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/caali-hackerman/tera-data/master/";
 const DiscordURL = "https://discord.gg/dUNDDtw";
@@ -66,15 +67,23 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
     else if (updatelog)
       console.log("[update] Updating module " + name);
 
-    // TODO FIXME: temporary fix until migration to new github is done!
-    const update_url_root = updateData["servers"][serverIndex].replace('/hackerman-caali/', '/caali-hackerman/');
-    const manifest_url = update_url_root + 'manifest.json';
+    const update_url_root = updateData["servers"][serverIndex];
+    const manifest_file = 'manifest.json';
+    const manifest_url = update_url_root + manifest_file;
+    const manifest_path = path.join(root, manifest_file);
     if(updatelog)
       console.log("[update] - Retrieving update manifest (Server " + serverIndex + ")");
 
-    const manifest = await request({url: manifest_url, qs: {"drmkey": updateData["drmKey"]}, json: true});
-    if(typeof manifest !== 'object')
-      throw "Invalid manifest.json!";
+    let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url, updateData["drmKey"], null);
+    if(!manifest_result)
+      throw new Error(`Unable to download update manifest for module "${name}":\n${e}`);
+
+    let manifest;
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifest_path, 'utf8'));
+    } catch(e) {
+      throw new Error(`Invalid update manifest for module "${name}":\n${e}`);
+    }
 
     let promises = [];
     for(let file in manifest["files"]) {
@@ -224,14 +233,14 @@ async function autoUpdateMaps(updatelog, updatelimit) {
   return [protocol_data, promises];
 }
 
-async function autoUpdate(moduleBase, modules, updatelog, updatelimit, region) {
+async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
   console.log("[update] Auto-update started!");
   let requiredDefs = new Set(["C_CHECK_VERSION.1.def"]);
 
   let successModules = [];
   let legacyModules = [];
   let failedModules = [];
-  for (let module of modules) {
+  for (let module of listModules(moduleBase)) {
     if(!module.endsWith('.js')) {
       let root = path.join(moduleBase, module);
       try {
