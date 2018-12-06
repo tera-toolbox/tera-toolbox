@@ -233,6 +233,11 @@ async function autoUpdateMaps(updatelog, updatelimit) {
   return [protocol_data, promises];
 }
 
+const CoreModules = {
+  "command": "https://raw.githubusercontent.com/caali-hackerman/tera-proxy/master/bin/node_modules/command/module.json",
+  "tera-game-state": "https://raw.githubusercontent.com/caali-hackerman/tera-game-state/master/module.json",
+};
+
 async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
   console.log("[update] Auto-update started!");
   let requiredDefs = new Set(["C_CHECK_VERSION.1.def"]);
@@ -245,6 +250,17 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
   do {
     installedModulesChanged = false;
     const installedModules = listModules(moduleBase);
+
+    for (let coreModule in CoreModules) {
+      if(installedModules.indexOf(coreModule) < 0) {
+        const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, coreModule, 'module.json'), CoreModules[coreModule]);
+        if(!dependency_result[1])
+          throw new Error(`Unable to install core module "${dependency}: ${dependency_result[2]}`);
+        console.log(`[update] Initialized core module "${dependency}"`);
+        installedModulesChanged = true;
+      }
+    }
+
     for (let module of installedModules) {
       if(!module.endsWith('.js')) {
         let root = path.join(moduleBase, module);
@@ -259,11 +275,11 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
 
               for(let dependency in updateData["dependencies"]) {
                 if(installedModules.indexOf(dependency) < 0) {
-                    const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, dependency, 'module.json'), updateData["dependencies"][dependency]);
-                    if(!dependency_result[1])
-                        throw new Error(`Unable to install dependency module "${dependency}: ${dependency_result[2]}`);
-                    console.log(`[update] Initialized dependency "${dependency}" for module "${module}"`);
-                    installedModulesChanged = true;
+                  const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, dependency, 'module.json'), updateData["dependencies"][dependency]);
+                  if(!dependency_result[1])
+                    throw new Error(`Unable to install dependency module "${dependency}: ${dependency_result[2]}`);
+                  console.log(`[update] Initialized dependency "${dependency}" for module "${module}"`);
+                  installedModulesChanged = true;
                 }
               }
 

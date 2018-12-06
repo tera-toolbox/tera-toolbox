@@ -38,22 +38,24 @@ const ModuleFolderOld = path.join(__dirname, "..", "node_modules");
 const ModuleFolder = path.join(__dirname, "..", "..", "mods");
 
 if(fs.existsSync(ModuleFolderOld)){
+  console.log("-------------------------------------------------------");
+  console.log("--------------- IMPORTANT INFORMATION -----------------");
+  console.log("-------------------------------------------------------");
+  console.log("Proxy's folder containing installed mods was moved from");
+  console.log("          [proxy folder]/bin/node_modules/             ");
+  console.log("                        to                             ");
+  console.log("               [proxy folder]/mods/                    ");
+  console.log("-------------------------------------------------------");
+
   try {
     fs.renameSync(ModuleFolderOld, ModuleFolder);
-    console.log("-------------------------------------------------------");
-    console.log("--------------- IMPORTANT INFORMATION -----------------");
-    console.log("-------------------------------------------------------");
-    console.log("Proxy's folder containing installed mods was moved from");
-    console.log("          [proxy folder]/bin/node_modules/             ");
-    console.log("                        to                             ");
-    console.log("               [proxy folder]/mods/                    ");
-    console.log("-------------------------------------------------------");
     console.log("  All installed mods were automatically moved for you. ");
     console.log("        No further manual action is required.          ");
     console.log("-------------------------------------------------------");
   } catch(e) {
-    console.log("ERROR: Unable to migrate modules folder!");
-    console.log("ERROR: Try to fix it yourself or ask in the #help channel of %s!", DiscordURL);
+    console.log("ERROR: Unable to automatically migrate modules folder!");
+    console.log("ERROR: Try to move it yourself or ask in the #help channel of %s!", DiscordURL);
+    console.log("-------------------------------------------------------");
     console.log(e)
     process.exit(1);
   }
