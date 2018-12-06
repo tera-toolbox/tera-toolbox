@@ -35,7 +35,7 @@
     "node_modules/tera-data-parser/lib/protocol/types/skillid.js": "0588af40ae989866d8b0b707e21fe5c46580bea55ad605c88c3ea54631c889ae",
     "node_modules/tera-data-parser/lib/sysmsg/index.js": "83985eeb224c9c232213bcff998f171e65c92909c3a1641be4caf2e2cae733e6",
     "node_modules/tera-proxy-game/package.json": "675e32bacfb27daa43bd755220079b30a8b27a6a09b9b00ee6e48a742865dcf2",
-    "node_modules/tera-proxy-game/lib/index.js": "edf146fcd62a4784d333326b6b362b98dd33f1746a29b7beda0b56111cbdd468",
+    "node_modules/tera-proxy-game/lib/index.js": "fb90664893f454079190a46ed44098e857a3a122289fd38d744f067c2c8b5b5c",
     "node_modules/tera-proxy-game/lib/logger.js": "336cf30d3a79ddc69b5f235ab9d7fe3c4c6cf1ce79c0e77f4ad28e458d7569aa",
     "node_modules/tera-proxy-game/lib/packetBuilder.js": "66f49a4d771a20d9bd15283e8b4933f104da9c7c68652ab154a42354776b6d68",
     "node_modules/tera-proxy-game/lib/clients/RealClient.js": "1399d90da2adc0fadcb57a5c82adecb9847a954b1ecb52d56d3e0bb6c853ff45",
