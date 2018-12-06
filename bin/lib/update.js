@@ -253,10 +253,10 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
 
     for (let coreModule in CoreModules) {
       if(installedModules.indexOf(coreModule) < 0) {
-        const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, coreModule, 'module.json'), CoreModules[coreModule]);
-        if(!dependency_result[1])
-          throw new Error(`Unable to install core module "${dependency}: ${dependency_result[2]}`);
-        console.log(`[update] Initialized core module "${dependency}"`);
+        const coreModuleResult = await autoUpdateFile('module.json', path.join(moduleBase, coreModule, 'module.json'), CoreModules[coreModule]);
+        if(!coreModuleResult[1])
+          throw new Error(`Unable to install core module "${coreModule}: ${coreModuleResult[2]}`);
+        console.log(`[update] Initialized core module "${coreModule}"`);
         installedModulesChanged = true;
       }
     }
