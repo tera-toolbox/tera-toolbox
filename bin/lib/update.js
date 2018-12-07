@@ -188,30 +188,37 @@ async function autoUpdateDefs(requiredDefs, updatelog, updatelimit) {
 
 async function autoUpdateMaps(updatelog, updatelimit) {
   let promises = [];
-  let protocol_data = {}
+  const tera_data_folder = path.join(__dirname, '..', '..', 'node_modules', 'tera-data');
 
   if(updatelog)
     console.log("[update] Updating maps");
 
-  const mappings = await request({url: TeraDataAutoUpdateServer + 'mappings.json', json: true});
+  const mappings_file = 'mappings.json';
+  const mappings_url = TeraDataAutoUpdateServer + mappings_file;
+  const mappings_path = path.join(tera_data_folder, mappings_file);
+  let mappings_result = await autoUpdateFile(mappings_file, mappings_path, mappings_url);
+  if(!mappings_result)
+    throw new Error(`Unable to download protocol mapping manifest:\n${e}`);
+
+  let mappings;
+  try {
+    mappings = JSON.parse(fs.readFileSync(mappings_path, 'utf8'));
+  } catch(e) {
+    throw new Error(`Invalid protocol mapping manifest:\n${e}`);
+  }
+
   for(let region in mappings) {
     let mappingData = mappings[region];
-    protocol_data[mappingData['version']] = {
-        'region': region.toLowerCase().split('-')[0],
-        'major_patch': mappingData['major_patch'],
-        'minor_patch': mappingData['minor_patch'],
-    }
-
     let protocol_name = 'protocol.' + mappingData["version"].toString() + '.map';
     let sysmsg_name = 'sysmsg.' + mappingData["version"].toString() + '.map';
 
-    let protocol_custom_filename = path.join(__dirname, '..', '..', 'node_modules', 'tera-data', 'map', protocol_name);
+    let protocol_custom_filename = path.join(tera_data_folder, 'map', protocol_name);
     if(!fs.existsSync(protocol_custom_filename)) {
       forcedirSync(path.dirname(protocol_custom_filename));
       fs.closeSync(fs.openSync(protocol_custom_filename, 'w'));
     }
 
-    let protocol_filename = path.join(__dirname, '..', '..', 'node_modules', 'tera-data', 'map_base', protocol_name);
+    let protocol_filename = path.join(tera_data_folder, 'map_base', protocol_name);
     if(!fs.existsSync(protocol_filename) || hash(fs.readFileSync(protocol_filename)) !== mappingData["protocol_hash"].toUpperCase()) {
       if(updatelog)
         console.log("[update] - " + protocol_name);
@@ -220,7 +227,7 @@ async function autoUpdateMaps(updatelog, updatelimit) {
       promises.push(updatelimit ? (await promise) : promise);
     }
 
-    let sysmsg_filename = path.join(__dirname, '..', '..', 'node_modules', 'tera-data', 'map_base', sysmsg_name);
+    let sysmsg_filename = path.join(tera_data_folder, 'map_base', sysmsg_name);
     if(!fs.existsSync(sysmsg_filename) || hash(fs.readFileSync(sysmsg_filename)) !== mappingData["sysmsg_hash"].toUpperCase()) {
       if(updatelog)
         console.log("[update] - " + sysmsg_name);
@@ -230,7 +237,7 @@ async function autoUpdateMaps(updatelog, updatelimit) {
     }
   }
 
-  return [protocol_data, promises];
+  return promises;
 }
 
 const CoreModules = {
@@ -371,7 +378,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
 
   let updatePromises = await autoUpdateDefs(requiredDefs, updatelog, updatelimit);
   let mapResults = await autoUpdateMaps(updatelog, updatelimit);
-  updatePromises = updatePromises.concat(mapResults[1]);
+  updatePromises = updatePromises.concat(mapResults);
 
   let results = updatelimit ? updatePromises : (await Promise.all(updatePromises));
   let failedFiles = [];
@@ -384,7 +391,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
     console.error("[update] ERROR: Unable to update the following def/map files. Please join %s and report this error in the #help channel!\n - %s", DiscordURL, failedFiles.join('\n - '));
 
   console.log("[update] Auto-update complete!");
-  return {"tera-data": (failedFiles.length == 0), "protocol_data": mapResults[0], "updated": successModules, "legacy": legacyModules, "failed": failedModules};
+  return {"tera-data": (failedFiles.length == 0), "updated": successModules, "legacy": legacyModules, "failed": failedModules};
 }
 
 module.exports = autoUpdate;

@@ -14,7 +14,7 @@ async function updateSelf() {
 
 updateSelf().then((result) => {
   if(result)
-    require("./proxy");
+    require("./loader");
   else
     console.log("Failed to auto-update the proxy, terminating...");
 });
