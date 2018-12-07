@@ -320,7 +320,7 @@ function startProxy() {
   for (let mod of lastUpdateResult["updated"]) {
     if (mod.options.loadOn === "startup") {
       console.log(`[proxy] Initializing module ${mod.name}`);
-      require(mod.name)(REGION_SHORT);
+      require(path.join(ModuleFolder, mod.name))(REGION_SHORT);
     }
   }
 }
