@@ -1,3 +1,5 @@
 {
-	"region": "EU"
+    "region": "EU",
+    "branch": "master",
+    "updatelog": false
 }
