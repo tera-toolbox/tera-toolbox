@@ -91,7 +91,7 @@ class TeraProxy {
         this.connectionManager.destructor();
         this.connectionManager = null;
 
-        HostsClean();
+        HostsClean(this.region);
         this.slsDestroy();
 
         this.servers.forEach(server => server.close());
