@@ -15,7 +15,7 @@ const DiscordURL = "https://discord.gg/dUNDDtw";
 // Safely load configuration
 let branch = 'master';
 try {
-  const config = require("../config.json");
+  const config = require("./config").loadConfig();
   if(config && config.branch)
     branch = config.branch.toLowerCase();
 } catch(_) { }
@@ -28,9 +28,7 @@ function forcedirSync(dir) {
     const curDir = path.resolve(parentDir, childDir);
     try {
       fs.mkdirSync(curDir);
-    } catch (err) {
-
-    }
+    } catch (_) { }
 
     return curDir;
   }, initDir);
@@ -61,8 +59,8 @@ async function autoUpdateSelf(updatelimit = true, serverIndex = 0) {
     console.error("ERROR: Please join %s and download the prepackaged release version from the #proxy channel!", DiscordURL);
     return Promise.reject("Request not installed");
   }
-  
-  if(serverIndex == 0)
+
+  if(serverIndex === 0)
     console.log(`[update] Proxy self-update started (Branch: ${branch})`);
 
   try {
