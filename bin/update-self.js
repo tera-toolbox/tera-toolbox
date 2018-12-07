@@ -14,10 +14,14 @@ const DiscordURL = "https://discord.gg/dUNDDtw";
 
 // Safely load configuration
 let branch = 'master';
+let updatelog = false;
 try {
   const config = require("./config").loadConfig();
-  if(config && config.branch)
-    branch = config.branch.toLowerCase();
+  if(config) {
+    if(config.branch)
+      branch = config.branch.toLowerCase();
+    updatelog = !!config.updatelog;
+  }
 } catch(_) { }
 
 // Implementation
@@ -86,6 +90,8 @@ async function autoUpdateSelf(updatelimit = true, serverIndex = 0) {
       }
 
       if(needsUpdate) {
+        if(updatelog)
+          console.log("[update] - Download " + file);
         let promise = autoUpdateFile(file, filepath, TeraProxyAutoUpdateServers[serverIndex] + branch + '/' + file, expectedHash);
         promises.push(updatelimit ? (await promise) : promise);
       }
