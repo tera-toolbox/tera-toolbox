@@ -77,6 +77,7 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 * [Demon's Wheel Guide (my fork)](https://github.com/caali-hackerman/dw-guide)
 * [Grotto of Lost Souls Guide](https://github.com/valkyr1e-tera/gls-guide)
 * [Talent (EP System) Info](https://github.com/Owyn/talents_info)
+* [Party Death Markers (Owyn's fork)](https://github.com/Owyn/party_death_marker_pointers)
 * Bern's scripts
 * Kasea's Ping Remover
 * ... and many more
