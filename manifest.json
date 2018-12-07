@@ -3,7 +3,7 @@
     "TeraProxy.bat": "c92e8db47a2d955d839b9d662889d1b9170654bfd17355855d1db41740e691a7",
     "bin/lib/index.js": "2679fc20ef4e4abf7dc828713cb07dc40829a826db6396da9ff9d43ac5b5d669",
     "bin/lib/config.js": "c87c945611058fc201ca517c311875f1f6a6ea01d82df33247de3652b985ee9c",
-    "bin/lib/loader.js": "85a0ba89157403f52e133c4962983119301879473e76687c49d2d792c5e045ce",
+    "bin/lib/loader.js": "1424af6850802192123021530eee4a899ec6e5e9a11fd1c1455926dd8472aeeb",
     "bin/lib/connectionManager.js": "0bfbf330ecff0cbc634091cc470f0d1b3b6eeb03d45e579df0f89c24605a7510",
     "bin/lib/hosts.js": "e554c3d2593be08afc60f3db74ca96644c7b267e12d546cfbf5ef61c965da99a",
     "bin/lib/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
