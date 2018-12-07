@@ -8,7 +8,7 @@ const ModuleFolder = path.join(__dirname, "..", "..", "mods");
 // Load and validate configuration
 function LoadConfiguration() {
     try {
-        return require("../config.json");
+        return require('./config').loadConfig();
     } catch (_) {
         console.log("ERROR: Whoops, looks like you've fucked up your config.json!");
         console.log("ERROR: Try to fix it yourself or ask in the #help channel of %s!", DiscordURL);
@@ -68,19 +68,12 @@ function ProxyMigration() {
 
 // Load region
 function LoadRegion(region) {
-    const currentRegion = require("./regions")[region];
-    if (!currentRegion) {
-        console.error("Invalid region: " + region);
+    try {
+        return require('./config').loadRegion(region);
+    } catch (e) {
+        console.log(`ERROR: Unable to load region information: ${e}`);
+        console.log("ERROR: Try to fix it yourself or ask in the #help channel of %s!", DiscordURL);
         process.exit(1);
-    }
-
-    currentRegion.altHostnames = currentRegion.altHostnames || [];
-
-    return {
-        'id': region,
-        'idShort': region.toLowerCase().split('-')[0],
-        'platform': currentRegion.console ? 'console' : (currentRegion.classic ? 'classic' : 'pc'),
-        'data': currentRegion,
     }
 }
 
