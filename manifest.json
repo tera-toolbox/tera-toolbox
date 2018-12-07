@@ -8,7 +8,7 @@
     "bin/hosts.js": "2d1592299406dc7e0f082c30809236c305226766e4d26afad698899c646a80ed",
     "bin/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
     "bin/proxy.js": "212769e3f0797055205683ca92c64739459c24df20468ad70cc346a2b8798ebd",
-    "bin/regions.js": "81417c4ce556cc7296677df446893c4ff748612dd167490e4ae44e966fa5408b",
+    "bin/regions.js": "30a8ed0985e5f47503c907ded11290c72fc20e0d478ae7e63fffdf7a9b13c8bb",
     "bin/update.js": "7fcb69fd5675a9ccca11d4df38bedcd367dcc75a0c7ca55cd89bc9687e892a4f",
     "bin/update-self.js": "b9e9a9d36455e261270809c4a1d293ed3c17b266b1f9e5d9718d6d2a30f9feee",
     "bin/servers/servers-eu.json": {"overwrite": false, "hash": "fe961a1205ad1e0cee690e447692b00f82cbda0425878a9a047a5e74297a1374"},

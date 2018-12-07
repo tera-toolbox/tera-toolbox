@@ -18,6 +18,7 @@ module.exports = {
   RU: {
     url: "http://launcher.tera-online.ru/launcher/sls/",
     hostname: "launcher.tera-online.ru",
+    altHostnames: ["www.tera-online.ru"],
     address: "91.225.237.3",
     port: 80,
     customServers: require("./servers/servers-ru.json"),
@@ -26,16 +27,10 @@ module.exports = {
   KR: {
     url: "http://tera.nexon.com/launcher/sls/servers/list.xml",
     hostname: "tera.nexon.com",
+    altHostnames: ["tera.nexon.game.naver.com"],
     port: 80,
     customServers: require("./servers/servers-kr.json"),
     listenHostname: "127.0.0.13"
-  },
-  "KR-NAVER": {
-    url: "http://tera.nexon.game.naver.com/launcher/sls/servers/list.xml",
-    hostname: "tera.nexon.game.naver.com",
-    port: 80,
-    customServers: require("./servers/servers-kr.json"),
-    listenHostname: "127.0.0.20"
   },
   JP: {
     url: "https://tera.pmang.jp/game_launcher/server_list.xml?usn=0",
