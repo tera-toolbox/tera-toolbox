@@ -1,5 +1,6 @@
 {
   "files": {
+    "bin/lib/index.js": "cebeb857c9a39b39269001db689e124ba4e83317d14bad0cbab1a9cfe4cf3285",
     "bin/lib/hosts.js": "e554c3d2593be08afc60f3db74ca96644c7b267e12d546cfbf5ef61c965da99a",
     "bin/lib/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
     "bin/lib/proxy.js": "ef7d8c818a81a8751a911d4d2cc2441672a888fbf3c1449fdf7dbdced9ecc83f",
