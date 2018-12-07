@@ -7,6 +7,14 @@ try { BigIntSupported = eval('1234n === 1234n'); } catch (_) {}
 if(['11.0.0', '11.1.0'].includes(process.versions.node)) {
   console.error('ERROR: Node.JS 11.0 and 11.1 contain a critical bug preventing timers from working properly. Please install version 11.2 or later!');
   process.exit();
+} else if (['11.3.0', '11.4.0'].includes(process.versions.node)) {
+  // Fix stupid timeout bug because enterprise-level runtime devs are too retarded to properly
+  // implement the most essential stuff despite having pushed four releases already
+  const setTimeoutOld = setTimeout;
+  setTimeout = (cb, delay, ...args) => setTimeoutOld(cb, Math.trunc(delay), ...args);
+
+  const setIntervalOld = setInterval;
+  setInterval = (cb, delay, ...args) => setIntervalOld(cb, Math.trunc(delay), ...args);
 } else if(process.versions.modules < 64 || !BigIntSupported) {
   if(!!process.versions.electron) {
     console.error('ERROR: Your version of Electron is too old to run tera-proxy!');
