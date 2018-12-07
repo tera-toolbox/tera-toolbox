@@ -2,11 +2,11 @@
   "files": {
     "TeraProxy.bat": "c92e8db47a2d955d839b9d662889d1b9170654bfd17355855d1db41740e691a7",
     "bin/lib/index.js": "2679fc20ef4e4abf7dc828713cb07dc40829a826db6396da9ff9d43ac5b5d669",
-    "bin/lib/loader.js": "73bf4b2fe59d1e814f5fa313e5ac2b98654e4f98b73c33081d4db7c068d7de4e",
+    "bin/lib/loader.js": "780e8a7ea6d1c4257715da43d582e99b0f688c07c5dd81b6932a16f3cc18e54b",
     "bin/lib/connectionManager.js": "0bfbf330ecff0cbc634091cc470f0d1b3b6eeb03d45e579df0f89c24605a7510",
     "bin/lib/hosts.js": "e554c3d2593be08afc60f3db74ca96644c7b267e12d546cfbf5ef61c965da99a",
     "bin/lib/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
-    "bin/lib/proxy.js": "7ce830704b4b9d921c2ac2bd8edbea4676d2ce6584c493241c529c73c9faa6ec",
+    "bin/lib/proxy.js": "452eaa6ad60818fed106db2f142562a84478817b17daa76b5b400c870390e24a",
     "bin/lib/regions.js": "33d1d9890e2b3b7759e9b334291de0aa8936172ddc238b91abc5805518207b83",
     "bin/lib/update.js": "a6355226777323b4eaf51854c76b0a1eaa610993e5fcc6feeba6427df393c096",
     "bin/lib/update-self.js": "9e2bd6b9f5afc9b3ccec797894375f84de70132d06632261ea92d4ac637f64b2",

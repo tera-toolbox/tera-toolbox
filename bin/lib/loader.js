@@ -118,7 +118,38 @@ function RegionMigration(region) {
     }
 }
 
-// Run!
+// Runs proxy
+function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
+    const TeraProxy = require('./proxy');
+    let proxy = new TeraProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+    proxy.run();
+
+    // Set up clean exit
+    const isWindows = process.platform === "win32";
+
+    function cleanExit() {
+        console.log("terminating...");
+
+        proxy.destructor();
+        proxy = null;
+
+        if (isWindows)
+            process.stdin.pause();
+    }
+
+    if (isWindows) {
+        require("readline").createInterface({
+            input: process.stdin,
+            output: process.stdout
+        }).on("SIGINT", () => process.emit("SIGINT"));
+    }
+
+    process.on("SIGHUP", cleanExit);
+    process.on("SIGINT", cleanExit);
+    process.on("SIGTERM", cleanExit);
+}
+
+// Main
 const ProxyConfig = LoadConfiguration();
 NodeVersionCheck();
 ProxyMigration();
@@ -137,7 +168,6 @@ autoUpdate(ModuleFolder, ProxyConfig.updatelog, true, ProxyRegionConfig.idShort)
     delete require.cache[require.resolve("tera-data-parser")];
     delete require.cache[require.resolve("tera-proxy-game")];
 
-    const RunProxy = require('./proxy');
     RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
 }).catch(e => {
     console.log("ERROR: Unable to auto-update: %s", e);

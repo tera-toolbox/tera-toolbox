@@ -1,6 +1,4 @@
 // Host file modification
-const hosts = require("./hosts");
-
 function HostsError(e) {
     switch (e.code) {
         case "EACCES":
@@ -33,6 +31,7 @@ function HostsError(e) {
 function HostsInitialize(region) {
     if (region.platform !== 'console') {
         try {
+            const hosts = require("./hosts");
             hosts.set(region.data.listenHostname, region.data.hostname);
             for (let x of region.data.altHostnames)
                 hosts.set(region.data.listenHostname, x);
@@ -47,6 +46,7 @@ function HostsInitialize(region) {
 function HostsClean(region) {
     if (region.platform !== 'console') {
         try {
+            const hosts = require("./hosts");
             hosts.remove(region.data.listenHostname, region.data.hostname);
             for (let x of region.data.altHostnames)
                 hosts.remove(region.data.listenHostname, x);
@@ -73,8 +73,6 @@ function ListenError(e) {
     process.exit();
 }
 
-const ConnectionManager = require('./connectionManager');
-
 class TeraProxy {
     constructor(moduleFolder, config, region) {
         this.moduleFolder = moduleFolder;
@@ -84,6 +82,8 @@ class TeraProxy {
 
         this.servers = new Map();
         this.slsInit();
+
+        const ConnectionManager = require('./connectionManager');
         this.connectionManager = new ConnectionManager(moduleFolder, this.region.id, this.region.idShort, this.region.platform);
     }
 
@@ -213,34 +213,4 @@ class TeraProxy {
     }
 }
 
-// Proxy main
-function RunProxy(moduleFolder, config, region) {
-    let proxy = new TeraProxy(moduleFolder, config, region);
-    proxy.run();
-
-    // Set up clean exit
-    const isWindows = process.platform === "win32";
-
-    function cleanExit() {
-        console.log("terminating...");
-
-        proxy.destructor();
-        proxy = null;
-
-        if (isWindows)
-            process.stdin.pause();
-    }
-
-    if (isWindows) {
-        require("readline").createInterface({
-            input: process.stdin,
-            output: process.stdout
-        }).on("SIGINT", () => process.emit("SIGINT"));
-    }
-
-    process.on("SIGHUP", cleanExit);
-    process.on("SIGINT", cleanExit);
-    process.on("SIGTERM", cleanExit);
-}
-
-module.exports = RunProxy;
+module.exports = TeraProxy;
