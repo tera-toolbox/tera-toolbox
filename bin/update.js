@@ -169,7 +169,7 @@ async function autoUpdateDefs(requiredDefs, updatelog, updatelimit) {
 
   const defs = await request({url: TeraDataAutoUpdateServer + 'defs.json', json: true});
   for(let def in defs) {
-    let filepath = path.join(__dirname, '..', '..', 'node_modules', 'tera-data', 'protocol', def);
+    let filepath = path.join(__dirname, '..', 'node_modules', 'tera-data', 'protocol', def);
     let expectedHash = defs[def].toUpperCase();
     if(!fs.existsSync(filepath) || hash(fs.readFileSync(filepath)) !== expectedHash) {
       if(updatelog)
@@ -188,7 +188,7 @@ async function autoUpdateDefs(requiredDefs, updatelog, updatelimit) {
 
 async function autoUpdateMaps(updatelog, updatelimit) {
   let promises = [];
-  const tera_data_folder = path.join(__dirname, '..', '..', 'node_modules', 'tera-data');
+  const tera_data_folder = path.join(__dirname, '..', 'node_modules', 'tera-data');
 
   if(updatelog)
     console.log("[update] Updating maps");

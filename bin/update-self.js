@@ -70,7 +70,7 @@ async function autoUpdateSelf(updatelimit = true, serverIndex = 0) {
 
     let promises = [];
     for(let file in manifest["files"]) {
-      let filepath = path.join(__dirname, "..", "..", file);
+      let filepath = path.join(__dirname, "..", file);
       let filedata = manifest["files"][file];
       let needsUpdate = !fs.existsSync(filepath);
       let expectedHash = null;

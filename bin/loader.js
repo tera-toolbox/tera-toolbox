@@ -2,8 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const DiscordURL = "https://discord.gg/dUNDDtw";
-const ModuleFolderOld = path.join(__dirname, "..", "node_modules");
-const ModuleFolder = path.join(__dirname, "..", "..", "mods");
+const ModuleFolder = path.join(__dirname, "..", "mods");
 
 // Load and validate configuration
 function LoadConfiguration() {
@@ -40,7 +39,37 @@ function NodeVersionCheck() {
 
 // Migrate from old proxy versions
 function ProxyMigration() {
+    const oldLibFolder = path.join(__dirname, 'lib');
+    const isOldStructure = fs.existsSync(oldLibFolder);
+    if(!isOldStructure)
+        return;
+
+    // Migrate config.json
+    try {
+        fs.renameSync(path.join(__dirname, 'config.json'), path.join(__dirname, '..', 'config.json'));
+    } catch (e) {
+        console.log("ERROR: Unable to migrate your proxy settings!");
+        console.log("ERROR: Try to move them yourself or ask in the #help channel of %s!", DiscordURL);
+        console.log(e);
+        process.exit(1);
+    }
+
+    // Migrate servers
+    try {
+        const oldServersFolder = path.join(oldLibFolder, 'res');
+        const newServersFolder = path.join(__dirname, 'servers');
+
+        fs.readdirSync(oldServersFolder).forEach( entry => fs.renameSync(path.join(oldServersFolder, entry), path.join(newServersFolder, entry)) );
+        fs.rmdirSync(oldServersFolder);
+    } catch (e) {
+        console.log("ERROR: Unable to migrate your server settings!");
+        console.log("ERROR: Try to move them yourself or ask in the #help channel of %s!", DiscordURL);
+        console.log(e);
+        process.exit(1);
+    }
+
     // Migrate module folder
+    const ModuleFolderOld = path.join(__dirname, "node_modules");
     if (fs.existsSync(ModuleFolderOld)) {
         console.log("-------------------------------------------------------");
         console.log("--------------- IMPORTANT INFORMATION -----------------");
@@ -64,6 +93,12 @@ function ProxyMigration() {
             process.exit(1);
         }
     }
+
+    // Delete leftover files
+    try {
+        fs.readdirSync(oldLibFolder).forEach( entry => fs.unlinkSync(path.join(oldLibFolder, entry)) );
+        fs.rmdirSync(oldLibFolder);
+    } catch (_) {}
 }
 
 // Load region
@@ -85,17 +120,17 @@ function RegionMigration(region) {
     switch (region.id) {
         case "EU": {
             if (customServers["30"] || customServers["31"] || customServers["32"] || customServers["33"] || customServers["34"] || customServers["35"])
-                migratedFile = "res/servers-eu.json";
+                migratedFile = "servers/servers-eu.json";
             break;
         }
         case "TH": {
             if (customServers["2"] || !customServers["1"])
-                migratedFile = "res/servers-th.json";
+                migratedFile = "servers/servers-th.json";
             break;
         }
         case "JP": {
             if (!customServers["5073"])
-                migratedFile = "res/servers-jp.json";
+                migratedFile = "servers/servers-jp.json";
             break;
         }
     }
@@ -143,9 +178,9 @@ function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
 }
 
 // Main
-const ProxyConfig = LoadConfiguration();
 NodeVersionCheck();
 ProxyMigration();
+const ProxyConfig = LoadConfiguration();
 const ProxyRegionConfig = LoadRegion(ProxyConfig.region);
 RegionMigration(ProxyRegionConfig);
 
