@@ -45,7 +45,7 @@
     "node_modules/tera-proxy-game/lib/connection/index.js": "ba389511e0b351390015bfdb479991851905c746ee8a49e42cfee9d6647a7958",
     "node_modules/tera-proxy-game/lib/connection/dispatch/index.js": "d59c404575e8a2a3cd6f4404e315e0c4be4aec71fbe9465eee093dda3d774af2",
     "node_modules/tera-proxy-game/lib/connection/dispatch/module.js": "27ab7e4a21d96d8255bd68b1e0f62e41be0bdb5a5c4da5f6f4e5c9d721813ab4",
-    "node_modules/tera-proxy-game/lib/connection/dispatch/moduleManager.js": "250ba27dcd192a7129d9ace1dcb5adfeca826c3745cd375e01f2e7c7f0de9946",
+    "node_modules/tera-proxy-game/lib/connection/dispatch/moduleManager.js": "b651cd79b4feb8e1e4d43319883c6e0737471ae54201da38e6ae46e60ce84357",
     "node_modules/tera-proxy-game/lib/connection/encryption/index.js": "817e5d4fc932f910a49f2cda3db4cda38a8e72add0b883ffcd14415c6ce8758d",
     "node_modules/tera-proxy-game/lib/connection/encryption/sha0.js": "49748cdd71917d10232013990dd03ccbbd01a27dc85dfd6c534c211cffe14398",
     "node_modules/tera-proxy-sls/res/private.pem": "d4a1aee78f9ece48b6821d4cd318cbf0774caba16c7a83b55e1ef8146027fbe1",
