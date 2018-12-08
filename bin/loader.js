@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 
-const DiscordURL = "https://discord.gg/dUNDDtw";
 const ModuleFolder = path.join(__dirname, "..", "mods");
 
 // Load and validate configuration
@@ -10,29 +9,35 @@ function LoadConfiguration() {
         return require('./config').loadConfig();
     } catch (_) {
         console.log("ERROR: Whoops, looks like you've fucked up your config.json!");
-        console.log("ERROR: Try to fix it yourself or ask in the #help channel of %s!", DiscordURL);
+        console.log(`ERROR: Try to fix it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
         process.exit(1);
     }
 }
 
 // Check node/electron version
 function NodeVersionCheck() {
-    let BigIntSupported = false;
-    try { BigIntSupported = eval('1234n === 1234n'); } catch (_) { }
+    const { checkRuntimeCompatibility } = require('./utils');
 
-    if (['11.0.0', '11.1.0', '11.2.0', '11.3.0'].includes(process.versions.node)) {
-        console.error('ERROR: Node.JS 11.0 to 11.3 contain critical bugs preventing timers from working properly. Please install version 11.4 or later!');
-        process.exit();
-    } else if (process.versions.modules < 64 || !BigIntSupported) {
-        if (!!process.versions.electron) {
-            console.error('ERROR: Your version of Electron is too old to run tera-proxy!');
-            console.error('ERROR: If you are using Arborean Apparel, download the latest release from:');
-            console.error('ERROR: https://github.com/iribae/arborean-apparel/releases');
-            console.error('ERROR: Otherwise, please ask in the #help channel of %s!', DiscordURL);
-        } else {
-            console.error('ERROR: Your installed version of Node.JS is too old to run tera-proxy!');
-            console.error('ERROR: Please install the latest version from https://nodejs.org/en/download/current/');
+    try {
+        checkRuntimeCompatibility();
+    } catch (e) {
+        switch (e.message) {
+            case 'BigInt not supported':
+                if (!!process.versions.electron) {
+                    console.error('ERROR: Your version of Electron is too old to run tera-proxy!');
+                    console.error('ERROR: If you are using Arborean Apparel, download the latest release from:');
+                    console.error('ERROR: https://github.com/iribae/arborean-apparel/releases');
+                    console.error(`ERROR: Otherwise, please ask here: ${global.TeraProxy.SupportUrl}!`);
+                } else {
+                    console.error('ERROR: Your installed version of Node.JS is too old to run tera-proxy!');
+                    console.error('ERROR: Please install the latest version from https://nodejs.org/en/download/current/');
+                }
+                break;
+
+            default:
+                console.error(`ERROR: ${e.message}`);
         }
+
         process.exit();
     }
 }
@@ -49,7 +54,7 @@ function ProxyMigration() {
         fs.renameSync(path.join(__dirname, 'config.json'), path.join(__dirname, '..', 'config.json'));
     } catch (e) {
         console.log("ERROR: Unable to migrate your proxy settings!");
-        console.log("ERROR: Try to move them yourself or ask in the #help channel of %s!", DiscordURL);
+        console.log(`ERROR: Try to move them yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
         console.log(e);
         process.exit(1);
     }
@@ -63,7 +68,7 @@ function ProxyMigration() {
         fs.rmdirSync(oldServersFolder);
     } catch (e) {
         console.log("ERROR: Unable to migrate your server settings!");
-        console.log("ERROR: Try to move them yourself or ask in the #help channel of %s!", DiscordURL);
+        console.log(`ERROR: Try to move them yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
         console.log(e);
         process.exit(1);
     }
@@ -87,7 +92,7 @@ function ProxyMigration() {
             console.log("-------------------------------------------------------");
         } catch (e) {
             console.log("ERROR: Unable to automatically migrate modules folder!");
-            console.log("ERROR: Try to move it yourself or ask in the #help channel of %s!", DiscordURL);
+            console.log(`ERROR: Try to move it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
             console.log("-------------------------------------------------------");
             console.log(e);
             process.exit(1);
@@ -107,7 +112,7 @@ function LoadRegion(region) {
         return require('./config').loadRegion(region);
     } catch (e) {
         console.log(`ERROR: Unable to load region information: ${e}`);
-        console.log("ERROR: Try to fix it yourself or ask in the #help channel of %s!", DiscordURL);
+        console.log(`ERROR: Try to fix it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
         process.exit(1);
     }
 }
@@ -178,9 +183,12 @@ function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
 }
 
 // Main
+const { initGlobalSettings } = require('./utils');
+initGlobalSettings(false);
 NodeVersionCheck();
 ProxyMigration();
 const ProxyConfig = LoadConfiguration();
+global.TeraProxy.DevMode = !!ProxyConfig.devmode;
 const ProxyRegionConfig = LoadRegion(ProxyConfig.region);
 RegionMigration(ProxyRegionConfig);
 
