@@ -192,19 +192,29 @@ global.TeraProxy.DevMode = !!ProxyConfig.devmode;
 const ProxyRegionConfig = LoadRegion(ProxyConfig.region);
 RegionMigration(ProxyRegionConfig);
 
-const autoUpdate = require("./update");
-autoUpdate(ModuleFolder, ProxyConfig.updatelog, true, ProxyRegionConfig.idShort).then(updateResult => {
-    for (let mod of updateResult["legacy"])
-        console.log("[update] WARNING: Module %s does not support auto-updating!", mod.name);
-    for (let mod of updateResult["failed"])
-        console.log("[update] ERROR: Module %s could not be updated and might be broken!", mod.name);
-    if (!updateResult["tera-data"])
-        console.log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
-
-    delete require.cache[require.resolve("tera-data-parser")];
-    delete require.cache[require.resolve("tera-proxy-game")];
-
+// Auto-update modules & tera-data and run
+if (ProxyConfig.noupdate) {
+    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    console.warn("!!!!!      YOU HAVE GLOBALLY DISABLED AUTOMATIC UPDATES     !!!!!");
+    console.warn("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
+    console.warn("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
+    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
-}).catch(e => {
-    console.log("ERROR: Unable to auto-update: %s", e);
-});
+} else {
+    const autoUpdate = require("./update");
+    autoUpdate(ModuleFolder, ProxyConfig.updatelog, true, ProxyRegionConfig.idShort).then(updateResult => {
+        for (let mod of updateResult["legacy"])
+            console.log("[update] WARNING: Module %s does not support auto-updating!", mod.name);
+        for (let mod of updateResult["failed"])
+            console.log("[update] ERROR: Module %s could not be updated and might be broken!", mod.name);
+        if (!updateResult["tera-data"])
+            console.log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
+
+        delete require.cache[require.resolve("tera-data-parser")];
+        delete require.cache[require.resolve("tera-proxy-game")];
+
+        RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+    }).catch(e => {
+        console.log("ERROR: Unable to auto-update: %s", e);
+    });
+}

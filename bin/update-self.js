@@ -15,12 +15,14 @@ const DiscordURL = "https://discord.gg/dUNDDtw";
 // Safely load configuration
 let branch = 'master';
 let updatelog = false;
+let disableSelfUpdate = false;
 try {
   const config = require("./config").loadConfig();
   if(config) {
     if(config.branch)
       branch = config.branch.toLowerCase();
     updatelog = !!config.updatelog;
+    disableSelfUpdate = !!config.noselfupdate;
   }
 } catch(_) { }
 
@@ -62,6 +64,15 @@ async function autoUpdateSelf(updatelimit = true, serverIndex = 0) {
     console.error("ERROR: It looks like you've downloaded my proxy directly from GitHub without properly installing required dependencies!");
     console.error("ERROR: Please join %s and download the prepackaged release version from the #proxy channel!", DiscordURL);
     return Promise.reject("Request not installed");
+  }
+
+  if(disableSelfUpdate) {
+    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    console.warn("!!!!!    YOU HAVE DISABLED AUTOMATIC PROXY SELF-UPDATING    !!!!!");
+    console.warn("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
+    console.warn("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
+    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    return false;
   }
 
   if(serverIndex === 0)
