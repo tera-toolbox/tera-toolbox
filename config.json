@@ -1,5 +1,6 @@
 {
     "region": "EU",
     "branch": "master",
-    "updatelog": false
+    "updatelog": false,
+    "devmode": false
 }
