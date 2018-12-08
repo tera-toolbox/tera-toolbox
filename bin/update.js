@@ -2,7 +2,7 @@ const request = require('request-promise-native');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { listModules } = require('tera-proxy-game');
+const { listModules } = require('tera-proxy-game').ModuleInstallation;
 
 const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/caali-hackerman/tera-data/master/";
 

@@ -108,9 +108,8 @@ class TeraProxy {
         this.slsListen();
 
         // TODO: this is a dirty hack, implement a proper API for client/startup mods
-        const { listModules, loadModuleInfo } = require('tera-proxy-game');
-        listModules(this.moduleFolder).forEach(mod => {
-            const modInfo = loadModuleInfo(this.moduleFolder, mod);
+        const { listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
+        listModuleInfos(this.moduleFolder).forEach(modInfo => {
             if (modInfo.options.loadOn === "startup") {
                 console.log(`[proxy] Loading startup module ${modInfo.name}`);
                 require(modInfo.path)(this.region.idShort);
