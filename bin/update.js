@@ -2,7 +2,7 @@ const request = require('request-promise-native');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { listModules } = require('tera-proxy-game').ModuleInstallation;
+const { listModules, listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
 
 const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/caali-hackerman/tera-data/master/";
 
@@ -256,9 +256,10 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
   do {
     installedModulesChanged = false;
     const installedModules = listModules(moduleBase);
+    const installedModuleInfos = listModuleInfos(moduleBase);
 
     for (let coreModule in CoreModules) {
-      if(installedModules.indexOf(coreModule) < 0) {
+      if(!installedModuleInfos.some(mod => mod.name === coreModule)) {
         const coreModuleResult = await autoUpdateFile('module.json', path.join(moduleBase, coreModule, 'module.json'), CoreModules[coreModule]);
         if(!coreModuleResult[1])
           throw new Error(`Unable to install core module "${coreModule}: ${coreModuleResult[2]}`);
@@ -280,7 +281,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
               updateData = JSON.parse(updateData);
 
               for(let dependency in updateData["dependencies"]) {
-                if(installedModules.indexOf(dependency) < 0) {
+                if(!installedModuleInfos.some(mod => mod.name === dependency)) {
                   const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, dependency, 'module.json'), updateData["dependencies"][dependency]);
                   if(!dependency_result[1])
                     throw new Error(`Unable to install dependency module "${dependency}: ${dependency_result[2]}`);
