@@ -53,8 +53,8 @@ function ProxyMigration() {
     try {
         fs.renameSync(path.join(__dirname, 'config.json'), path.join(__dirname, '..', 'config.json'));
     } catch (e) {
-        console.log("ERROR: Unable to migrate your proxy settings!");
-        console.log(`ERROR: Try to move them yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
+        console.log("[update] ERROR: Unable to migrate your proxy settings!");
+        console.log(`[update] ERROR: Try to move them yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
         console.log(e);
         process.exit(1);
     }
@@ -67,8 +67,8 @@ function ProxyMigration() {
         fs.readdirSync(oldServersFolder).forEach( entry => fs.renameSync(path.join(oldServersFolder, entry), path.join(newServersFolder, entry)) );
         fs.rmdirSync(oldServersFolder);
     } catch (e) {
-        console.log("ERROR: Unable to migrate your server settings!");
-        console.log(`ERROR: Try to move them yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
+        console.log("[update] ERROR: Unable to migrate your server settings!");
+        console.log(`[update] ERROR: Try to move them yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
         console.log(e);
         process.exit(1);
     }
@@ -76,24 +76,24 @@ function ProxyMigration() {
     // Migrate module folder
     const ModuleFolderOld = path.join(__dirname, "node_modules");
     if (fs.existsSync(ModuleFolderOld)) {
-        console.log("-------------------------------------------------------");
-        console.log("--------------- IMPORTANT INFORMATION -----------------");
-        console.log("-------------------------------------------------------");
-        console.log("Proxy's folder containing installed mods was moved from");
-        console.log("          [proxy folder]/bin/node_modules/             ");
-        console.log("                        to                             ");
-        console.log("               [proxy folder]/mods/                    ");
-        console.log("-------------------------------------------------------");
+        console.log("[update] -------------------------------------------------------");
+        console.log("[update] --------------- IMPORTANT INFORMATION -----------------");
+        console.log("[update] -------------------------------------------------------");
+        console.log("[update] Proxy's folder containing installed mods was moved from");
+        console.log("[update]           [proxy folder]/bin/node_modules/             ");
+        console.log("[update]                         to                             ");
+        console.log("[update]                [proxy folder]/mods/                    ");
+        console.log("[update] -------------------------------------------------------");
 
         try {
             fs.renameSync(ModuleFolderOld, ModuleFolder);
-            console.log("  All installed mods were automatically moved for you. ");
-            console.log("        No further manual action is required.          ");
-            console.log("-------------------------------------------------------");
+            console.log("[update]   All installed mods were automatically moved for you. ");
+            console.log("[update]         No further manual action is required.          ");
+            console.log("[update] -------------------------------------------------------");
         } catch (e) {
-            console.log("ERROR: Unable to automatically migrate modules folder!");
-            console.log(`ERROR: Try to move it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
-            console.log("-------------------------------------------------------");
+            console.log("[update] ERROR: Unable to automatically migrate modules folder!");
+            console.log(`[update] ERROR: Try to move it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
+            console.log("[update] -------------------------------------------------------");
             console.log(e);
             process.exit(1);
         }
@@ -143,9 +143,10 @@ function RegionMigration(region) {
     if (migratedFile) {
         try {
             fs.unlinkSync(path.join(__dirname, migratedFile));
-            console.log(`Due to a change in the server list by the publisher, your server configuration for region ${region.id} was reset. Please restart proxy for the changes to take effect!`);
+            console.log(`[update] Due to a change in the server list by the publisher, your server configuration for region ${region.id} was reset.`);
+            console.log('[update] Please restart proxy for the changes to take effect!');
         } catch (e) {
-            console.log(`ERROR: Unable to migrate server list for region ${region.id}: ${e}`);
+            console.log(`[update] ERROR: Unable to migrate server list for region ${region.id}: ${e}`);
         }
         process.exit(1);
     }
@@ -170,12 +171,12 @@ function ModuleMigration(ModuleFolder) {
 
     if(BugfixModules.length > 0) {
         if (BugfixInstalled) {
-            console.log('The following installed modules have been automatically uninstalled because they');
-            console.log('are already included in the installed "bugfix" module:');
-            BugfixModules.forEach(mod => console.log(` - ${mod}`));
+            console.log('[update] The following installed modules have been automatically uninstalled because they');
+            console.log('[update] are already included in the installed "bugfix" module:');
+            BugfixModules.forEach(mod => console.log(`[update]  - ${mod}`));
         } else {
-            console.log('The following installed modules have been automatically converted into the new "bugfix" module:');
-            BugfixModules.forEach(mod => console.log(` - ${mod}`));
+            console.log('[update] The following installed modules have been automatically converted into the new "bugfix" module:');
+            BugfixModules.forEach(mod => console.log(`[update]  - ${mod}`));
             installModule(ModuleFolder, {"name": "bugfix", "servers": ["https://raw.githubusercontent.com/caali-hackerman/bugfix/master/"]});
         }
     }

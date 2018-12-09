@@ -58,6 +58,11 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) 
   }
 }
 
+function migrateModuleUpdateUrlRoot(update_url_root) {
+  if(update_url_root === "https://raw.githubusercontent.com/caali-hackerman/tera-proxy/master/bin/node_modules/command/")
+    return "https://raw.githubusercontent.com/caali-hackerman/command/master/";
+}
+
 async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, region, serverIndex = 0) {
   try {
     // If only one file (module.json) exists, it's a fresh install
@@ -66,7 +71,7 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
     else if (updatelog)
       console.log("[update] Updating module " + name);
 
-    const update_url_root = updateData["servers"][serverIndex];
+    const update_url_root = migrateModuleUpdateUrlRoot(updateData["servers"][serverIndex]);
     const manifest_file = 'manifest.json';
     const manifest_url = update_url_root + manifest_file;
     const manifest_path = path.join(root, manifest_file);
