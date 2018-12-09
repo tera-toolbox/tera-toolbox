@@ -5,7 +5,7 @@ module.exports = {
     trace: () => {},
     debug: () => {},
     info: () => {},
-    warn: c('warn'),
+    warn: {}, // TODO: add an option to trigger this for developers
     error: c('error'),
     fatal: c('error'),
 };
