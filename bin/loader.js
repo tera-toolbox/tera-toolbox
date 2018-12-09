@@ -180,6 +180,22 @@ function ModuleMigration(ModuleFolder) {
             installModule(ModuleFolder, {"name": "bugfix", "servers": ["https://raw.githubusercontent.com/caali-hackerman/bugfix/master/"]});
         }
     }
+
+    // Migrate instant-xxxxx mods to instant-everything
+    let InstantModules = [];
+    listModuleInfos(ModuleFolder).forEach(modInfo => {
+        if(['instant-soulbind', 'instant-soulbind.js', 'instant-enchant', 'instant-enchant.js', 'instant-upgrade', 'instant-upgrade.js', 'instant-merge', 'instant-merge.js', 'instant-dismantle', 'instant-dismantle.js'].includes(modInfo.name)) {
+            InstantModules.push(modInfo.name);
+            uninstallModule(modInfo);
+        }
+    });
+
+    if(InstantModules.length > 0) {
+        console.log('[update] The following installed modules have been automatically converted into the new "instant-everything" module:');
+        InstantModules.forEach(mod => console.log(`[update]  - ${mod}`));
+        console.log('[update] Enter "/8 instant" in the chat to see a list of toggleable featurs. Use "/8 instant [feature]" to toggle them.');
+        installModule(ModuleFolder, {"name": "instant-everything", "servers": ["https://raw.githubusercontent.com/caali-hackerman/instant-everything/master/"]});
+    }
 }
 
 // Runs proxy
