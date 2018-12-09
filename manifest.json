@@ -31,7 +31,7 @@
     "node_modules/long/index.js": "246b9723d5ed996bb89456a5be2ce2e8bf9428b49241a94c41b22b50f6200bd5",
     "node_modules/tera-data-parser/package.json": "1e1ac1bf77aa5716b1fd11307a876e23032d84ac0a908b760c795fa674622880",
     "node_modules/tera-data-parser/lib/index.js": "d0a339467c56fefb09401559671a6cdda33d83bca787b8d6c8dffa10df5c1123",
-    "node_modules/tera-data-parser/lib/logger.js": "891c9e3b30fb684811a3bf4bf97e21e2f7c06225e9c878c57fd35920760c476a",
+    "node_modules/tera-data-parser/lib/logger.js": "336cf30d3a79ddc69b5f235ab9d7fe3c4c6cf1ce79c0e77f4ad28e458d7569aa",
     "node_modules/tera-data-parser/lib/parsers/def.js": "6ae4466d8f41cd996c56770d90617e6f01e70843b5b6df413ec83b09289f31c6",
     "node_modules/tera-data-parser/lib/parsers/map.js": "72c3461d2fbfaf43d1bcfe03a59a3789a103da946195e6d64558453d4cd703dd",
     "node_modules/tera-data-parser/lib/protocol/index.js": "e620db608242b7f0ddb6df9521d63d200b8a44118c93dc6119b0cbba1bbe1be3",
