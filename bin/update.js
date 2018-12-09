@@ -2,7 +2,7 @@ const request = require('request-promise-native');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { listModules, listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
+const { CoreModules, listModules, listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
 
 const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/caali-hackerman/tera-data/master/";
 
@@ -238,11 +238,6 @@ async function autoUpdateMaps(updatelog, updatelimit) {
 
   return promises;
 }
-
-const CoreModules = {
-  "command": "https://raw.githubusercontent.com/caali-hackerman/tera-proxy/master/bin/node_modules/command/module.json",
-  "tera-game-state": "https://raw.githubusercontent.com/caali-hackerman/tera-game-state/master/module.json",
-};
 
 async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
   console.log("[update] Auto-update started!");

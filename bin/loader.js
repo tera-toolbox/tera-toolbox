@@ -151,6 +151,36 @@ function RegionMigration(region) {
     }
 }
 
+// Migrate modules
+function ModuleMigration(ModuleFolder) {
+    const { listModuleInfos, installModule, uninstallModule } = require('tera-proxy-game').ModuleInstallation;
+
+    // Migrate swim-fix and chat-sanitizer to bugfix
+    let BugfixModules = [];
+    let BugfixInstalled = false;
+    listModuleInfos(ModuleFolder).forEach(modInfo => {
+        if(['swim-fix', 'swim-fix.js', 'chat-sanitizer', 'chat-sanitizer.js'].includes(modInfo.name) || ((modInfo.name === 'bugfix' || modInfo.name === 'bugfix-master') && modInfo.compatibility !== 'compatible')) {
+            BugfixModules.push(modInfo.name);
+            uninstallModule(modInfo);
+        }
+
+        if (modInfo.name === 'bugfix' && modInfo.compatibility === 'compatible')
+            BugfixInstalled = true;
+    });
+
+    if(BugfixModules.length > 0) {
+        if (BugfixInstalled) {
+            console.log('The following installed modules have been automatically uninstalled because they');
+            console.log('are already included in the installed "bugfix" module:');
+            BugfixModules.forEach(mod => console.log(` - ${mod}`));
+        } else {
+            console.log('The following installed modules have been automatically converted into the new "bugfix" module:');
+            BugfixModules.forEach(mod => console.log(` - ${mod}`));
+            installModule(ModuleFolder, {"name": "bugfix", "servers": ["https://raw.githubusercontent.com/caali-hackerman/bugfix/master/"]});
+        }
+    }
+}
+
 // Runs proxy
 function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
     const TeraProxy = require('./proxy');
@@ -191,6 +221,7 @@ const ProxyConfig = LoadConfiguration();
 global.TeraProxy.DevMode = !!ProxyConfig.devmode;
 const ProxyRegionConfig = LoadRegion(ProxyConfig.region);
 RegionMigration(ProxyRegionConfig);
+ModuleMigration(ModuleFolder);
 
 // Auto-update modules & tera-data and run
 if (ProxyConfig.noupdate) {
