@@ -10,7 +10,7 @@
     "bin/proxy.js": "2121898a98f87520e96030e282bcc1fa5673b8369b3ba04f15471c98892c5eef",
     "bin/regions.js": "30a8ed0985e5f47503c907ded11290c72fc20e0d478ae7e63fffdf7a9b13c8bb",
     "bin/utils.js": "ff75e368e7ec0cd359d15862821484bfa4fb0d4c7f56187c873acb527795a797",
-    "bin/update.js": "b4a735773a249b25f936cff5b3e8b296cb8f40216890b71d9e607ad7e903f6a9",
+    "bin/update.js": "b689569e0d8f3c627dbfdcdc4a25d4814ac95a633e37ce347d06a50b2f40595e",
     "bin/update-self.js": "dc6a2d65d32bc2068c517a6f4d8db7edc9f0282850fa5ec38d9cf95395559b4d",
     "bin/servers/servers-eu.json": {"overwrite": false, "hash": "fe961a1205ad1e0cee690e447692b00f82cbda0425878a9a047a5e74297a1374"},
     "bin/servers/servers-eu-test.json": {"overwrite": false, "hash": "dfe01c75882cce6d4454319fbaff9cdf3575c165696d01d4df9e2c8d0fc6f473"},

@@ -61,6 +61,8 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) 
 function migrateModuleUpdateUrlRoot(update_url_root) {
   if(update_url_root === "https://raw.githubusercontent.com/caali-hackerman/tera-proxy/master/bin/node_modules/command/")
     return "https://raw.githubusercontent.com/caali-hackerman/command/master/";
+  else
+    return update_url_root;
 }
 
 async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, region, serverIndex = 0) {
