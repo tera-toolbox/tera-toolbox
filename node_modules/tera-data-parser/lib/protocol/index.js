@@ -146,7 +146,8 @@ class TeraProtocol {
       vec3fa: 12,
       angle: 2,
 
-      skillid: 8
+      skillid: 8,
+      customize: 8,
     };
 
     let length = 0;

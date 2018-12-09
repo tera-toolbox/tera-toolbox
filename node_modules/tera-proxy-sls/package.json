@@ -13,7 +13,6 @@
     "xmldom": "^0.1.22"
   },
   "optionalDependencies": {
-    "baldera-logger": "^0.1.0"
   },
   "engines": {
     "node": ">=6.0.0"
