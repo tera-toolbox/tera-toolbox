@@ -1,7 +1,7 @@
 'use strict'
 
 const log = require('../logger'),
-      { SkillID, Vec3 } = require('./types')
+      { Customize, SkillID, Vec3 } = require('./types')
 
 const MULT_INT16_TO_RAD = 1 / 0x8000 * Math.PI,
 	  MULT_RAD_TO_INT16 = 1 / Math.PI * 0x8000
@@ -71,17 +71,21 @@ class Readable {
 
 	skillid() {
 		const raw = this.uint64(),
-			type = Number((raw >> 28n) & 0xFn),
+			type = Number((raw >> 28n) & 0xfn),
             npc = Boolean(raw & 0x0100000000n)
 
 		return new SkillID({
             id: Number(raw & (npc ? 0xffffn : 0xfffffffn)),
-			huntingZoneId: npc ? Number(raw >> 16n & 0xfffn) : 0,
+			huntingZoneId: npc ? Number((raw >> 16n) & 0xfffn) : 0,
 			type,
 			npc,
 			reserved: Number(raw >> 33n)
 		})
 	}
+
+    customize() {
+        return new Customize(this.uint64());
+    }
 
 	float() {
 		const ret = this.buffer.readFloatLE(this.position)
@@ -126,7 +130,7 @@ class Writeable {
 	uint64(n = 0n) {
         if(typeof n === 'number')
             n = BigInt(n)
-		this.uint32(Number(n & 0xffffffffn))
+        this.uint32(Number(n & 0xffffffffn))
 		this.uint32(Number((n >> 32n) & 0xffffffffn))
 	}
 	vec3(v = {}) {
@@ -154,6 +158,20 @@ class Writeable {
 
 		this.uint64(raw)
 	}
+
+    customize(val) {
+        switch(typeof val) {
+            case 'object':
+                if (!(val instanceof Customize))
+                    val = new Customize(val);
+                val.write(this);
+            case 'bigint':
+                val = new Customize(val);
+                val.write(this);
+            default:
+                this.uint64(0);
+        }
+    }
 
 	float(n = 0) { this.position = this.buffer.writeFloatLE(n, this.position) }
 	double(n = 0) { this.position = this.buffer.writeDoubleLE(n, this.position) }

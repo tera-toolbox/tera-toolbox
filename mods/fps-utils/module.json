@@ -1,0 +1,20 @@
+{
+    "disableAutoUpdate": false,
+    "name": "fps-utils",
+    "author": "Pentagon",
+    "description": "Hides other players and skill effects to significantly boost your framerate",
+    "version": "1.0",
+    "donationUrl": "https://ko-fi.com/codeagon",
+    "options": {
+        "niceName": "FPS-UTILS",
+        "settingsVersion": 1,
+        "settingsFile": "config.json",
+        "settingsMigrator": "setting_migration.js"
+    },
+    "servers": [
+        "https://raw.githubusercontent.com/codeagon/fps-utils/master/"
+    ],
+    "dependencies": {
+        "badgui": "https://raw.githubusercontent.com/codeagon/badGui/master/module.json"
+    }
+}

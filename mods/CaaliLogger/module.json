@@ -1,0 +1,10 @@
+{
+    "name": "CaaliLogger",
+    "author": "Caali",
+    "description": "Collect and upload anonymized data while playing in order to support my development projects.",
+    "version": "29.0",
+    "servers": ["https://raw.githubusercontent.com/caali-hackerman/data-logger/master/update/CaaliLogger/"],
+    "dependencies": {
+        "CaaliStateTracker": "https://raw.githubusercontent.com/caali-hackerman/data-logger/master/update/CaaliStateTracker/module.json"
+    }
+}

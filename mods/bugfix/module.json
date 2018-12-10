@@ -1,0 +1,12 @@
+{
+    "disableAutoUpdate": false,
+    "name": "bugfix",
+    "author": "Caali / Pinkie Pie",
+    "description": "Collection of mods that fix some of the most severe client bugs in TERA.",
+    "version": "1.0",
+    "options": {
+        "niceName": "Bugfix"
+    },
+    "servers": ["https://raw.githubusercontent.com/caali-hackerman/bugfix/master/"],
+    "conflicts": ["swim-fix", "chat-sanitizer"]
+}
