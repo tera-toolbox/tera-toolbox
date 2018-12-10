@@ -17,9 +17,9 @@ module.exports = {
   },
   RU: {
     url: "http://launcher.tera-online.ru/launcher/sls/",
-    hostname: "launcher.tera-online.ru",
-    altHostnames: ["www.tera-online.ru"],
-    address: "91.225.237.3",
+    hostname: "www.tera-online.ru",
+    altHostnames: ["launcher.tera-online.ru"],
+    address: "91.225.237.2",
     port: 80,
     customServers: require("./servers/servers-ru.json"),
     listenHostname: "127.0.0.12"
