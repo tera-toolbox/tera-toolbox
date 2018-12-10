@@ -261,7 +261,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
     const installedModuleInfos = listModuleInfos(moduleBase);
 
     for (let coreModule in CoreModules) {
-      if(!installedModuleInfos.some(mod => mod.name === coreModule)) {
+      if(!installedModuleInfos.some(mod => mod.name === coreModule.toLowerCase())) {
         const coreModuleResult = await autoUpdateFile('module.json', path.join(moduleBase, coreModule, 'module.json'), CoreModules[coreModule]);
         if(!coreModuleResult[1])
           throw new Error(`Unable to install core module "${coreModule}: ${coreModuleResult[2]}`);
@@ -283,7 +283,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
               updateData = JSON.parse(updateData);
 
               for(let dependency in updateData["dependencies"]) {
-                if(!installedModuleInfos.some(mod => mod.name === dependency)) {
+                if(!installedModuleInfos.some(mod => mod.name === dependency.toLowerCase())) {
                   const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, dependency, 'module.json'), updateData["dependencies"][dependency]);
                   if(!dependency_result[1])
                     throw new Error(`Unable to install dependency module "${dependency}: ${dependency_result[2]}`);
