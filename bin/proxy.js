@@ -57,14 +57,14 @@ function HostsClean(region) {
 }
 
 // Proxy implementation
-function ListenError(e) {
+function ListenError(e, port) {
     switch (e.code) {
         case "EADDRINUSE":
             console.error("ERROR: Another instance of TeraProxy is already running, please close it then try again.");
             break;
         case "EACCES":
-            console.error(`ERROR: Another process is already using port ${region.data.port}.\nPlease close or uninstall the application first:`);
-            require("./netstat")(region.data.port);
+            console.error(`ERROR: Another process is already using port ${port}.\nPlease close or uninstall the application first:`);
+            require("./netstat")(port);
             break;
         default:
             throw e;
@@ -132,7 +132,7 @@ class TeraProxy {
 
     slsListenHandler(err) {
         if (err) {
-            ListenError(err);
+            ListenError(err, this.region.data.port);
         } else {
             HostsInitialize(this.region);
 

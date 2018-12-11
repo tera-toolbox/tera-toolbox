@@ -7,7 +7,7 @@
     "bin/connectionManager.js": "0bfbf330ecff0cbc634091cc470f0d1b3b6eeb03d45e579df0f89c24605a7510",
     "bin/hosts.js": "2d1592299406dc7e0f082c30809236c305226766e4d26afad698899c646a80ed",
     "bin/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
-    "bin/proxy.js": "2121898a98f87520e96030e282bcc1fa5673b8369b3ba04f15471c98892c5eef",
+    "bin/proxy.js": "01ef2ecbb62419348820dd0f32ab18db7e02757a2dca41a49ce78a5f76fcd8fa",
     "bin/regions.js": "9e51e6b45a3bb7def6a1ccffce57925ba769c208f59f79aa5f9106bf2c8110e7",
     "bin/utils.js": "ff75e368e7ec0cd359d15862821484bfa4fb0d4c7f56187c873acb527795a797",
     "bin/update.js": "55cfaa4783bb087aeda13293ceeec71145915f852e8e43f92fd49a1c7256704b",
