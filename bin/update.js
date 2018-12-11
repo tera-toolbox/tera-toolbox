@@ -257,16 +257,18 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
   let installedModulesChanged;
   do {
     installedModulesChanged = false;
+    let addedModules = [];
     const installedModules = listModules(moduleBase);
     const installedModuleInfos = listModuleInfos(moduleBase);
 
     for (let coreModule in CoreModules) {
-      if(!installedModuleInfos.some(mod => mod.name === coreModule.toLowerCase())) {
+      if(!installedModuleInfos.some(mod => mod.name === coreModule.toLowerCase()) && addedModules.indexOf(coreModule) < 0) {
         const coreModuleResult = await autoUpdateFile('module.json', path.join(moduleBase, coreModule, 'module.json'), CoreModules[coreModule]);
         if(!coreModuleResult[1])
           throw new Error(`Unable to install core module "${coreModule}: ${coreModuleResult[2]}`);
         console.log(`[update] Initialized core module "${coreModule}"`);
         installedModulesChanged = true;
+        addedModules.push(coreModule);
       }
     }
 
@@ -283,12 +285,13 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
               updateData = JSON.parse(updateData);
 
               for(let dependency in updateData["dependencies"]) {
-                if(!installedModuleInfos.some(mod => mod.name === dependency.toLowerCase())) {
+                if(!installedModuleInfos.some(mod => mod.name === dependency.toLowerCase()) && addedModules.indexOf(dependency) < 0) {
                   const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, dependency, 'module.json'), updateData["dependencies"][dependency]);
                   if(!dependency_result[1])
                     throw new Error(`Unable to install dependency module "${dependency}: ${dependency_result[2]}`);
                   console.log(`[update] Initialized dependency "${dependency}" for module "${module}"`);
                   installedModulesChanged = true;
+                  addedModules.push(dependency);
                 }
               }
 
