@@ -165,11 +165,14 @@ class Writeable {
                 if (!(val instanceof Customize))
                     val = new Customize(val);
                 val.write(this);
+                break;
             case 'bigint':
                 val = new Customize(val);
                 val.write(this);
+                break;
             default:
                 this.uint64(0);
+                break;
         }
     }
 

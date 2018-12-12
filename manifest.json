@@ -35,7 +35,7 @@
     "node_modules/tera-data-parser/lib/parsers/def.js": "6ae4466d8f41cd996c56770d90617e6f01e70843b5b6df413ec83b09289f31c6",
     "node_modules/tera-data-parser/lib/parsers/map.js": "72c3461d2fbfaf43d1bcfe03a59a3789a103da946195e6d64558453d4cd703dd",
     "node_modules/tera-data-parser/lib/protocol/index.js": "e620db608242b7f0ddb6df9521d63d200b8a44118c93dc6119b0cbba1bbe1be3",
-    "node_modules/tera-data-parser/lib/protocol/stream.js": "907864ba7f09d7687f118f02005a989fdf908c48354e57c9f86fbfb525a732a9",
+    "node_modules/tera-data-parser/lib/protocol/stream.js": "16cca08bd4af9ba60bc4e9e288166df9adb4f81b4afc211553dd8407b80c78ad",
     "node_modules/tera-data-parser/lib/protocol/types/index.js": "63c3b0d190ddf64b12f6cddbc2ddc0769c1c9c14bc7634940930e86c71720e1d",
     "node_modules/tera-data-parser/lib/protocol/types/skillid.js": "5e2ab48f6a3b6bf17fb5c3d91293eac614375250a50fe962110a7bcc1910e312",
     "node_modules/tera-data-parser/lib/protocol/types/customize.js": "1e4b3e55e2e6dca1ae2950ec29dc5d90eefe5cba231b84c496cbd1b2b7da087a",
