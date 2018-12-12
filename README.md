@@ -1,27 +1,34 @@
-### Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
+# Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
 * It will auto-update your opcode mappings, packet definitions, and compatible installed modules. You no longer need do manually update _anything_!
 * Feel free to visit my Discord server at https://discord.gg/dUNDDtw
 * Originally forked from https://github.com/pinkipi/tera-proxy which was DMCA'd by EME.
 
-### Installation instructions
+# Installation instructions
 * Download and run the setup from the #proxy channel in the Discord server linked above. A manual installation is possible, but not recommended!
 * The first auto-update after installing the proxy or new mods may take a few seconds. This is because all required files will be downloaded automatically.
 * The most popular modules are already pre-installed for your convenience - check out `bin/node_modules/`. If you don't want to use a particular mod, just delete the corresponding folder or prefix its folder name with an underscore (`_`).
 * Run `TeraProxy.bat` *as Administrator*, then start the game
 
-### Popular and fully compatible modules
+# Popular and fully compatible modules
 Almost all tera-proxy modules are compatible with my proxy. For an always up-to-date list, check out [my Discord server](https://discord.gg/dUNDDtw)!
+
+## Core Modules (always installed)
+* [Command (core module, always installed)](https://github.com/caali-hackerman/command)
+* [tera-game-state (core module, always installed)](https://github.com/caali-hackerman/tera-game-state)
+
+## Default Modules (bundled with proxy setup)
 * [Skill Prediction (SaltyMonkey's fork, included with the proxy by default)](https://github.com/SaltyMonkey/skill-prediction)
 * [FPS Utils (included with the proxy by default)](https://github.com/codeagon/fps-utils)
+* [Instant Everything](https://github.com/caali-hackerman/instant-everything)
+* [Bugfix](https://github.com/caali-hackerman/bugfix)
+* [CaaliLogger / CaaliStateTracker](https://github.com/caali-hackerman/data-logger)
+
+## Other Modules
 * [Arborean Apparel](https://github.com/iribae/arborean-apparel)
 * [Astral Tera](https://github.com/codeagon/Astral-TERA)
 * [True Everful Nostrum (my fork)](https://github.com/caali-hackerman/true-everful-nostrum)
-* [Instant Soulbind](https://github.com/beng-mods/instant-soulbind)
-* [Instant Enchant (my fork)](https://github.com/caali-hackerman/instant-enchant)
 * [Socialize](https://github.com/Leyki/Socialize)
 * [Settings Saver](https://github.com/Kaseaa/Tera-Settings-Saver)
-* [Command / Chat-Sanitizer / Swim-Fix (included with the proxy by default)](https://github.com/pinkipi/tera-proxy)
-* [CaaliLogger / CaaliStateTracker](https://github.com/caali-hackerman/data-logger)
 * [Ghillieglade Auto-Reset](https://github.com/Snugglez/GG-Reset)
 * [No Custom Loading Screens](https://github.com/caali-hackerman/no-custom-loadingscreens)
 * [Library](https://github.com/Kaseaa/library)
@@ -83,7 +90,7 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 * Kasea's Ping Remover
 * ... and many more
 
-### Developers: Adding auto-update compatibility to your module
+# Developers: Adding auto-update compatibility to your module
 * You'll need to create two files in your root update directory (called UpdateRoot from now on): `module.json` and `manifest.json`.
 * `module.json` contains the UpdateRoot URL and optional other data. See [here](https://github.com/caali-hackerman/data-logger/blob/master/update/CaaliLogger/module.json) for an example. If you're distributing paid modules, you can add a `drmKey` parameter representing a unique per-user key (string) there as well. It'll be sent as a HTTP GET parameter when `manifest.json` is requested.
 * `manifest.json` contains a list of all files required for your module (relative to its root directory) and their corresponding SHA256 hashes. Furthermore, you must specify a list of all packet definitions and versions required by your module here. See [here](https://github.com/caali-hackerman/data-logger/blob/master/update/CaaliLogger/manifest.json) for an example. If you have files that shouldn't be overwritten, you can use `{"overwrite": false, "hash": [file hash]}` instead of just a string on a per-file basis. You can also specify for which game regions a file is downloaded.
