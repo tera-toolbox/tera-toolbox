@@ -2,6 +2,7 @@
   "files": {
     "TeraProxy.bat": "49fef1def43cf054a9932ff11f9a8554479c74c623f00af7d4ef39c3f7109eca",
     "TeraProxyGUI.bat": "4acc052b3789a343ef43ae3e3f947129fc502ce97940971548b242c9d6a49a19",
+    "TeraProxyGUIWithConsole.bat": "97a6479aae48149380b41d48cafa028d9b308155e0a9965d3fcfb02363f32fed",
     "bin/index.js": "2679fc20ef4e4abf7dc828713cb07dc40829a826db6396da9ff9d43ac5b5d669",
     "bin/config.js": "5235418ded7c599fddc420dd1aab2b9a6908753e211616d46f281f9811602ffc",
     "bin/loader.js": "f709e8df159ca9019eb11ae353369542c71c438e89af35cd2ea2a3f3f4c26e59",
