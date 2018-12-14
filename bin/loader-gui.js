@@ -281,9 +281,13 @@ module.exports = function LoaderGUI(ModFolder, ProxyConfig, ProxyRegionConfig) {
         };
     });
 
-    app.on('ready', () => {
+    if (app.isReady()) {
         gui.show();
-    });
+    } else {
+        app.on('ready', () => {
+            gui.show();
+        });
+    }
 
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin')
