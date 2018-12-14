@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Caali's Tera Proxy</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+		<link rel="stylesheet" href="css/main.css">
+		<script>window.$ = window.jQuery = require('./js/jquery-3.2.1.min.js')</script>
+		<script src="main.js"></script>
+	</head>
+
+	<body>
+        <!-- Title Bar -->
+		<div id="title-bar" class="title-bar">
+			<img src="icon.png" id="title-icon">
+			<div id="title">Caali's Tera Proxy</div>
+			<div id="title-status">Proxy not running</div>
+            <button id="close-btn" class="nodrag">&times;</button>
+		</div>
+
+        <!-- Content -->
+        <div class="container">
+            <!-- Tab Header -->
+            <ul class="tabs">
+                <li class="tab-link nodrag current" tabname="log">Log</li>
+                <li class="tab-link nodrag" tabname="mods">My Mods</li>
+                <li class="tab-link nodrag" tabname="newmods">Get More Mods</li>
+                <li class="tab-link nodrag" tabname="settings">Proxy Settings</li>
+                <li class="tab-link nodrag" tabname="credits">Credits</li>
+                <a class="nodrag" id="startproxy">Start Proxy</a>
+            </ul>
+
+            <!-- Proxy Console -->
+            <div id="log_loading" class="tab-content nodrag">
+                <div class="loading">
+                    <div class="loading icon"></div>
+                    <div class="loading text">Loading proxy log...</div>
+                </div>
+            </div>
+            <div id="log" class="tab-content nodrag current">
+                <textarea id="log-contents" class="log-contents" disabled readonly></textarea>
+                <button id="clear-logs">&times;</button>
+            </div>
+
+            <!-- Installed Modules -->
+            <div id="mods_loading" class="tab-content nodrag">
+                <div class="loading">
+                    <div class="loading icon"></div>
+                    <div class="loading text">Loading installed mods...</div>
+                </div>
+            </div>
+            <div id="mods" class="tab-content nodrag">
+                <div class="modulesList">
+                </div>
+            </div>
+
+            <!-- New Module Installation -->
+            <div id="newmods_loading" class="tab-content nodrag">
+                <div class="loading">
+                    <div class="loading icon"></div>
+                    <div class="loading text">Loading list of mods...</div>
+                </div>
+            </div>
+            <div id="newmods" class="tab-content nodrag">
+                <div class="installableModulesList">
+                </div>
+            </div>
+
+            <!-- Proxy Settings -->
+            <div id="settings_loading" class="tab-content nodrag">
+                <div class="loading">
+                    <div class="loading icon"></div>
+                    <div class="loading text">Loading settings...</div>
+                </div>
+            </div>
+            <div id="settings" class="tab-content nodrag">
+                <div>
+                    <a>Theme</a>
+                    <div class="theme black"></div>
+                    <div class="theme white"></div>
+                    <div class="theme pink"></div>
+                    <div class="theme dong"></div>
+                    <div class="theme leiki"></div>
+                    <div class="theme lain"></div>
+                </div>
+                <div>
+                    <a>Region</a>
+                    <select id="regions">
+                        <option>NA</option>
+                        <option>EU</option>
+                        <option>RU</option>
+                        <option>KR</option>
+                        <option>JP</option>
+                        <option>TW</option>
+                        <option>TH</option>
+                        <option>SE</option>
+                        <option>EU-TEST</option>
+                        <option>KR-TEST</option>
+                    </select>
+                </div>
+                <div>
+                    <a>Autostart</a>
+                    <input id="autostart" type="checkbox">
+                </div>
+            </div>
+
+            <!-- Credits -->
+            <div id="credits_loading" class="tab-content nodrag">
+                <div class="loading">
+                    <div class="loading icon"></div>
+                    <div class="loading text">Loading credits...</div>
+                </div>
+            </div>
+            <div id="credits" class="tab-content nodrag">
+                <div class="credits text">
+                    Thanks to<br />
+                    Mathicha &amp; Pentagon: Core GUI stuff
+                </div>
+            </div>
+
+            <!-- Modal Box -->
+            <div id="modalbox" class="modalbox">
+                <div class="modalbox-content">
+                    <div id="modalbox-text" class="modalbox-text"></div>
+                    <button id="modalbox-ok" class="modalbox-button">OK</button>
+                </div>
+            </div>
+
+        </div>
+
+	</body>
+
+</html>

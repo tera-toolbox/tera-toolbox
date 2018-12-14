@@ -1,0 +1,351 @@
+const { remote, ipcRenderer, shell } = require('electron');
+
+function HashString(str) {
+    var hash = 0, i, chr;
+    if (str.length === 0) return hash;
+    for (i = 0; i < str.length; i++) {
+        chr = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+jQuery(($) => {
+    // --------------------------------------------------------------------
+    // ----------------------------- MAIN ---------------------------------
+    // --------------------------------------------------------------------
+    $('#close-btn').click(() => {
+        remote.getCurrentWindow().minimize();
+    });
+
+    // Proxy control
+    let ProxyRunning = false;
+    let ProxyStarting = false;
+
+    ipcRenderer.on('proxy running', (_, running) => {
+        ProxyRunning = running;
+        ProxyStarting = false;
+
+        $('#startproxy').text(ProxyRunning ? 'Stop Proxy' : 'Start Proxy');
+        $('#title-status').text(ProxyRunning ? 'Proxy Running' : 'Proxy Not Running');
+    });
+
+    function startProxy() {
+        if (ProxyStarting || ProxyRunning)
+            return;
+
+        ProxyStarting = true;
+        $('#startproxy').text('Proxy starting...');
+        ipcRenderer.send('start proxy');
+    }
+
+    function stopProxy() {
+        if (!ProxyRunning)
+            return;
+
+        $('#startproxy').text('Proxy stopping...');
+        ipcRenderer.send('stop proxy');
+    }
+
+    $('#startproxy').click(() => {
+        if (ProxyRunning)
+            stopProxy();
+        else
+            startProxy();
+    });
+
+    // --------------------------------------------------------------------
+    // ----------------------------- TABS ---------------------------------
+    // --------------------------------------------------------------------
+    let Tabs = {};
+    let CurrentTab = null;
+
+    function addTab(tab, implementation) {
+        Tabs[tab] = implementation;
+    }
+
+    function isCurrentTab(tab) {
+        return CurrentTab === tab;
+    }
+
+    function emitTabEvent(tab, event, ...args) {
+        if (!tab || !Tabs[tab])
+            return;
+
+        if (typeof Tabs[tab][event] === 'function')
+            Tabs[tab][event](...args);
+    }
+
+    function tabReady(tab) {
+        if (!isCurrentTab(tab))
+            return;
+
+        $("#" + CurrentTab + "_loading").removeClass('current');
+        $("#" + CurrentTab).addClass('current');
+    }
+
+    $('ul.tabs li').click(function changeTab() {
+        emitTabEvent(CurrentTab, 'hide');
+        $('ul.tabs li').removeClass('current');
+        $('.tab-content').removeClass('current');
+
+        CurrentTab = $(this).attr('tabname');
+        $(this).addClass('current');
+        $("#" + CurrentTab + "_loading").addClass('current');
+        emitTabEvent(CurrentTab, 'show');
+    });
+
+    // --------------------------------------------------------------------
+    // --------------------------- LOG TAB --------------------------------
+    // --------------------------------------------------------------------
+    const LogTabName = 'log';
+
+    function log(msg) {
+        const contents = $('#log-contents');
+        contents.append(msg + '\n');
+        contents.scrollTop(contents[0].scrollHeight);
+    }
+
+    $('#clear-logs').click(() => {
+        $('#log-contents').text('');
+    });
+
+    ipcRenderer.on('log', (_, data) => {
+        log(data.toString());
+    });
+
+    addTab(LogTabName, {
+        show: () => {
+            tabReady(LogTabName);
+        },
+    });
+
+    // --------------------------------------------------------------------
+    // ------------------------- SETTINGS TAB -----------------------------
+    // --------------------------------------------------------------------
+    let Settings = null;
+    const SettingsTabName = 'settings';
+
+    function onSettingsChanged(newSettings) {
+        Settings = newSettings;
+        $(`option:contains(${Settings.region}):first`).prop('selected', true);
+        $('#autostart').prop('checked', Settings.gui.autostart);
+        $('head').append(`<link rel="stylesheet" href="css/themes/${Settings.gui.theme}.css">`);
+    }
+
+    function updateSettings(newSettings) {
+        ipcRenderer.send('set config', newSettings);
+        onSettingsChanged(newSettings);
+    }
+
+    function updateSetting(key, value) {
+        let Override = {};
+        Override[key] = value;
+        updateSettings(Object.assign(Settings, Override));
+    }
+
+    ipcRenderer.on('set config', (_, newConfig) => {
+        onSettingsChanged(newConfig);
+        tabReady(SettingsTabName);
+    });
+
+    addTab(SettingsTabName, {
+        show: () => {
+            ipcRenderer.send('get config');
+        },
+    });
+
+    // UI events
+    $('#regions').change(() => {
+        updateSetting('region', $('#regions').find(":selected").text());
+    });
+
+    $('#autostart').click(() => {
+        updateSetting('autostart', $(this).is(':checked'));
+    });
+
+    // change theme
+    $('div.theme').click(() => {
+        // TODO
+        /*
+        let theme = $(this).attr('class').split(' ').pop();
+        config.gui.theme = theme;
+        saveconfig();
+        $('head>link').filter('[rel="stylesheet"]:last').remove();
+        $('head').append(`< link rel = "stylesheet" href = "css/themes/${theme}.css" > `);
+        */
+    });
+
+    // --------------------------------------------------------------------
+    // ---------------------------- MODS TAB ------------------------------
+    // --------------------------------------------------------------------
+    const ModsTabName = 'mods';
+    let WaitingForModUninstall = false;
+
+    ipcRenderer.on('set mods', (_, modInfos) => {
+        WaitingForModUninstall = false;
+        $('.modulesList').empty();
+        modInfos.forEach(modInfo => {
+            const escapedName = HashString(modInfo.name);
+            const headerId = `modheader-${escapedName}`;
+            const bodyId = `modbody-${escapedName}`;
+            const donationId = `moddonate-${escapedName}`;
+            const uninstallId = `moduninstall-${escapedName}`;
+            const infoId = `modinfo-${escapedName}`;
+
+            $('.modulesList').append(`
+                <div id="${headerId}" class="moduleHeader">
+                    <div class="moduleHeader name">${modInfo.options.niceName || modInfo.rawName}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
+                    ${modInfo.author ? `<div class="moduleHeader author">by ${modInfo.author}</div>` : ''}
+                </div>
+            `);
+
+            $(`#${headerId}`).append(`
+                <div id="${bodyId}" class="moduleBody">
+                    <div class="moduleBody description">
+                        ${modInfo.description || ''}
+                    </div>
+                    <div class="moduleBody buttons">
+                        ${!modInfo.isCoreModule ? `<a href="#" id="${uninstallId}" class="moduleBody buttons uninstall"></a>` : ''}
+                        ${modInfo.donationUrl ? `<a href="#" id="${donationId}" class="moduleBody buttons donate"></a>` : ''}
+                        ${modInfo.supportUrl ? `<a href="#" id="${infoId}" class="moduleBody buttons info"></a>` : ''}
+                    </div>
+                </div>`
+            );
+
+            $(`#${donationId}`).on('click', (event) => {
+                event.preventDefault();
+                shell.openExternal(modInfo.donationUrl);
+                return false;
+            });
+
+            $(`#${infoId}`).on('click', (event) => {
+                event.preventDefault();
+                shell.openExternal(modInfo.supportUrl);
+                return false;
+            });
+
+            $(`#${uninstallId}`).on('click', (event) => {
+                event.preventDefault();
+                if (ProxyRunning) {
+                    ShowModal("You cannot uninstall mods while Tera-Proxy is running. Please stop it first!");
+                } else if (!WaitingForModUninstall) {
+                    ipcRenderer.send('uninstall mod', modInfo);
+                    WaitingForModUninstall = true;
+                }
+                return false;
+            });
+
+            $(".moduleBody").click(() => {
+                // Cancel default action and event bubbling
+                return false;
+            });
+
+            $(`#${headerId}`).click(() => {
+                $(`#${bodyId}`).toggle();
+                $(`#${headerId}`).toggleClass('active');
+            });
+        });
+
+        tabReady(ModsTabName);
+    });
+
+    addTab(ModsTabName, {
+        show: () => {
+            ipcRenderer.send('get mods');
+        },
+    });
+
+    // --------------------------------------------------------------------
+    // ---------------------- MODS INSTALLATION TAB -----------------------
+    // --------------------------------------------------------------------
+    const ModsInstallationTabName = 'newmods';
+    let WaitingForModInstall = false;
+
+    ipcRenderer.on('set installable mods', (_, modInfos) => {
+        WaitingForModInstall = false;
+
+        $('.installableModulesList').empty();
+        modInfos.forEach(modInfo => {
+            const escapedName = HashString(modInfo.name);
+            const headerId = `installablemodheader-${escapedName}`;
+            const bodyId = `installablemodbody-${escapedName}`;
+            const installId = `installablemodinstall-${escapedName}`;
+
+            $('.installableModulesList').append(`
+                <div id="${headerId}" class="installableModuleHeader">
+                    <div class="installableModuleHeader name">${(modInfo.options && modInfo.options.niceName) ? modInfo.options.niceName : modInfo.name}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
+                    ${modInfo.author ? `<div class="installableModuleHeader author">by ${modInfo.author}</div>` : ''}
+                </div>
+            `);
+
+            $(`#${headerId}`).append(`
+                <div id="${bodyId}" class="installableModuleBody">
+                    <div class="installableModuleBody description">
+                        ${modInfo.description || ''}
+                    </div>
+                    <div class="installableModuleBody buttons">
+                        <a href="#" id="${installId}" class="installableModuleBody buttons install"></a>
+                    </div>
+                </div>`
+            );
+
+            $(`#${installId}`).on('click', (event) => {
+                event.preventDefault();
+                if (ProxyRunning) {
+                    ShowModal("You cannot install modules while Tera-Proxy is running. Please stop it first!");
+                } else if (!WaitingForModInstall) {
+                    ipcRenderer.send('install mod', modInfo);
+                    WaitingForModInstall = true;
+                }
+                return false;
+            });
+
+            $(".installableModuleBody").click(() => {
+                // Cancel default action and event bubbling
+                return false;
+            });
+        });
+
+        tabReady(ModsInstallationTabName);
+    });
+
+    addTab(ModsInstallationTabName, {
+        show: () => {
+            ipcRenderer.send('get installable mods');
+        },
+    });
+
+    // --------------------------------------------------------------------
+    // --------------------------- CREDITS TAB ----------------------------
+    // --------------------------------------------------------------------
+    const CreditsTabName = 'credits';
+
+    addTab(CreditsTabName, {
+        show: () => {
+            tabReady(CreditsTabName);
+        },
+    });
+
+    // --------------------------------------------------------------------
+    // ---------------------------- MODAL BOX -----------------------------
+    // --------------------------------------------------------------------
+    function ShowModal(text) {
+        $("#modalbox-text").text(text);
+        $("#modalbox").show();
+    }
+
+    $("#modalbox-ok").click(() => {
+        $("#modalbox").hide();
+    });
+
+    ipcRenderer.on('error', (_, error) => {
+        ShowModal(error);
+    });
+
+    // --------------------------------------------------------------------
+    // ------------------------------ RUN! --------------------------------
+    // --------------------------------------------------------------------
+    ipcRenderer.send('init');
+});

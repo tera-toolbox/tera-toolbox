@@ -1,18 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-
 const ModuleFolder = path.join(__dirname, "..", "mods");
-
-// Load and validate configuration
-function LoadConfiguration() {
-    try {
-        return require('./config').loadConfig();
-    } catch (_) {
-        console.log("ERROR: Whoops, looks like you've fucked up your config.json!");
-        console.log(`ERROR: Try to fix it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
-        process.exit(1);
-    }
-}
 
 // Check node/electron version
 function NodeVersionCheck() {
@@ -39,6 +27,17 @@ function NodeVersionCheck() {
         }
 
         process.exit();
+    }
+}
+
+// Load and validate configuration
+function LoadConfiguration() {
+    try {
+        return require('./config').loadConfig();
+    } catch (_) {
+        console.log("ERROR: Whoops, looks like you've fucked up your config.json!");
+        console.log(`ERROR: Try to fix it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
+        process.exit(1);
     }
 }
 
@@ -198,37 +197,6 @@ function ModuleMigration(ModuleFolder) {
     }
 }
 
-// Runs proxy
-function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
-    const TeraProxy = require('./proxy');
-    let proxy = new TeraProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
-    proxy.run();
-
-    // Set up clean exit
-    const isWindows = process.platform === "win32";
-
-    function cleanExit() {
-        console.log("terminating...");
-
-        proxy.destructor();
-        proxy = null;
-
-        if (isWindows)
-            process.stdin.pause();
-    }
-
-    if (isWindows) {
-        require("readline").createInterface({
-            input: process.stdin,
-            output: process.stdout
-        }).on("SIGINT", () => process.emit("SIGINT"));
-    }
-
-    process.on("SIGHUP", cleanExit);
-    process.on("SIGINT", cleanExit);
-    process.on("SIGTERM", cleanExit);
-}
-
 // Main
 const { initGlobalSettings } = require('./utils');
 initGlobalSettings(false);
@@ -240,29 +208,6 @@ const ProxyRegionConfig = LoadRegion(ProxyConfig.region);
 RegionMigration(ProxyRegionConfig);
 ModuleMigration(ModuleFolder);
 
-// Auto-update modules & tera-data and run
-if (ProxyConfig.noupdate) {
-    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    console.warn("!!!!!      YOU HAVE GLOBALLY DISABLED AUTOMATIC UPDATES     !!!!!");
-    console.warn("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
-    console.warn("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
-    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
-} else {
-    const autoUpdate = require("./update");
-    autoUpdate(ModuleFolder, ProxyConfig.updatelog, true, ProxyRegionConfig.idShort).then(updateResult => {
-        for (let mod of updateResult["legacy"])
-            console.log("[update] WARNING: Module %s does not support auto-updating!", mod.name);
-        for (let mod of updateResult["failed"])
-            console.log("[update] ERROR: Module %s could not be updated and might be broken!", mod.name);
-        if (!updateResult["tera-data"])
-            console.log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
-
-        delete require.cache[require.resolve("tera-data-parser")];
-        delete require.cache[require.resolve("tera-proxy-game")];
-
-        RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
-    }).catch(e => {
-        console.log("ERROR: Unable to auto-update: %s", e);
-    });
-}
+// Pass control to second-stage loader
+const SecondStageLoader = require(!!process.versions.electron ? './loader-gui' : './loader-console');
+SecondStageLoader(ModuleFolder, ProxyConfig, ProxyRegionConfig);

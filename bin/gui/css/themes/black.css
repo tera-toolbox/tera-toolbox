@@ -1,0 +1,54 @@
+/*********
+ * BLACK *
+ *********/
+
+body {
+	background-color: #292F33;
+	color: #bbb
+}
+
+#close-btn {
+	color: #bbb
+}
+
+ul.tabs li {
+	background-color: #292F33
+}
+
+ul.tabs li.current {
+	background: #222426
+}
+
+.tab-content {
+	background: #14171A;
+	border: solid 4px #222426
+}
+
+#startproxy {
+	background: #222426
+}
+
+.log-contents {
+    background-color: #222426;
+    color: #bbb
+}
+
+#clear-logs {
+	color: #bbb
+}
+
+ul.ModulesList li {
+	background-color: #222426
+}
+
+::-webkit-scrollbar-track {
+	background: #292f33
+}
+
+::-webkit-scrollbar-thumb {
+	background: #222426
+}
+
+#Config>div {
+	background-color: #222426
+}
