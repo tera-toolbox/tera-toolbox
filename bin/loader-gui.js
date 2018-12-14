@@ -3,7 +3,7 @@ const { app, BrowserWindow, Tray, Menu, ipcMain } = require('electron');
 
 // Configuration
 function SaveConfiguration(newConfig) {
-    // TODO
+    require('./config').saveConfig(newConfig);
 }
 
 // Region
@@ -70,9 +70,9 @@ async function StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
             const updateResult = await autoUpdate(ModuleFolder, ProxyConfig.updatelog, true, ProxyRegionConfig.idShort);
 
             for (let mod of updateResult["legacy"])
-                log("[update] WARNING: Module %s does not support auto-updating!", mod.name);
+                log(`[update] WARNING: Module ${mod.name} does not support auto-updating!`);
             for (let mod of updateResult["failed"])
-                log("[update] ERROR: Module %s could not be updated and might be broken!", mod.name);
+                log(`[update] ERROR: Module ${mod.name} could not be updated and might be broken!`);
             if (!updateResult["tera-data"])
                 log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
 
@@ -81,7 +81,7 @@ async function StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
 
             return _StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
         } catch (e) {
-            error("ERROR: Unable to auto-update: %s", e);
+            error(`ERROR: Unable to auto-update: ${e}`);
             return false;
         }
     }
@@ -129,6 +129,13 @@ ipcMain.on('init', (event, _) => {
         log("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
         log("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
         log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+
+    if (config.gui.autostart) {
+        log("Starting proxy...");
+        StartProxy(ModuleFolder, config, LoadRegion(config.region)).then((result) => {
+            event.sender.send('proxy running', result);
+        });
     }
 });
 

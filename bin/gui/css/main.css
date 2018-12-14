@@ -259,6 +259,10 @@ ul.tabs {
             border: none;
         }
 
+            .moduleBody.buttons.donate:hover {
+                background-size: 30px;
+            }
+
         .moduleBody.buttons.info {
             background: url(../icons/infoWhite.svg);
             background-repeat: no-repeat;
@@ -269,6 +273,10 @@ ul.tabs {
             margin-top: 2px;
         }
 
+            .moduleBody.buttons.info:hover {
+                background-size: 27px;
+            }
+
         .moduleBody.buttons.uninstall {
             background: url(../icons/deleteWhite.png);
             background-repeat: no-repeat;
@@ -278,6 +286,10 @@ ul.tabs {
             border: none;
             margin-left: 10px;
         }
+
+            .moduleBody.buttons.uninstall:hover {
+                background-size: 30px;
+            }
 
 /***********************
  * INSTALLABLE MODULES *
@@ -350,6 +362,10 @@ ul.tabs {
             background-size: 28px;
             border: none;
         }
+
+            .installableModuleBody.buttons.install:hover {
+                background-size: 30px;
+            }
 
 
 /*************
@@ -461,7 +477,7 @@ ul.tabs {
     padding: 20px;
     border: 1px solid #888;
     width: 40%;
-    height: 30%;
+    height: 40%;
 }
 
 .modalbox-text {

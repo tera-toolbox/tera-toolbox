@@ -145,6 +145,15 @@ jQuery(($) => {
         updateSettings(Object.assign(Settings, Override));
     }
 
+    function updateGUISetting(key, value) {
+        let Override = {};
+        Override[key] = value;
+
+        let SettingsCopy = Object.assign({}, Settings);
+        SettingsCopy.gui = Object.assign(SettingsCopy.gui, Override);
+        updateSettings(SettingsCopy);
+    }
+
     ipcRenderer.on('set config', (_, newConfig) => {
         onSettingsChanged(newConfig);
         tabReady(SettingsTabName);
@@ -162,7 +171,7 @@ jQuery(($) => {
     });
 
     $('#autostart').click(() => {
-        updateSetting('autostart', $(this).is(':checked'));
+        updateGUISetting('autostart', $('#autostart').is(':checked'));
     });
 
     // change theme

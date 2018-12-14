@@ -1,7 +1,13 @@
 const path = require('path');
+const fs = require('fs');
+const ConfigFilePath = path.join(__dirname, '..', 'config.json');
 
 function loadConfig() {
-    return require(path.join(__dirname, '..', 'config.json'));
+    return JSON.parse(fs.readFileSync(ConfigFilePath, 'utf8'));
+}
+
+function saveConfig(newConfig) {
+    fs.writeFileSync(ConfigFilePath, JSON.stringify(newConfig, null, 4));
 }
 
 function loadRegion(region) {
@@ -19,4 +25,4 @@ function loadRegion(region) {
     };
 }
 
-module.exports = { loadConfig, loadRegion };
+module.exports = { loadConfig, saveConfig, loadRegion };

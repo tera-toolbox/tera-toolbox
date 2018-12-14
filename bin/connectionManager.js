@@ -59,7 +59,7 @@ class ConnectionManager {
 
         srvConn.on("connect", () => {
             remote = socket.remoteAddress + ":" + socket.remotePort;
-            console.log("[connection] routing %s to %s:%d", remote, srvConn.remoteAddress, srvConn.remotePort);
+            console.log(`[connection] routing ${remote} to ${srvConn.remoteAddress}:${srvConn.remotePort}`);
 
             this.activeConnections.add(connection);
         });
@@ -70,7 +70,7 @@ class ConnectionManager {
         });
 
         srvConn.on("close", () => {
-            console.log("[connection] %s disconnected", remote);
+            console.log(`[connection] ${remote} disconnected`);
             this.activeConnections.delete(connection);
         });
     }
