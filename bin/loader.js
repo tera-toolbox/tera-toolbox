@@ -183,18 +183,32 @@ function ModuleMigration(ModuleFolder) {
 
     // Migrate instant-xxxxx mods to instant-everything
     let InstantModules = [];
+    let InstantEverythingInstalled = false;
     listModuleInfos(ModuleFolder).forEach(modInfo => {
-        if(['instant-soulbind', 'instant-soulbind.js', 'instant-enchant', 'instant-enchant.js', 'instant-upgrade', 'instant-upgrade.js', 'instant-merge', 'instant-merge.js', 'instant-dismantle', 'instant-dismantle.js'].includes(modInfo.name)) {
+        if (['instant-soulbind', 'instant-soulbind-master', 'instant-soulbind.js',
+            'instant-enchant', 'instant-enchant-master', 'instant-enchant.js',
+            'instant-upgrade', 'instant-upgrade-master', 'instant-upgrade.js',
+            'instant-merge', 'instant-merge-master', 'instant-merge.js',
+            'instant-dismantle', 'instant-dismantle-master', 'instant-dismantle.js'].includes(modInfo.name)) {
             InstantModules.push(modInfo.name);
             uninstallModule(modInfo);
         }
+
+        if (modInfo.name === 'instant-everything' && modInfo.compatibility === 'compatible')
+            InstantEverythingInstalled = true;
     });
 
-    if(InstantModules.length > 0) {
-        console.log('[update] The following installed modules have been automatically converted into the new "instant-everything" module:');
-        InstantModules.forEach(mod => console.log(`[update]  - ${mod}`));
-        console.log('[update] Enter "/8 instant" in the chat to see a list of toggleable features. Use "/8 instant [feature]" to toggle them.');
-        installModule(ModuleFolder, {"name": "instant-everything", "servers": ["https://raw.githubusercontent.com/caali-hackerman/instant-everything/master/"]});
+    if (InstantModules.length > 0) {
+        if (InstantEverythingInstalled) {
+            console.log('[update] The following installed modules have been automatically uninstalled because they');
+            console.log('[update] are already included in the installed "instant-everything" module:');
+            InstantModules.forEach(mod => console.log(`[update]  - ${mod}`));
+        } else {
+            console.log('[update] The following installed modules have been automatically converted into the new "instant-everything" module:');
+            InstantModules.forEach(mod => console.log(`[update]  - ${mod}`));
+            console.log('[update] Enter "/8 instant" in the chat to see a list of toggleable features. Use "/8 instant [feature]" to toggle them.');
+            installModule(ModuleFolder, { "name": "instant-everything", "servers": ["https://raw.githubusercontent.com/caali-hackerman/instant-everything/master/"] });
+        }
     }
 }
 
