@@ -21,11 +21,9 @@ function HostsError(e) {
             console.error('  * Make sure no anti-virus software is running.');
             console.error('  * Right click TeraProxy.bat and select \'Run as administrator\'.');
             break;
-        default:
-            throw e;
     }
 
-    process.exit();
+    throw e;
 }
 
 function HostsInitialize(region) {
