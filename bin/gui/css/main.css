@@ -151,6 +151,10 @@ ul.tabs {
  * LOGS *
  ********/
 
+#log {
+    overflow-y: hidden;
+}
+
 #clear-logs {
     z-index: 999999;
     font-size: 20px;
@@ -199,6 +203,10 @@ ul.tabs {
     border-radius: 7px;
     margin-top: 2px;
 }
+
+    .moduleHeader:hover {
+        background-color: #292F33;
+    }
 
     .moduleHeader.active {
         background-color: #393c40
@@ -336,6 +344,10 @@ ul.tabs {
     border-radius: 7px;
     margin-top: 2px;
 }
+
+    .installableModuleHeader:hover {
+        background-color: #292F33;
+    }
 
     .installableModuleHeader.name {
         background: inherit;

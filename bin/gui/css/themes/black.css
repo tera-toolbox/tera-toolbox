@@ -15,6 +15,10 @@ ul.tabs li {
 	background-color: #292F33
 }
 
+ul.tabs li:hover {
+	background-color: #393c40
+}
+
 ul.tabs li.current {
 	background: #222426
 }
@@ -26,6 +30,10 @@ ul.tabs li.current {
 
 #startproxy {
 	background: #222426
+}
+
+#startproxy:hover {
+	background: #393c40
 }
 
 .log-contents {
@@ -42,11 +50,11 @@ ul.ModulesList li {
 }
 
 ::-webkit-scrollbar-track {
-	background: #292f33
+	background: #222426
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #222426
+	background: #393c40
 }
 
 #Config>div {
