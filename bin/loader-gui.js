@@ -3,6 +3,7 @@ const { app, BrowserWindow, Tray, Menu, ipcMain } = require('electron');
 
 // Configuration
 function SaveConfiguration(newConfig) {
+    global.TeraProxy.DevMode = !!newConfig.devmode;
     require('./config').saveConfig(newConfig);
 }
 

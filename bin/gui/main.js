@@ -153,6 +153,8 @@ jQuery(($) => {
         Settings = newSettings;
         $(`option:contains(${Settings.region}):first`).prop('selected', true);
         $('#autostart').prop('checked', Settings.gui.autostart);
+        $('#updatelog').prop('checked', Settings.gui.updatelog);
+        $('#devmode').prop('checked', Settings.gui.devmode);
         $('head').append(`<link rel="stylesheet" href="css/themes/${Settings.gui.theme}.css">`);
     }
 
@@ -194,6 +196,14 @@ jQuery(($) => {
 
     $('#autostart').click(() => {
         updateGUISetting('autostart', $('#autostart').is(':checked'));
+    });
+
+    $('#updatelog').click(() => {
+        updateSetting('updatelog', $('#updatelog').is(':checked'));
+    });
+
+    $('#devmode').click(() => {
+        updateSetting('devmode', $('#devmode').is(':checked'));
     });
 
     // change theme
