@@ -86,6 +86,8 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 * [Party Death Markers (Owyn's fork)](https://github.com/Owyn/party_death_marker_pointers)
 * [No More Annoying Titles](https://github.com/SaltyMonkey/NoMoreAnnoyingTitles)
 * [Chat-Memeizer](https://github.com/SaltyMonkey/chat-mememizer)
+* [Auto Whisper] (https://github.com/poor-Nurd/Auto-Whisper)
+* [Server Identifier] (https://github.com/poor-Nurd/Server-identifier)
 * Bern's scripts
 * Kasea's Ping Remover
 * ... and many more
