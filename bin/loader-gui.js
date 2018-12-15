@@ -172,13 +172,13 @@ ipcMain.on('get installable mods', (event, _) => {
 
 ipcMain.on('install mod', (event, modInfo) => {
     installModule(ModuleFolder, modInfo);
-    log(`Installed "${(modInfo.options && modInfo.options.niceName) ? modInfo.options.niceName : modInfo.name}"`);
+    log(`Installed "${modInfo.rawName}"`);
     getInstallableMods().then(mods => event.sender.send('set installable mods', mods));
 });
 
 ipcMain.on('toggle mod autoupdate', (event, modInfo) => {
     toggleAutoUpdate(modInfo);
-    log(`${modInfo.autoUpdateDisabled ? 'Enabled' : 'Disabled'} automatic updates for "${(modInfo.options && modInfo.options.niceName) ? modInfo.options.niceName : modInfo.name}"`);
+    log(`${modInfo.autoUpdateDisabled ? 'Enabled' : 'Disabled'} automatic updates for "${modInfo.rawName}"`);
     event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
