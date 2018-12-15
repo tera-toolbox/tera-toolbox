@@ -19,7 +19,7 @@ function LoadRegion(region) {
 
 // Installed mod management
 const AvailableModuleListUrl = "https://raw.githubusercontent.com/caali-hackerman/tera-mods/master/modulelist.json";
-const { listModuleInfos, installModule, uninstallModule } = require('tera-proxy-game').ModuleInstallation;
+const { listModuleInfos, installModule, uninstallModule, toggleAutoUpdate } = require('tera-proxy-game').ModuleInstallation;
 
 let CachedAvailableModuleList = null;
 async function getInstallableMods(forceRefresh = false) {
@@ -174,6 +174,12 @@ ipcMain.on('install mod', (event, modInfo) => {
     installModule(ModuleFolder, modInfo);
     log(`Installed "${(modInfo.options && modInfo.options.niceName) ? modInfo.options.niceName : modInfo.name}"`);
     getInstallableMods().then(mods => event.sender.send('set installable mods', mods));
+});
+
+ipcMain.on('toggle mod autoupdate', (event, modInfo) => {
+    toggleAutoUpdate(modInfo);
+    log(`${modInfo.autoUpdateDisabled ? 'Enabled' : 'Disabled'} automatic updates for "${(modInfo.options && modInfo.options.niceName) ? modInfo.options.niceName : modInfo.name}"`);
+    event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
 ipcMain.on('uninstall mod', (event, modInfo) => {

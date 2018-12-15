@@ -247,6 +247,7 @@ ul.tabs {
         padding-right: 5px;
         padding-top: 5px;
         padding-bottom: 5px;
+        margin-right: 5px;
         vertical-align: middle;
     }
 
@@ -289,6 +290,34 @@ ul.tabs {
 
             .moduleBody.buttons.uninstall:hover {
                 background-size: 30px;
+            }
+
+        .moduleBody.buttons.updateEnabled {
+            background: url(../icons/updateEnabledWhite.svg);
+            background-repeat: no-repeat;
+            width: 28px;
+            height: 28px;
+            background-size: 26px;
+            border: none;
+            margin-left: 10px;
+        }
+
+            .moduleBody.buttons.updateEnabled:hover {
+                background-size: 28px;
+            }
+
+        .moduleBody.buttons.updateDisabled {
+            background: url(../icons/updateDisabledWhite.svg);
+            background-repeat: no-repeat;
+            width: 28px;
+            height: 28px;
+            background-size: 26px;
+            border: none;
+            margin-left: 10px;
+        }
+
+            .moduleBody.buttons.updateDisabled:hover {
+                background-size: 28px;
             }
 
 /***********************

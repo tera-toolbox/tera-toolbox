@@ -11,6 +11,17 @@ function HashString(str) {
     return hash;
 }
 
+function displayName(modInfo) {
+    if (modInfo.options) {
+        if (modInfo.options.guiName)
+            return modInfo.options.guiName;
+        if (modInfo.options.niceName)
+            return modInfo.options.niceName;
+    }
+
+    return modInfo.rawName;
+}
+
 jQuery(($) => {
     // --------------------------------------------------------------------
     // ----------------------------- MAIN ---------------------------------
@@ -190,10 +201,12 @@ jQuery(($) => {
     // ---------------------------- MODS TAB ------------------------------
     // --------------------------------------------------------------------
     const ModsTabName = 'mods';
-    let WaitingForModUninstall = false;
+    let WaitingForModAction = false;
+    let ExpandedModNames = {};
 
     ipcRenderer.on('set mods', (_, modInfos) => {
-        WaitingForModUninstall = false;
+        WaitingForModAction = false;
+        NewExpandedModNames = {};
         $('.modulesList').empty();
         modInfos.forEach(modInfo => {
             const escapedName = HashString(modInfo.name);
@@ -202,11 +215,12 @@ jQuery(($) => {
             const donationId = `moddonate-${escapedName}`;
             const uninstallId = `moduninstall-${escapedName}`;
             const infoId = `modinfo-${escapedName}`;
+            const updateId = `modupdate-${escapedName}`;
 
             $('.modulesList').append(`
                 <div id="${headerId}" class="moduleHeader">
-                    <div class="moduleHeader name">${modInfo.options.niceName || modInfo.rawName}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
-                    ${modInfo.author ? `<div class="moduleHeader author">by ${modInfo.author}</div>` : ''}
+                    <div class="moduleHeader name">${displayName(modInfo)}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
+                    ${modInfo.author ? `<div class="moduleHeader author">by ${modInfo.author}${modInfo.drmKey ? ' (paid)' : ''}</div>` : ''}
                 </div>
             `);
 
@@ -219,6 +233,7 @@ jQuery(($) => {
                         ${!modInfo.isCoreModule ? `<a href="#" id="${uninstallId}" class="moduleBody buttons uninstall"></a>` : ''}
                         ${modInfo.donationUrl ? `<a href="#" id="${donationId}" class="moduleBody buttons donate"></a>` : ''}
                         ${modInfo.supportUrl ? `<a href="#" id="${infoId}" class="moduleBody buttons info"></a>` : ''}
+                        <a href="#" id="${updateId}" class="moduleBody buttons update${modInfo.autoUpdateDisabled ? 'Disabled' : 'Enabled'}"></a>
                     </div>
                 </div>`
             );
@@ -235,13 +250,22 @@ jQuery(($) => {
                 return false;
             });
 
+            $(`#${updateId}`).on('click', (event) => {
+                event.preventDefault();
+                if (!WaitingForModAction) {
+                    ipcRenderer.send('toggle mod autoupdate', modInfo);
+                    WaitingForModAction = true;
+                }
+                return false;
+            });
+
             $(`#${uninstallId}`).on('click', (event) => {
                 event.preventDefault();
                 if (ProxyRunning) {
                     ShowModal("You cannot uninstall mods while Tera-Proxy is running. Please stop it first!");
                 } else if (!WaitingForModUninstall) {
                     ipcRenderer.send('uninstall mod', modInfo);
-                    WaitingForModUninstall = true;
+                    WaitingForModAction = true;
                 }
                 return false;
             });
@@ -252,11 +276,19 @@ jQuery(($) => {
             });
 
             $(`#${headerId}`).click(() => {
+                ExpandedModNames[modInfo.name] = !ExpandedModNames[modInfo.name];
                 $(`#${bodyId}`).toggle();
                 $(`#${headerId}`).toggleClass('active');
             });
+
+            NewExpandedModNames[modInfo.name] = ExpandedModNames[modInfo.name];
+            if (ExpandedModNames[modInfo.name]) {
+                $(`#${bodyId}`).toggle();
+                $(`#${headerId}`).toggleClass('active');
+            }
         });
 
+        ExpandedModNames = NewExpandedModNames;
         tabReady(ModsTabName);
     });
 
@@ -284,7 +316,7 @@ jQuery(($) => {
 
             $('.installableModulesList').append(`
                 <div id="${headerId}" class="installableModuleHeader">
-                    <div class="installableModuleHeader name">${(modInfo.options && modInfo.options.niceName) ? modInfo.options.niceName : modInfo.name}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
+                    <div class="installableModuleHeader name">${displayName(modInfo)}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
                     ${modInfo.author ? `<div class="installableModuleHeader author">by ${modInfo.author}</div>` : ''}
                 </div>
             `);
