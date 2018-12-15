@@ -16,7 +16,7 @@
     "bin/utils.js": "ff75e368e7ec0cd359d15862821484bfa4fb0d4c7f56187c873acb527795a797",
     "bin/update.js": "bb25fef21d6861598b9e31059278fc9ba6425f6ed0712bf7f60f3059a7aefedc",
     "bin/update-self.js": "dc6a2d65d32bc2068c517a6f4d8db7edc9f0282850fa5ec38d9cf95395559b4d",
-    "bin/gui/main.js": "a9358de1412ca5baae5ab5fdabd4ad77d5c2feb45e7ab945a71700eb59c3d188",
+    "bin/gui/main.js": "0b43bf7edc1e7fc4d066f1c3c199ef5ccb6e1ee25241493d1ea96ccf1e26c519",
     "bin/gui/index.html": "9175a7aebdd98c251f73e7bef451f198e239c3e3832f326044ea7627e0b8dfe8",
     "bin/gui/icon.png": "414bb8e8a84a8c26da11087b7e845f8a85651fc92e64652c956dcf4a949bc791",
     "bin/gui/css/main.css": "0c90ca415c6d641e9ec8afbd88e202cde9fb8c58c96997e78b181d277bbd40f0",

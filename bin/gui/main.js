@@ -19,7 +19,7 @@ function displayName(modInfo) {
             return modInfo.options.niceName;
     }
 
-    return modInfo.rawName;
+    return modInfo.rawName || modInfo.name;
 }
 
 jQuery(($) => {
