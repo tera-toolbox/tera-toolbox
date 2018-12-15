@@ -30,6 +30,17 @@ jQuery(($) => {
         remote.getCurrentWindow().minimize();
     });
 
+    // Disable mouse wheel clicks
+    $(document).on('auxclick', 'a', (e) => {
+        if (e.which !== 2)
+            return true;
+
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+    });
+
     // Proxy control
     let ProxyRunning = false;
     let ProxyStarting = false;
