@@ -295,7 +295,9 @@ async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
                 }
               }
 
-              if(updateData["disableAutoUpdate"]) {
+              // If only one file (module.json) exists, it's a fresh install
+              const isFreshInstalled = walkdir(root, true, false).length === 1;
+              if(!isFreshInstalled && updateData["disableAutoUpdate"]) {
                 console.warn(`[update] WARNING: Auto-update disabled for module ${module}!`);
                 successModules.push({
                   "name": module,

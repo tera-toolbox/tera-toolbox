@@ -274,7 +274,7 @@ jQuery(($) => {
                 event.preventDefault();
                 if (ProxyRunning) {
                     ShowModal("You cannot uninstall mods while Tera-Proxy is running. Please stop it first!");
-                } else if (!WaitingForModUninstall) {
+                } else if (!WaitingForModAction) {
                     ipcRenderer.send('uninstall mod', modInfo);
                     WaitingForModAction = true;
                 }
