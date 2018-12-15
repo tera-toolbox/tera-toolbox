@@ -172,7 +172,7 @@ ipcMain.on('get installable mods', (event, _) => {
 
 ipcMain.on('install mod', (event, modInfo) => {
     installModule(ModuleFolder, modInfo);
-    log(`Installed "${modInfo.rawName}"`);
+    log(`Installed "${modInfo.name}"`);
     getInstallableMods().then(mods => event.sender.send('set installable mods', mods));
 });
 
@@ -184,7 +184,7 @@ ipcMain.on('toggle mod autoupdate', (event, modInfo) => {
 
 ipcMain.on('uninstall mod', (event, modInfo) => {
     uninstallModule(modInfo);
-    log(`Uninstalled "${modInfo.options.niceName || modInfo.rawName}"`);
+    log(`Uninstalled "${modInfo.rawName}"`);
     event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
