@@ -211,7 +211,7 @@ jQuery(($) => {
     $('#noupdate').click(() => {
         const checked = $('#noupdate').is(':checked');
         if (checked)
-            ShowModal('Warning! You disabled automatic updates for all of your modules. This might will break things at some point. We will not provide any assistance unless re-enabled!');
+            ShowModal('Warning! You disabled automatic updates for all of your modules. This will break things at some point. We will not provide any assistance unless re-enabled!');
         updateSetting('noupdate', checked);
     });
 
