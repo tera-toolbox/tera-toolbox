@@ -102,6 +102,16 @@ class TeraProxy {
         this.running = true;
 
         console.log(`[proxy] Tera-Proxy configured for region ${this.region.id}!`);
+
+        // TODO remove this - show GUI update notification
+        if (!process.versions.electron) {
+            console.log(`[info] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
+            console.log(`[info] Tera-Proxy now comes with an official graphical user interface!`);
+            console.log(`[info] If you want to use it, please check out the #proxy-news channel`);
+            console.log(`[info] in ${global.TeraProxy.DiscordUrl} for further information!`);
+            console.log(`[info] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
+        }
+
         HostsClean(this.region);
         this.slsListen();
 
