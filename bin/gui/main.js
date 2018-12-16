@@ -153,8 +153,10 @@ jQuery(($) => {
         Settings = newSettings;
         $(`option:contains(${Settings.region}):first`).prop('selected', true);
         $('#autostart').prop('checked', Settings.gui.autostart);
-        $('#updatelog').prop('checked', Settings.gui.updatelog);
-        $('#devmode').prop('checked', Settings.gui.devmode);
+        $('#updatelog').prop('checked', Settings.updatelog);
+        $('#devmode').prop('checked', Settings.devmode);
+        $('#noupdate').prop('checked', Settings.noupdate);
+        $('#noselfupdate').prop('checked', Settings.noselfupdate);
         $('head').append(`<link rel="stylesheet" href="css/themes/${Settings.gui.theme}.css">`);
     }
 
@@ -204,6 +206,20 @@ jQuery(($) => {
 
     $('#devmode').click(() => {
         updateSetting('devmode', $('#devmode').is(':checked'));
+    });
+
+    $('#noupdate').click(() => {
+        const checked = $('#noupdate').is(':checked');
+        if (checked)
+            ShowModal('Warning! You disabled automatic updates for all of your modules. This might will break things at some point. We will not provide any assistance unless re-enabled!');
+        updateSetting('noupdate', checked);
+    });
+
+    $('#noselfupdate').click(() => {
+        const checked = $('#noselfupdate').is(':checked');
+        if (checked)
+            ShowModal('Warning! You disabled automatic updates for Tera Proxy. This will break things at some point. We will not provide any assistance unless re-enabled!');
+        updateSetting('noselfupdate', checked);
     });
 
     // change theme
