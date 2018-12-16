@@ -45,13 +45,14 @@ function NodeVersionCheck() {
 // Migrate from old proxy versions
 function ProxyMigration() {
     const oldLibFolder = path.join(__dirname, 'lib');
-    const isOldStructure = fs.existsSync(oldLibFolder);
+    const oldConfig = path.join(__dirname, 'config.json');
+    const isOldStructure = fs.existsSync(oldLibFolder) && fs.existsSync(oldConfig);
     if(!isOldStructure)
         return;
 
     // Migrate config.json
     try {
-        fs.renameSync(path.join(__dirname, 'config.json'), path.join(__dirname, '..', 'config.json'));
+        fs.renameSync(oldConfig, path.join(__dirname, '..', 'config.json'));
     } catch (e) {
         console.log("[update] ERROR: Unable to migrate your proxy settings!");
         console.log(`[update] ERROR: Try to move them yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
