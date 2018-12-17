@@ -120,7 +120,13 @@ class TeraProxy {
         listModuleInfos(this.moduleFolder).forEach(modInfo => {
             if (modInfo.options.loadOn === "startup") {
                 console.log(`[proxy] Loading startup module ${modInfo.name}`);
-                require(modInfo.path)(this.region.idShort);
+                try {
+                    const modConstructor = require(modInfo.path);
+                    modConstructor(this.region.idShort);
+                } catch (e) {
+                    console.log(`[proxy] Error loading startup module ${modInfo.name}:`);
+                    console.log(e);
+                }
             }
         });
     }
