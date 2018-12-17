@@ -221,6 +221,17 @@ class TeraProxyGUI {
 
         //this.window.on('minimize', () => { this.window.hide(); });
         this.window.on('closed', () => { this.window = null; });
+        
+        // Redirect console to built-in one
+        const nodeConsole = require('console');
+        console = new nodeConsole.Console(process.stdout, process.stderr);
+        ['stdout', 'stderr'].forEach(mode => {
+            const oldLogger = process[mode].write;
+            process[mode].write = function (msg, ...args) {
+                oldLogger(msg, ...args);
+                log(msg);
+            };
+        });
 
         // Initialize tray icon
         this.tray = new Tray(guiIcon);
@@ -286,14 +297,6 @@ module.exports = function LoaderGUI(ModFolder, ProxyConfig, ProxyRegionConfig) {
     }
 
     gui = new TeraProxyGUI;
-
-    ['log', 'warn', 'error'].forEach(mode => {
-        const oldLogger = console[mode];
-        console[mode] = function (msg, ...args) {
-            oldLogger(msg, ...args);
-            log(msg);
-        };
-    });
 
     if (app.isReady()) {
         gui.show();
