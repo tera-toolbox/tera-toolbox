@@ -124,8 +124,11 @@ jQuery(($) => {
     const LogTabName = 'log';
 
     function log(msg) {
+        if (msg[msg.length - 1] !== '\n')
+            msg += '\n';
+
         const contents = $('#log-contents');
-        contents.append(msg + '\n');
+        contents.append(msg);
         contents.scrollTop(contents[0].scrollHeight);
     }
 
