@@ -7,7 +7,7 @@
     "bin/config.js": "5235418ded7c599fddc420dd1aab2b9a6908753e211616d46f281f9811602ffc",
     "bin/loader.js": "7096eb142d508cf1e13b7142bdd3510b6a080477a7f4f5aa34839c41fb2e601a",
     "bin/loader-console.js": "636d0bbdd13b6c0fbb2f9c7f9e488837f06635a2c8e9279f85f276f457e16bdc",
-    "bin/loader-gui.js": "fcaffa003ab2b33127be38516f458852d4314c5ac9fbf8713c2b18cfda076c79",
+    "bin/loader-gui.js": "6576a6c2c796a77b904366e12209e67ebf74ca62d26d4ef1c722a6a6c18a8131",
     "bin/connectionManager.js": "d13907a972e88ada9e2669be8237f72958f2177ed0463f078b0d66d5c9db9f2f",
     "bin/hosts.js": "2d1592299406dc7e0f082c30809236c305226766e4d26afad698899c646a80ed",
     "bin/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
@@ -89,6 +89,7 @@
     "node_modules/tera-crypto-native/bin/x64/tera-crypto-native_64.node": "90920633e6b61697a45e12a5b22ac0497d4ea2c47e94011daf924e64b0c63ca3",
     "node_modules/tera-crypto-native/bin/x64/tera-crypto-native_67.node": "ec78abe3e74fa2f9e94b511c9f70ea71d033e62e793d5b681a797be935c12366",
     "node_modules/tera-vec3/package.json": "312e8093688f7a5eb20789931f4161fabc92494dfc8eabdc95677f12565eb122",
-    "node_modules/tera-vec3/index.js": "e35016326fd04c36abca0ff234465618e92d861d214c40a0705f6b23e05e1daf"
+    "node_modules/tera-vec3/index.js": "e35016326fd04c36abca0ff234465618e92d861d214c40a0705f6b23e05e1daf",
+    "node_modules/tera-mod-ui/index.js": "66cdf606fd2237bc1f7262479e180fdd85619fc7cf217dcc49f156728125105b"
   }
 }

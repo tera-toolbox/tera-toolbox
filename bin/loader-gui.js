@@ -220,7 +220,7 @@ class TeraProxyGUI {
         //this.window.webContents.openDevTools();
 
         //this.window.on('minimize', () => { this.window.hide(); });
-        this.window.on('closed', () => { this.window = null; });
+        this.window.on('closed', () => { StopProxy(); this.window = null; });
 
         // Redirect console to built-in one
         const nodeConsole = require('console');
@@ -253,6 +253,8 @@ class TeraProxyGUI {
 
     close() {
         if (this.window !== null) {
+            StopProxy();
+
             this.window.close();
             this.window = null;
         }
