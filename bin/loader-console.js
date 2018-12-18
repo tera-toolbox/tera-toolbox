@@ -34,6 +34,8 @@ function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
 }
 
 module.exports = function LoaderConsole(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
+    global.TeraProxy.GUIMode = false;
+
     // Auto-update modules & tera-data and run
     if (ProxyConfig.noupdate) {
         console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

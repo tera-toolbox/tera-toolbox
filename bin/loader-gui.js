@@ -221,7 +221,7 @@ class TeraProxyGUI {
 
         //this.window.on('minimize', () => { this.window.hide(); });
         this.window.on('closed', () => { this.window = null; });
-        
+
         // Redirect console to built-in one
         const nodeConsole = require('console');
         console = new nodeConsole.Console(process.stdout, process.stderr);
@@ -286,6 +286,8 @@ function log(msg) {
 }
 
 module.exports = function LoaderGUI(ModFolder, ProxyConfig, ProxyRegionConfig) {
+    global.TeraProxy.GUIMode = true;
+
     ModuleFolder = ModFolder;
     config = ProxyConfig;
     if (!config.gui) {

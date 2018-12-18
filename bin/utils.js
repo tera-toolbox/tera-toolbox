@@ -15,6 +15,7 @@ function initGlobalSettings(DevMode = false) {
         DevMode: !!DevMode,
         DiscordUrl: 'https://discord.gg/dUNDDtw',
         SupportUrl: '#help channel of https://discord.gg/dUNDDtw',
+        GUIMode: !!process.versions.electron,
     };
 }
 
