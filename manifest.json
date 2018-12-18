@@ -90,6 +90,6 @@
     "node_modules/tera-crypto-native/bin/x64/tera-crypto-native_67.node": "ec78abe3e74fa2f9e94b511c9f70ea71d033e62e793d5b681a797be935c12366",
     "node_modules/tera-vec3/package.json": "312e8093688f7a5eb20789931f4161fabc92494dfc8eabdc95677f12565eb122",
     "node_modules/tera-vec3/index.js": "e35016326fd04c36abca0ff234465618e92d861d214c40a0705f6b23e05e1daf",
-    "node_modules/tera-mod-ui/index.js": "66cdf606fd2237bc1f7262479e180fdd85619fc7cf217dcc49f156728125105b"
+    "node_modules/tera-mod-ui/index.js": "4342ef7f705316dae6c0362fae57a2cc617899cda8cf8dbb861d4f41d255c916"
   }
 }
