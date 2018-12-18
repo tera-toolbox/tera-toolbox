@@ -214,7 +214,10 @@ class TeraProxyGUI {
             icon: guiIcon,
             frame: false,
             backgroundColor: '#292F33',
-            resizable: false
+            resizable: false,
+            webPreferences: {
+                devTools: false
+            }
         });
         this.window.loadFile(path.join(guiRoot, 'index.html'));
         //this.window.webContents.openDevTools();

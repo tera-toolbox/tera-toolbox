@@ -3,8 +3,8 @@
  ***********/
 
 body {
-    background-color: #292F33;
-    color: #BBB;
+	background-color: #E1E8ED;
+	color: #292F33;
 }
 
 /*************
@@ -12,7 +12,7 @@ body {
  *************/
 
 #close-btn {
-    color: #BBB;
+	color: #292F33;
 }
 
     #close-btn:hover {
@@ -25,27 +25,27 @@ body {
  ********/
 
 ul.tabs li {
-    background-color: #292F33;
+	background-color: #E1E8ED;
 }
 
     ul.tabs li:hover {
-        background-color: #393C40;
+        background-color: #D0D2D4;
     }
 
     ul.tabs li.current {
-        background: #222426;
+        background: #F5F8FA;
     }
 
 .tab-content {
-    background: #14171A;
-    border: solid 4px #222426;
+	background: #FFF;
+	border: solid 4px #F5F8FA;
 }
 
 .loading {
 }
 
     .loading.icon {
-        background: url(../../icons/loadingWhite.svg);
+        background: url(../../icons/loadingBlack.svg);
         background-repeat: no-repeat;
         background-size: 50px;
     }
@@ -55,11 +55,11 @@ ul.tabs li {
  *********/
 
 #startproxy {
-    background: #222426;
+	background: #F5F8FA;
 }
 
     #startproxy:hover {
-        background: #393C40;
+        background: #D0D2D4;
     }
 
 /********
@@ -67,12 +67,12 @@ ul.tabs li {
  ********/
 
 .log-contents {
-    background-color: #222426;
-    color: #BBB;
+    background-color: #F5F8FA;
+    color: #292F33;
 }
 
 #clear-logs {
-    color: #BBB;
+    color: #292F33;
 }
 
     #clear-logs:hover {
@@ -84,7 +84,7 @@ ul.tabs li {
  ***********/
 
 ul.ModulesList li {
-    background-color: #222426;
+    background-color: #F5F8FA;
 }
 
 #modInfo li {
@@ -92,30 +92,32 @@ ul.ModulesList li {
 }
 
 .moduleHeader {
-    border-color: #14171A;
-    background-color: #222426;
+    border-color: #FFF;
+    background-color: #F5F8FA;
 }
 
     .moduleHeader:hover {
-        background-color: #292F33;
+        background-color: #E1E8ED;
     }
 
     .moduleHeader.active {
-        background-color: #393C40;
+        background-color: #D0D2D4;
     }
 
         .moduleHeader.active:hover {
-            background-color: #393C40;
+            background-color: #D0D2D4;
         }
 
 .moduleBody {
+
 }
 
     .moduleBody.buttons {
+
     }
 
         .moduleBody.buttons.donate {
-            background: url(../../icons/donateWhite.png);
+            background: url(../../icons/donateBlack.png);
             background-repeat: no-repeat;
             background-size: 28px;
         }
@@ -125,7 +127,7 @@ ul.ModulesList li {
             }
 
         .moduleBody.buttons.info {
-            background: url(../../icons/infoWhite.svg);
+            background: url(../../icons/infoBlack.svg);
             background-repeat: no-repeat;
             background-size: 25px;
         }
@@ -135,7 +137,7 @@ ul.ModulesList li {
             }
 
         .moduleBody.buttons.uninstall {
-            background: url(../../icons/deleteWhite.png);
+            background: url(../../icons/deleteBlack.png);
             background-repeat: no-repeat;
             background-size: 28px;
         }
@@ -145,7 +147,7 @@ ul.ModulesList li {
             }
 
         .moduleBody.buttons.updateEnabled {
-            background: url(../../icons/updateEnabledWhite.svg);
+            background: url(../../icons/updateEnabledBlack.svg);
             background-repeat: no-repeat;
             background-size: 26px;
         }
@@ -155,7 +157,7 @@ ul.ModulesList li {
             }
 
         .moduleBody.buttons.updateDisabled {
-            background: url(../../icons/updateDisabledWhite.svg);
+            background: url(../../icons/updateDisabledBlack.svg);
             background-repeat: no-repeat;
             background-size: 26px;
         }
@@ -169,22 +171,24 @@ ul.ModulesList li {
  ***********************/
 
 .installableModuleHeader {
-    border-color: #14171A;
-    background-color: #222426;
+    border-color: #FFF;
+    background-color: #F5F8FA;
 }
 
     .installableModuleHeader:hover {
-        background-color: #292F33;
+        background-color: #E1E8ED;
     }
 
 .installableModuleBody {
+
 }
 
     .installableModuleBody.buttons {
+
     }
 
         .installableModuleBody.buttons.install {
-            background: url(../../icons/installWhite.svg);
+            background: url(../../icons/installBlack.svg);
             background-repeat: no-repeat;
             background-size: 28px;
         }
@@ -197,11 +201,11 @@ ul.ModulesList li {
  * SCROLLBAR *
  *************/
 ::-webkit-scrollbar-track {
-    background: #222426;
+	background: #F5F8FA;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #393C40;
+	background: #D0D2D4;
 }
 
 /**********
@@ -209,7 +213,7 @@ ul.ModulesList li {
  **********/
 
 #settings > div {
-    background-color: #222426;
+    background-color: #F5F8FA;
 }
 
 /***********
@@ -225,18 +229,18 @@ ul.ModulesList li {
 }
 
 .modalbox-content {
-    background-color: #393C40;
+    background-color: #F5F8FA;
     border-color: #888;
 }
 
 .modalbox-button {
-    background-color: #393C40;
+    background-color: #D0D2D4;
     color: white;
-    border-color: #999999;
+    border-color: #F5F8FA;
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
 }
 
     .modalbox-button:hover {
-        border-color: #dddddd;
+        border-color: #D0D2D4;
     }

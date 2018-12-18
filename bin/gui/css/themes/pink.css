@@ -3,8 +3,8 @@
  ***********/
 
 body {
-    background-color: #292F33;
-    color: #BBB;
+    background-color: #F0438C;
+    color: #292F33;
 }
 
 /*************
@@ -12,7 +12,7 @@ body {
  *************/
 
 #close-btn {
-    color: #BBB;
+    color: #292F33;
 }
 
     #close-btn:hover {
@@ -25,27 +25,27 @@ body {
  ********/
 
 ul.tabs li {
-    background-color: #292F33;
+    background-color: #F0438C;
 }
 
     ul.tabs li:hover {
-        background-color: #393C40;
+        background-color: #F9B8D2;
     }
 
     ul.tabs li.current {
-        background: #222426;
+        background: #F9B8D2;
     }
 
 .tab-content {
-    background: #14171A;
-    border: solid 4px #222426;
+    background: #FFF;
+    border: solid 4px #F9B8D2;
 }
 
 .loading {
 }
 
     .loading.icon {
-        background: url(../../icons/loadingWhite.svg);
+        background: url(../../icons/loadingBlack.svg);
         background-repeat: no-repeat;
         background-size: 50px;
     }
@@ -55,11 +55,11 @@ ul.tabs li {
  *********/
 
 #startproxy {
-    background: #222426;
+    background: #F9B8D2;
 }
 
     #startproxy:hover {
-        background: #393C40;
+        background: #FFD2E4;
     }
 
 /********
@@ -67,12 +67,12 @@ ul.tabs li {
  ********/
 
 .log-contents {
-    background-color: #222426;
-    color: #BBB;
+    background-color: #F9B8D2;
+    color: #292F33;
 }
 
 #clear-logs {
-    color: #BBB;
+    color: #292F33;
 }
 
     #clear-logs:hover {
@@ -84,7 +84,7 @@ ul.tabs li {
  ***********/
 
 ul.ModulesList li {
-    background-color: #222426;
+    background-color: #F9B8D2;
 }
 
 #modInfo li {
@@ -92,20 +92,20 @@ ul.ModulesList li {
 }
 
 .moduleHeader {
-    border-color: #14171A;
-    background-color: #222426;
+    border-color: #FFF;
+    background-color: #F9B8D2;
 }
 
     .moduleHeader:hover {
-        background-color: #292F33;
+        background-color: #F0438C;
     }
 
     .moduleHeader.active {
-        background-color: #393C40;
+        background-color: #F0438C;
     }
 
         .moduleHeader.active:hover {
-            background-color: #393C40;
+            background-color: #F0438C;
         }
 
 .moduleBody {
@@ -169,12 +169,12 @@ ul.ModulesList li {
  ***********************/
 
 .installableModuleHeader {
-    border-color: #14171A;
-    background-color: #222426;
+    border-color: #FFF;
+    background-color: #F9B8D2;
 }
 
     .installableModuleHeader:hover {
-        background-color: #292F33;
+        background-color: #F0438C;
     }
 
 .installableModuleBody {
@@ -197,11 +197,11 @@ ul.ModulesList li {
  * SCROLLBAR *
  *************/
 ::-webkit-scrollbar-track {
-    background: #222426;
+    background: #F0438C;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #393C40;
+    background: #F9B8D2;
 }
 
 /**********
@@ -209,7 +209,7 @@ ul.ModulesList li {
  **********/
 
 #settings > div {
-    background-color: #222426;
+    background-color: #F9B8D2;
 }
 
 /***********
@@ -225,18 +225,18 @@ ul.ModulesList li {
 }
 
 .modalbox-content {
-    background-color: #393C40;
+    background-color: #F9B8D2;
     border-color: #888;
 }
 
 .modalbox-button {
-    background-color: #393C40;
+    background-color: #F9B8D2;
     color: white;
-    border-color: #999999;
+    border-color: #FFFFFF;
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
 }
 
     .modalbox-button:hover {
-        border-color: #dddddd;
+        border-color: #F0438C;
     }

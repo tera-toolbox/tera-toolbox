@@ -4,13 +4,13 @@
 
 html {
     box-sizing: border-box;
-    height: 100%
+    height: 100%;
 }
 
 * {
     margin: 0;
     padding: 0;
-    box-sizing: inherit
+    box-sizing: inherit;
 }
 
 body {
@@ -21,11 +21,11 @@ body {
     line-height: 1.42857143;
     min-height: 100%;
     overflow: hidden;
-    display: flex
+    display: flex;
 }
 
 .nodrag {
-    -webkit-app-region: no-drag
+    -webkit-app-region: no-drag;
 }
 
 /*************
@@ -72,10 +72,6 @@ body {
     background-color: transparent
 }
 
-    #close-btn:hover {
-        color: #E81C4F
-    }
-
 /********
  * MAIN *
  ********/
@@ -118,11 +114,8 @@ ul.tabs {
 }
 
     .loading.icon {
-        background: url(../icons/loadingWhite.svg);
-        background-repeat: no-repeat;
         width: 50px;
         height: 50px;
-        background-size: 50px;
         border: none;
         margin-top: 250px;
     }
@@ -168,10 +161,6 @@ ul.tabs {
     background-color: transparent;
 }
 
-    #clear-logs:hover {
-        color: #E81C4F;
-    }
-
 .log-contents {
     word-break: break-all;
     position: relative;
@@ -188,14 +177,13 @@ ul.tabs {
 /***********
  * MODULES *
  ***********/
+
 #modInfo li {
     display: block;
-    background-color: #282a2d;
 }
 
 .moduleHeader {
-    border: 1px solid #14171A;
-    background-color: #222426;
+    border: 1px solid;
     width: 100%;
     display: block;
     cursor: pointer;
@@ -203,14 +191,6 @@ ul.tabs {
     border-radius: 7px;
     margin-top: 2px;
 }
-
-    .moduleHeader:hover {
-        background-color: #292F33;
-    }
-
-    .moduleHeader.active {
-        background-color: #393c40
-    }
 
     .moduleHeader.name {
         background: inherit;
@@ -223,6 +203,10 @@ ul.tabs {
         padding-left: 5px;
     }
 
+        .moduleHeader.name:hover {
+            background: inherit;
+        }
+
     .moduleHeader.author {
         background: inherit;
         width: 30%;
@@ -231,6 +215,10 @@ ul.tabs {
         border: none;
         padding-right: 5px;
     }
+
+        .moduleHeader.author:hover {
+            background: inherit;
+        }
 
 .moduleBody {
     display: none;
@@ -260,73 +248,38 @@ ul.tabs {
     }
 
         .moduleBody.buttons.donate {
-            background: url(../icons/donateWhite.png);
-            background-repeat: no-repeat;
             width: 28px;
             height: 28px;
-            background-size: 28px;
             border: none;
         }
 
-            .moduleBody.buttons.donate:hover {
-                background-size: 30px;
-            }
-
         .moduleBody.buttons.info {
-            background: url(../icons/infoWhite.svg);
-            background-repeat: no-repeat;
             width: 28px;
             height: 28px;
-            background-size: 25px;
             border: none;
             margin-top: 2px;
         }
 
-            .moduleBody.buttons.info:hover {
-                background-size: 27px;
-            }
-
         .moduleBody.buttons.uninstall {
-            background: url(../icons/deleteWhite.png);
-            background-repeat: no-repeat;
             width: 28px;
             height: 28px;
-            background-size: 28px;
             border: none;
             margin-left: 10px;
         }
-
-            .moduleBody.buttons.uninstall:hover {
-                background-size: 30px;
-            }
 
         .moduleBody.buttons.updateEnabled {
-            background: url(../icons/updateEnabledWhite.svg);
-            background-repeat: no-repeat;
             width: 28px;
             height: 28px;
-            background-size: 26px;
             border: none;
             margin-left: 10px;
         }
-
-            .moduleBody.buttons.updateEnabled:hover {
-                background-size: 28px;
-            }
 
         .moduleBody.buttons.updateDisabled {
-            background: url(../icons/updateDisabledWhite.svg);
-            background-repeat: no-repeat;
             width: 28px;
             height: 28px;
-            background-size: 26px;
             border: none;
             margin-left: 10px;
         }
-
-            .moduleBody.buttons.updateDisabled:hover {
-                background-size: 28px;
-            }
 
 /***********************
  * INSTALLABLE MODULES *
@@ -336,18 +289,13 @@ ul.tabs {
 }
 
 .installableModuleHeader {
-    border: 1px solid #14171A;
-    background-color: #222426;
+    border: 1px solid;
     width: 100%;
     display: block;
     overflow: hidden;
     border-radius: 7px;
     margin-top: 2px;
 }
-
-    .installableModuleHeader:hover {
-        background-color: #292F33;
-    }
 
     .installableModuleHeader.name {
         background: inherit;
@@ -396,17 +344,10 @@ ul.tabs {
     }
 
         .installableModuleBody.buttons.install {
-            background: url(../icons/installWhite.svg);
-            background-repeat: no-repeat;
             width: 28px;
             height: 28px;
-            background-size: 28px;
             border: none;
         }
-
-            .installableModuleBody.buttons.install:hover {
-                background-size: 30px;
-            }
 
 
 /*************
@@ -450,6 +391,7 @@ ul.tabs {
     }
 
 .theme {
+    cursor: pointer;
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -463,23 +405,11 @@ ul.tabs {
     }
 
     .theme.white {
-        background-color: #e1e8ed
+        background-color: #E1E8ED
     }
 
     .theme.pink {
         background-color: #F0438C
-    }
-
-    .theme.dong {
-        background-color: #d6ff00
-    }
-
-    .theme.leiki {
-        background-color: #288ee6
-    }
-
-    .theme.lain {
-        background-color: #5098a1
     }
 
 /***********
@@ -512,8 +442,6 @@ ul.tabs {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
     text-align: center;
 }
 
@@ -521,7 +449,7 @@ ul.tabs {
     background-color: #393c40;
     margin: auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid;
     width: 40%;
     height: 50%;
 }
@@ -531,8 +459,6 @@ ul.tabs {
 }
 
 .modalbox-button {
-    background-color: #393c40;
-    color: white;
     padding: 5px;
     padding-left: 4px;
     text-align: center;
@@ -541,14 +467,8 @@ ul.tabs {
     font-size: 20px;
     margin-top: 40px;
     cursor: pointer;
-    border: 3px solid #999999;
+    border: 3px solid;
     border-radius: 7px;
     height: 35px;
     width: 60px;
-    -webkit-transition-duration: 0.4s;
-    transition-duration: 0.4s;
 }
-
-    .modalbox-button:hover {
-        border-color: #dddddd;
-    }

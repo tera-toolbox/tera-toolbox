@@ -1,4 +1,5 @@
 const { remote, ipcRenderer, shell } = require('electron');
+const Themes = ['black', 'white', 'pink'];
 
 function HashString(str) {
     var hash = 0, i, chr;
@@ -160,7 +161,7 @@ jQuery(($) => {
         $('#devmode').prop('checked', Settings.devmode);
         $('#noupdate').prop('checked', Settings.noupdate);
         $('#noselfupdate').prop('checked', Settings.noselfupdate);
-        $('head').append(`<link rel="stylesheet" href="css/themes/${Settings.gui.theme}.css">`);
+        $('head').append(`<link rel="stylesheet" href="css/themes/${Themes.indexOf(Settings.gui.theme) < 0 ? Themes[0] : Settings.gui.theme}.css">`);
     }
 
     function updateSettings(newSettings) {
@@ -225,16 +226,12 @@ jQuery(($) => {
         updateSetting('noselfupdate', checked);
     });
 
-    // change theme
-    $('div.theme').click(() => {
-        // TODO
-        /*
-        let theme = $(this).attr('class').split(' ').pop();
-        config.gui.theme = theme;
-        saveconfig();
-        $('head>link').filter('[rel="stylesheet"]:last').remove();
-        $('head').append(`< link rel = "stylesheet" href = "css/themes/${theme}.css" > `);
-        */
+    Themes.forEach(theme => {
+        $(`#theme_${theme}`).click(() => {
+            $('head>link').filter('[rel="stylesheet"]:last').remove();
+            $('head').append(`<link rel="stylesheet" href="css/themes/${theme}.css">`);
+            updateGUISetting('theme', theme);
+        });
     });
 
     // --------------------------------------------------------------------
