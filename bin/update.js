@@ -65,6 +65,11 @@ function migrateModuleUpdateUrlRoot(update_url_root) {
     return update_url_root;
 }
 
+function checkModuleUpdateUrlBlacklist(update_url_root) {
+  // TODO: ... resolve this issue ...
+  return !update_url_root.toLowerCase().includes("/owyn/");
+}
+
 async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, region, serverIndex = 0) {
   try {
     // If only one file (module.json) exists, it's a fresh install
@@ -74,6 +79,9 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
       console.log(`[update] Updating module ${name}`);
 
     const update_url_root = migrateModuleUpdateUrlRoot(updateData["servers"][serverIndex]);
+    if(!checkModuleUpdateUrlBlacklist(update_url_root))
+        return {"defs": {}, "results": []};
+
     const manifest_file = 'manifest.json';
     const manifest_url = update_url_root + manifest_file;
     const manifest_path = path.join(root, manifest_file);
