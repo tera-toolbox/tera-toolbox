@@ -127,6 +127,7 @@ jQuery(($) => {
     function log(msg) {
         if (msg[msg.length - 1] !== '\n')
             msg += '\n';
+        msg = $('<div/>').text(msg).html()
 
         const contents = $('#log-contents');
         contents.append(msg);
