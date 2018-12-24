@@ -4,8 +4,6 @@ const fs = require('fs');
 const log = require('../logger');
 
 function parseSync(filepath) {
-  log.trace(`[parsers/map] reading "${filepath}"`);
-
   const map = {
     name: new Map(),
     code: new Map(),

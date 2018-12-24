@@ -40,8 +40,6 @@ function flatten(def, implicitMeta = true) {
 
 // main
 function parseSync(filepath) {
-  log.trace(`[parsers/def] reading "${filepath}"`);
-
   const data = fs.readFileSync(filepath, { encoding: 'utf8' }).split(/\r?\n/);
 
   const definition = [];
@@ -67,7 +65,7 @@ function parseSync(filepath) {
     const key = match[3];
 
     if (implicitMeta && (type === 'count' || type === 'offset')) {
-      log.warn(`[parsers/def] parse warning: "count" or "offset" encountered, disabling implicit metatypes\n    at "${filepath}", line ${i + 1}`);
+      log.debug(`[parsers/def] parse warning: "count" or "offset" encountered, disabling implicit metatypes\n    at "${filepath}", line ${i + 1}`);
       implicitMeta = false;
     }
 

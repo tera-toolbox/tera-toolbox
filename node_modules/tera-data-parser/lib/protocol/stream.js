@@ -17,7 +17,7 @@ class Readable {
 
 	bool() {
 		const ret = this.byte()
-		if(ret > 1) log.warn(new Error('read byte not 0 or 1 for bool'))
+		if(ret > 1) log.debug(new Error('read byte not 0 or 1 for bool'))
 		return !!ret
 	}
 

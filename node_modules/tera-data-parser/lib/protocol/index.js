@@ -72,7 +72,7 @@ class TeraProtocol {
           if (map.name.has(name)) {
             code = map.name.get(name);
           } else {
-            log.warn(new Error(`code not known for message "${name}"`));
+            throw new Error(`code not known for message "${name}"`);
             code = null;
           }
           break;
@@ -233,7 +233,7 @@ class TeraProtocol {
       if (!parsedName) {
         if (file.startsWith('protocol.') && file.endsWith('.map')) {
           log.warn(`[protocol] load (map) - invalid filename syntax "${fullpath}"`);
-        } else {
+        } else if (!file.startsWith('sysmsg.') && file.endsWith('.map')) {
           log.debug(`[protocol] load (map) - skipping path "${fullpath}"`);
         }
         continue;
@@ -260,7 +260,7 @@ class TeraProtocol {
       if (!parsedName) {
         if (file.startsWith('protocol.') && file.endsWith('.map')) {
           log.warn(`[protocol] load (map) - invalid filename syntax "${fullpath}"`);
-        } else {
+        } else if (!file.startsWith('sysmsg.') && file.endsWith('.map')) {
           log.debug(`[protocol] load (map) - skipping path "${fullpath}"`);
         }
         continue;
@@ -313,10 +313,6 @@ class TeraProtocol {
         // Always prefer platform-specific definition over default one!
         if (def_platform || !messages.get(name).get(version))
           messages.get(name).set(version, definition);
-      }
-
-      if (!mappedMessages.has(name)) {
-        log.warn(`[protocol] load - unmapped message "${name}"`);
       }
     }
 
@@ -373,7 +369,7 @@ class TeraProtocol {
         while (next && index < length) {
           let pos = reader.position;
           if (pos !== next) {
-            log.warn(`[protocol] parse - ${displayName}: offset mismatch for array "${keyPath}" at ${reader.position} (expected ${next})`);
+            log.debug(`[protocol] parse - ${displayName}: offset mismatch for array "${keyPath}" at ${reader.position} (expected ${next})`);
             reader.seek(next);
             pos = next;
           }
@@ -417,7 +413,7 @@ class TeraProtocol {
                 throw new Error(`${displayName}.${keyPath}: invalid offset for "${keyPath}" at ${reader.position} (inside header)`);
               }
               if (reader.position !== ofs) {
-                log.warn(`[protocol] parse - ${displayName}: offset mismatch for "${keyPath}" at ${reader.position} (expected ${ofs})`);
+                log.debug(`[protocol] parse - ${displayName}: offset mismatch for "${keyPath}" at ${reader.position} (expected ${ofs})`);
                 reader.seek(ofs);
               }
             }

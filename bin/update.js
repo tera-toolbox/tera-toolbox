@@ -67,7 +67,7 @@ function migrateModuleUpdateUrlRoot(update_url_root) {
 
 function checkModuleUpdateUrlBlacklist(update_url_root) {
   // TODO: ... resolve this issue ...
-  return !update_url_root.toLowerCase().includes("/owyn/");
+  return !["owyn", "lambda11", "busann"].some(name => update_url_root.toLowerCase().includes(`/${name}/`));
 }
 
 async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, region, serverIndex = 0) {

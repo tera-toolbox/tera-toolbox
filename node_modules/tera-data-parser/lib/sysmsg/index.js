@@ -34,7 +34,7 @@ class TeraSysmsg {
       if (!parsedName) {
         if (file.startsWith('sysmsg.') && file.endsWith('.map')) {
           log.warn(`[sysmsg] load - invalid filename syntax "${fullpath}"`);
-        } else {
+        } else if (!file.startsWith('protocol.') && file.endsWith('.map')) {
           log.debug(`[sysmsg] load - skipping path "${fullpath}"`);
         }
         continue;

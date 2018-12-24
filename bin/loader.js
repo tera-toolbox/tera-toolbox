@@ -128,6 +128,11 @@ function RegionMigration(region) {
                 migratedFile = "servers/servers-eu.json";
             break;
         }
+        case "NA": {
+            if (customServers["4004"] || customServers["4009"] || customServers["4012"] || customServers["4024"] || customServers["4032"])
+                migratedFile = "servers/servers-na.json";
+            break;
+        }
         case "TH": {
             if (customServers["2"] || !customServers["1"])
                 migratedFile = "servers/servers-th.json";
