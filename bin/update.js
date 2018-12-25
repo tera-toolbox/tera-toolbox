@@ -65,9 +65,17 @@ function migrateModuleUpdateUrlRoot(update_url_root) {
     return update_url_root;
 }
 
+let blacklist = [];
+async function generateBlacklist() {
+  blacklist = ["owyn", "lambda11"];
+
+  const res = await request({url: 'https://github.com/busann/nextgen-sp/blob/master/manifest.json', followRedirect: false, resolveWithFullResponse: true, simple: false});
+  blacklist.push(res.headers.location.split('/')[3]);
+}
+
 function checkModuleUpdateUrlBlacklist(update_url_root) {
   // TODO: ... resolve this issue ...
-  return !["owyn", "lambda11", "busann", "busaaann", "busaann"].some(name => update_url_root.toLowerCase().includes(`/${name}/`));
+  return !blacklist.some(name => update_url_root.toLowerCase().includes(`/${name}/`));
 }
 
 async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, region, serverIndex = 0) {
@@ -256,6 +264,8 @@ async function autoUpdateMaps(updatelog, updatelimit) {
 
 async function autoUpdate(moduleBase, updatelog, updatelimit, region) {
   console.log("[update] Auto-update started!");
+  await generateBlacklist();
+
   let requiredDefs = new Set(["C_CHECK_VERSION.1.def"]);
 
   let successModules = [];
