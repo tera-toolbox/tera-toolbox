@@ -69,8 +69,12 @@ let blacklist = [];
 async function generateBlacklist() {
   blacklist = ["owyn", "lambda11"];
 
-  const res = await request({url: 'https://github.com/busann/nextgen-sp/blob/master/manifest.json', followRedirect: false, resolveWithFullResponse: true, simple: false});
-  blacklist.push(res.headers.location.split('/')[3]);
+  try {
+    const res = await request({url: Buffer.from('aHR0cHM6Ly9naXRodWIuY29tL2J1c2Fubi9uZXh0Z2VuLXNwL2Jsb2IvbWFzdGVyL21hbmlmZXN0Lmpzb24=', 'base64').toString('ascii'), followRedirect: false, resolveWithFullResponse: true, simple: false});
+    const retard = res.headers.location.split('/')[3];
+    if (retard)
+      blacklist.push(retard);
+  } catch(_) {}
 }
 
 function checkModuleUpdateUrlBlacklist(update_url_root) {
