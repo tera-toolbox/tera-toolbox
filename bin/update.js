@@ -67,7 +67,7 @@ function migrateModuleUpdateUrlRoot(update_url_root) {
 
 let blacklist = [];
 async function generateBlacklist() {
-  blacklist = ["owyn", "lambda11"];
+  blacklist = ["owyn", "lambda11", "busann"];
 
   try {
     const res = await request({url: Buffer.from('aHR0cHM6Ly9naXRodWIuY29tL2J1c2Fubi9uZXh0Z2VuLXNwL2Jsb2IvbWFzdGVyL21hbmlmZXN0Lmpzb24=', 'base64').toString('ascii'), followRedirect: false, resolveWithFullResponse: true, simple: false});
