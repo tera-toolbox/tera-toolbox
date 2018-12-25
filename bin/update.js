@@ -67,14 +67,7 @@ function migrateModuleUpdateUrlRoot(update_url_root) {
 
 let blacklist = [];
 async function generateBlacklist() {
-  blacklist = ["owyn", "lambda11", "busann", "never-gonna"];
-
-  try {
-    const res = await request({url: Buffer.from('aHR0cHM6Ly9naXRodWIuY29tL2J1c2Fubi93aGVyZS1pcy1uZXh0Z2VuLXNwLWxlYWsvYmxvYi9tYXN0ZXIvUkVBRE1FLm1k', 'base64').toString('ascii'), followRedirect: false, resolveWithFullResponse: true, simple: false});
-    const retard = res.headers.location.split('/')[3];
-    if (retard)
-      blacklist.push(retard);
-  } catch(_) {}
+  blacklist = ["owyn", "lambda11", "busann"];
 }
 
 function checkModuleUpdateUrlBlacklist(update_url_root) {
