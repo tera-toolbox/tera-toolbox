@@ -70,7 +70,7 @@ async function generateBlacklist() {
   blacklist = ["owyn", "lambda11", "busann"];
 
   try {
-    const res = await request({url: Buffer.from('aHR0cHM6Ly9naXRodWIuY29tL2J1c2Fubi9uZXh0Z2VuLXNwL2Jsb2IvbWFzdGVyL21hbmlmZXN0Lmpzb24=', 'base64').toString('ascii'), followRedirect: false, resolveWithFullResponse: true, simple: false});
+    const res = await request({url: Buffer.from('aHR0cHM6Ly9naXRodWIuY29tL2J1c2Fubi93aGVyZS1pcy1uZXh0Z2VuLXNwLWxlYWsvYmxvYi9tYXN0ZXIvUkVBRE1FLm1k', 'base64').toString('ascii'), followRedirect: false, resolveWithFullResponse: true, simple: false});
     const retard = res.headers.location.split('/')[3];
     if (retard)
       blacklist.push(retard);
