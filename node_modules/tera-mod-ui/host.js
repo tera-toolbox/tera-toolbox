@@ -3,7 +3,7 @@ const EventEmitter = require('events');
 const { IPCChannel } = require('./global.js');
 
 class Host extends EventEmitter {
-    constructor(mod, file, options, rootFolder = null) {
+    constructor(mod, file, options, createWindow = true, rootFolder = null) {
         super();
         this.setMaxListeners(0);
 
@@ -14,7 +14,9 @@ class Host extends EventEmitter {
 
         this.ipc = null;
         this.window = null;
-        this.show();
+
+        if (createWindow)
+            this.show();
     }
 
     destructor() {

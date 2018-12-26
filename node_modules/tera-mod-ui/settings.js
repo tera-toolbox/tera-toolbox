@@ -15,11 +15,10 @@ class Settings extends EventEmitter {
             useContentSize: true,
             frame: false,
             resizable: false,
-            show: false,
             webPreferences: {
                 devTools: false
             }
-        }, options), path.join(__dirname, 'settings_ui'));
+        }, options), false, path.join(__dirname, 'settings_ui'));
 
         this.ui.on('init', () => {
             this.ui.send('init', mod.options.guiName || mod.name, global.TeraProxy.GUITheme, this.structure, this.settings);
