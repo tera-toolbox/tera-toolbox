@@ -23,7 +23,6 @@ class Settings extends EventEmitter {
 
         this.ui.on('init', () => {
             this.ui.send('init', mod.options.guiName || mod.name, global.TeraProxy.GUITheme, this.structure, this.settings);
-            this.ui.show();
         });
 
         this.ui.on('update', (key, value) => {
