@@ -7,7 +7,7 @@
     "bin/config.js": "5235418ded7c599fddc420dd1aab2b9a6908753e211616d46f281f9811602ffc",
     "bin/loader.js": "a073805fb80a714ad053bc765b0e25e40c095899edf9b66807c7ed61168965d0",
     "bin/loader-console.js": "636d0bbdd13b6c0fbb2f9c7f9e488837f06635a2c8e9279f85f276f457e16bdc",
-    "bin/loader-gui.js": "7516245136f59cfb4ac59abc0cfce94aacb89ef7939e3522fd020753d139c20a",
+    "bin/loader-gui.js": "dcbaf1887bea7709bbed51602b21b71e51e70596077167ff21ee1beb55355622",
     "bin/connectionManager.js": "d13907a972e88ada9e2669be8237f72958f2177ed0463f078b0d66d5c9db9f2f",
     "bin/hosts.js": "2d1592299406dc7e0f082c30809236c305226766e4d26afad698899c646a80ed",
     "bin/netstat.js": "2b7b5c825c82833403684545fc9b9cfc57cb878fa782bbde860805984119b6cb",
@@ -93,6 +93,18 @@
     "node_modules/tera-crypto-native/bin/x64/tera-crypto-native_67.node": "ec78abe3e74fa2f9e94b511c9f70ea71d033e62e793d5b681a797be935c12366",
     "node_modules/tera-vec3/package.json": "312e8093688f7a5eb20789931f4161fabc92494dfc8eabdc95677f12565eb122",
     "node_modules/tera-vec3/index.js": "e35016326fd04c36abca0ff234465618e92d861d214c40a0705f6b23e05e1daf",
-    "node_modules/tera-mod-ui/index.js": "4342ef7f705316dae6c0362fae57a2cc617899cda8cf8dbb861d4f41d255c916"
+    "node_modules/tera-mod-ui/index.js": "431ff7e0c90cc401c614df008769a013c3e800ee18e23586936e03497596362d",
+    "node_modules/tera-mod-ui/global.js": "e72401797df90c82a042fa733ce2e8e7b92f1c88e8640c877daea2a37f7752d0",
+    "node_modules/tera-mod-ui/host.js": "3081af2d3c08459a5180ab6c61544e02c1af2efc4e017796912f7b4c4a1d7bd8",
+    "node_modules/tera-mod-ui/renderer.js": "1b57e5c48eb207c5b6b4a859184d3d8546605250f8284ecb7838216c1d054004",
+    "node_modules/tera-mod-ui/settings.js": "eecd401571fc0628fa42689638ea85290a5d349f6796dbe33753d78dc62566f9",
+    "node_modules/tera-mod-ui/settings_ui/icon.png": "414bb8e8a84a8c26da11087b7e845f8a85651fc92e64652c956dcf4a949bc791",
+    "node_modules/tera-mod-ui/settings_ui/index.css": "89d8b609d2592644ccabd8e7efb937d63965e55020affb318b8360ebbf8eeda5",
+    "node_modules/tera-mod-ui/settings_ui/index.html": "db2430a8892a16ca2a97a7455a4510032c93ffd2dfdec851ed30a545ebb90562",
+    "node_modules/tera-mod-ui/settings_ui/index.js": "7df259afbf61dbc918654a8b349c52250f48988ce19a79da4c8217fdfa9b3cfd",
+    "node_modules/tera-mod-ui/settings_ui/jquery-3.2.1.min.js": "87083882cc6015984eb0411a99d3981817f5dc5c90ba24f0940420c5548d82de",
+    "node_modules/tera-mod-ui/settings_ui/themes/black.css": "d67db1b0e8b42dd9faaee7da42c0f5bf3b4848a50a1398078d0d2ead9e561907",
+    "node_modules/tera-mod-ui/settings_ui/themes/pink.css": "d3438336b9e60d7eca2463a593c99c1b2e02d6f20de83f17bf301a3727c0f395",
+    "node_modules/tera-mod-ui/settings_ui/themes/white.css": "206edc68ed7123a566914e7af92ed6c214d90da5d862c3e609cb78460e55d4cd"
   }
 }

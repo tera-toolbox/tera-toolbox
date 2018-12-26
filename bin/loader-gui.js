@@ -4,6 +4,7 @@ const { app, BrowserWindow, Tray, Menu, ipcMain } = require('electron');
 // Configuration
 function SaveConfiguration(newConfig) {
     global.TeraProxy.DevMode = !!newConfig.devmode;
+    global.TeraProxy.GUITheme = newConfig.gui.theme;
     require('./config').saveConfig(newConfig);
 }
 
@@ -242,7 +243,7 @@ class TeraProxyGUI {
         this.tray.setContextMenu(Menu.buildFromTemplate([
             {
                 label: 'Quit',
-                click: () => { app.exit(); },
+                click: () => { app.exit(); }
             }
         ]));
 
@@ -301,6 +302,10 @@ module.exports = function LoaderGUI(ModFolder, ProxyConfig, ProxyRegionConfig) {
             theme: 'black',
             autostart: false
         };
+
+        SaveConfiguration(config);
+    } else {
+        global.TeraProxy.GUITheme = ProxyConfig.gui.theme || 'black';
     }
 
     gui = new TeraProxyGUI;

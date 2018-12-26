@@ -1,0 +1,49 @@
+/***********
+ * GENERAL *
+ ***********/
+
+body {
+    background-color: #F0438C;
+    color: #292F33;
+}
+
+/*************
+ * TITLE BAR *
+ *************/
+
+#close-btn {
+    color: #292F33;
+}
+
+    #close-btn:hover {
+        color: #E81C4F;
+    }
+
+
+/********
+ * MAIN *
+ ********/
+
+.settings {
+    background: #FFF;
+    border: solid 4px #F9B8D2;
+}
+
+.setting_key {
+    background-color: #F9B8D2;
+}
+
+.setting_value {
+    background-color: #F9B8D2;
+}
+
+/*************
+ * SCROLLBAR *
+ *************/
+::-webkit-scrollbar-track {
+    background: #F0438C;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #F9B8D2;
+}
