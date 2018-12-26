@@ -99,7 +99,7 @@
     "node_modules/tera-mod-ui/renderer.js": "1b57e5c48eb207c5b6b4a859184d3d8546605250f8284ecb7838216c1d054004",
     "node_modules/tera-mod-ui/settings.js": "703e8fb79c052c46a3c447e5d73e21e544975f65cacb628d7fd78f4f5a1d4629",
     "node_modules/tera-mod-ui/settings_ui/icon.png": "414bb8e8a84a8c26da11087b7e845f8a85651fc92e64652c956dcf4a949bc791",
-    "node_modules/tera-mod-ui/settings_ui/index.css": "89d8b609d2592644ccabd8e7efb937d63965e55020affb318b8360ebbf8eeda5",
+    "node_modules/tera-mod-ui/settings_ui/index.css": "771866c64c089d57f4fe6dca4b2c83a3e7391c4ddd5a554ec514e0ae4c08a407",
     "node_modules/tera-mod-ui/settings_ui/index.html": "db2430a8892a16ca2a97a7455a4510032c93ffd2dfdec851ed30a545ebb90562",
     "node_modules/tera-mod-ui/settings_ui/index.js": "19402f66778d96c8a056e18d4f56355763bba799dacfc18a7288dc376bf27843",
     "node_modules/tera-mod-ui/settings_ui/jquery-3.2.1.min.js": "87083882cc6015984eb0411a99d3981817f5dc5c90ba24f0940420c5548d82de",
