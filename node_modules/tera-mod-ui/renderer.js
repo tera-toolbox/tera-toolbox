@@ -1,17 +1,21 @@
 const EventEmitter = require('events');
 const { IPCChannel } = require('./global.js');
-const { remote, ipcRenderer } = require('electron');
 
 class Renderer extends EventEmitter {
     constructor() {
         super();
 
+        this.ipc = require('electron').ipcRenderer;
+        this.remote = require('electron').remote;
+
         this._handleEvent = this._handleEvent.bind(this);
-        ipcRenderer.on(IPCChannel, this._handleEvent);
+        this.ipc.on(IPCChannel, this._handleEvent);
     }
 
     destructor() {
-        ipcRenderer.removeListener(IPCChannel, this._handleEvent);
+        this.ipc.removeListener(IPCChannel, this._handleEvent);
+        this.ipc = null;
+        this.remote = null;
     }
 
     _handleEvent(event, name, ...args) {
@@ -19,34 +23,34 @@ class Renderer extends EventEmitter {
     }
 
     send(name, ...args) {
-        ipcRenderer.send(IPCChannel, name, ...args);
+        this.ipc.send(IPCChannel, name, ...args);
     }
 
     minimize() {
-        return remote.getCurrentWindow().minimize();
+        return this.remote.getCurrentWindow().minimize();
     }
 
     maximize() {
-        return remote.getCurrentWindow().maximize();
+        return this.remote.getCurrentWindow().maximize();
     }
 
     unmaximize() {
-        return remote.getCurrentWindow().unmaximize();
+        return this.remote.getCurrentWindow().unmaximize();
     }
 
     isMaximized() {
-        return remote.getCurrentWindow().isMaximized();
+        return this.remote.getCurrentWindow().isMaximized();
     }
 
     toggleMaximized() {
         if (this.isMaximized())
-            this.unmaximize();
+            return this.unmaximize();
         else
-            this.maximize();
+            return this.maximize();
     }
 
     close() {
-        remote.getCurrentWindow().close();
+        return this.remote.getCurrentWindow().close();
     }
 }
 
