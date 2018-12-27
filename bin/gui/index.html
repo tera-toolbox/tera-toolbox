@@ -10,12 +10,13 @@
 
 	<body>
         <!-- Title Bar -->
-		<div id="title-bar" class="title-bar">
-			<img src="icon.png" id="title-icon">
-			<div id="title">Caali's Tera Proxy</div>
-			<div id="title-status">Proxy not running</div>
+        <div id="title-bar" class="title-bar">
+            <img src="icon.png" id="title-icon">
+            <div id="title">Caali's Tera Proxy</div>
+            <div id="title-status">Proxy not running</div>
+            <button id="minimize-btn" class="nodrag">-</button>
             <button id="close-btn" class="nodrag">&times;</button>
-		</div>
+        </div>
 
         <!-- Content -->
         <div class="container">
@@ -103,8 +104,8 @@
                     <input id="updatelog" type="checkbox">
                 </div>
                 <div>
-                    <a>Enable Developer Mode</a>
-                    <input id="devmode" type="checkbox">
+                    <a>Show time in log</a>
+                    <input id="logtimes" type="checkbox">
                 </div>
                 <div>
                     <a>Disable mod updates</a>
@@ -113,6 +114,10 @@
                 <div>
                     <a>Disable proxy update</a>
                     <input id="noselfupdate" type="checkbox">
+                </div>
+                <div>
+                    <a>Enable Developer Mode</a>
+                    <input id="devmode" type="checkbox">
                 </div>
             </div>
 

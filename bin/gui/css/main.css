@@ -61,6 +61,21 @@ body {
     height: 24px
 }
 
+#minimize-btn {
+    font-size: 20px;
+    position: fixed;
+    top: 0px;
+    right: 20px;
+    height: 32px;
+    width: 32px;
+    border: none;
+    background-color: transparent;
+}
+
+    #minimize-btn:focus {
+        outline: 0;
+    }
+
 #close-btn {
     font-size: 20px;
     position: fixed;
@@ -69,8 +84,12 @@ body {
     height: 32px;
     width: 32px;
     border: none;
-    background-color: transparent
+    background-color: transparent;
 }
+
+    #close-btn:focus {
+        outline: 0;
+    }
 
 /********
  * MAIN *
@@ -160,6 +179,10 @@ ul.tabs {
     border: none;
     background-color: transparent;
 }
+
+    #clear-logs:focus {
+        outline: 0;
+    }
 
 .log-contents {
     word-break: break-all;
@@ -371,7 +394,7 @@ ul.tabs {
  **********/
 
 #settings {
-    padding-top: 175px;
+    padding-top: 130px;
 }
 
 #settings > div {

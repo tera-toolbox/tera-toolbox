@@ -11,6 +11,14 @@ body {
  * TITLE BAR *
  *************/
 
+#minimize-btn {
+    color: #BBB;
+}
+
+    #minimize-btn:hover {
+        color: #E81C4F;
+    }
+
 #close-btn {
     color: #BBB;
 }

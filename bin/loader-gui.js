@@ -152,6 +152,7 @@ ipcMain.on('stop proxy', (event, _) => {
     log("Stopping proxy...");
     StopProxy().then(() => {
         event.sender.send('proxy running', false);
+        log("Proxy stopped!");
     });
 });
 
@@ -201,6 +202,9 @@ class TeraProxyGUI {
     show() {
         if (this.window !== null) {
             this.window.show();
+            if (this.window.isMinimized())
+                this.window.restore();
+            this.window.focus();
             return;
         }
 
@@ -292,6 +296,18 @@ function log(msg) {
 }
 
 module.exports = function LoaderGUI(ModFolder, ProxyConfig, ProxyRegionConfig) {
+    // Enforce single instance of GUI
+    if (!app.requestSingleInstanceLock()) {
+        app.quit();
+        return;
+    } else {
+        app.on('second-instance', () => {
+            if (gui)
+                gui.show();
+        });
+    }
+
+    // Boot GUI
     global.TeraProxy.GUIMode = true;
 
     ModuleFolder = ModFolder;
@@ -305,6 +321,11 @@ module.exports = function LoaderGUI(ModFolder, ProxyConfig, ProxyRegionConfig) {
 
         SaveConfiguration(config);
     } else {
+        if (config.gui.logtimes === undefined) {
+            config.gui.logtimes = true;
+            SaveConfiguration(config);
+        }
+
         global.TeraProxy.GUITheme = ProxyConfig.gui.theme || 'black';
     }
 

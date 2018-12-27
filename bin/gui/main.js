@@ -27,8 +27,12 @@ jQuery(($) => {
     // --------------------------------------------------------------------
     // ----------------------------- MAIN ---------------------------------
     // --------------------------------------------------------------------
-    $('#close-btn').click(() => {
+    $('#minimize-btn').click(() => {
         remote.getCurrentWindow().minimize();
+    });
+
+    $('#close-btn').click(() => {
+        remote.getCurrentWindow().close();
     });
 
     // Disable mouse wheel clicks
@@ -125,9 +129,13 @@ jQuery(($) => {
     const LogTabName = 'log';
 
     function log(msg) {
-        if (msg[msg.length - 1] !== '\n')
-            msg += '\n';
-        msg = $('<div/>').text(msg).html()
+        let timeStr = '';
+        if (Settings.gui.logtimes) {
+            const now = new Date();
+            timeStr = `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}] `;
+        }
+
+        msg = $('<div/>').text(`${timeStr}${msg}${msg[msg.length-1] !== '\n' ? '\n' : ''}`).html();
 
         const contents = $('#log-contents');
         contents.append(msg);
@@ -159,9 +167,10 @@ jQuery(($) => {
         $(`option:contains(${Settings.region}):first`).prop('selected', true);
         $('#autostart').prop('checked', Settings.gui.autostart);
         $('#updatelog').prop('checked', Settings.updatelog);
-        $('#devmode').prop('checked', Settings.devmode);
+        $('#logtimes').prop('checked', Settings.gui.logtimes);
         $('#noupdate').prop('checked', Settings.noupdate);
         $('#noselfupdate').prop('checked', Settings.noselfupdate);
+        $('#devmode').prop('checked', Settings.devmode);
         $('head').append(`<link rel="stylesheet" href="css/themes/${Themes.indexOf(Settings.gui.theme) < 0 ? Themes[0] : Settings.gui.theme}.css">`);
     }
 
@@ -193,7 +202,7 @@ jQuery(($) => {
     addTab(SettingsTabName, {
         show: () => {
             ipcRenderer.send('get config');
-        },
+        }
     });
 
     // UI events
@@ -209,8 +218,8 @@ jQuery(($) => {
         updateSetting('updatelog', $('#updatelog').is(':checked'));
     });
 
-    $('#devmode').click(() => {
-        updateSetting('devmode', $('#devmode').is(':checked'));
+    $('#logtimes').click(() => {
+        updateGUISetting('logtimes', $('#logtimes').is(':checked'));
     });
 
     $('#noupdate').click(() => {
@@ -225,6 +234,10 @@ jQuery(($) => {
         if (checked)
             ShowModal('Warning! You disabled automatic updates for Tera Proxy. This will break things at some point. We will not provide any assistance unless re-enabled!');
         updateSetting('noselfupdate', checked);
+    });
+
+    $('#devmode').click(() => {
+        updateSetting('devmode', $('#devmode').is(':checked'));
     });
 
     Themes.forEach(theme => {
