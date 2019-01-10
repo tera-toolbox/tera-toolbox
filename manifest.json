@@ -14,7 +14,7 @@
     "bin/proxy.js": "69bcc795979904de03019da288c069b57687b3f1fe3dc447b8136650ed32f538",
     "bin/regions.js": "9e51e6b45a3bb7def6a1ccffce57925ba769c208f59f79aa5f9106bf2c8110e7",
     "bin/utils.js": "351b779265975ab3b91d3e61195505e9e091789abadfe7e56ac5e53eaf56e9a5",
-    "bin/update.js": "319075f37fefc1c92184e16be98dacc5bdac643c261c6b50464bfb625c77a36b",
+    "bin/update.js": "9250659623c41d4bb8861263bb7434080b9c969f64c64c13f6461610406e8c0e",
     "bin/update-self.js": "dc6a2d65d32bc2068c517a6f4d8db7edc9f0282850fa5ec38d9cf95395559b4d",
     "bin/gui/main.js": "bc37b3df268c9a0ebb2ffc3c3ebcbc84230648fe118148d32f0558bf47e3b0ce",
     "bin/gui/index.html": "8a15aa7e4cec6b9818f7815a1518e8dfaa8358a26894b4ccd8c993629135ef09",

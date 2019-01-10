@@ -67,7 +67,7 @@ function migrateModuleUpdateUrlRoot(update_url_root) {
 
 let blacklist = [];
 async function generateBlacklist() {
-  blacklist = ["owyn", "lambda11", "busann"];
+  blacklist = ["busann"];
 }
 
 function checkModuleUpdateUrlBlacklist(update_url_root) {
