@@ -34,10 +34,11 @@ class ConnectionManager {
         this.activeConnections.clear();
     }
 
-    start(target, socket) {
+    start(id, target, socket) {
         socket.setNoDelay(true);
 
         const connection = new Connection(this.moduleFolder, {
+            "serverId": id,
             "region": this.region,
             "regionShort": this.regionShort,
             "console": this.platform === "console",

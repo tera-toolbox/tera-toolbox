@@ -27,7 +27,7 @@ function HostsError(e) {
 }
 
 function HostsInitialize(region) {
-    if (region.platform !== 'console') {
+    if (region && region.platform !== 'console') {
         try {
             const hosts = require("./hosts");
             hosts.set(region.data.listenHostname, region.data.hostname);
@@ -42,7 +42,7 @@ function HostsInitialize(region) {
 }
 
 function HostsClean(region) {
-    if (region.platform !== 'console') {
+    if (region && region.platform !== 'console') {
         try {
             const hosts = require("./hosts");
             hosts.remove(region.data.listenHostname, region.data.hostname);
@@ -86,8 +86,10 @@ class TeraProxy {
     }
 
     destructor() {
-        this.connectionManager.destructor();
-        this.connectionManager = null;
+        if (this.connectionManager) {
+            this.connectionManager.destructor();
+            this.connectionManager = null;
+        }
 
         HostsClean(this.region);
         this.slsDestroy();
@@ -197,7 +199,7 @@ class TeraProxy {
                         continue;
                     }
 
-                    const server = net.createServer(socket => this.connectionManager.start(target, socket));
+                    const server = net.createServer(socket => this.connectionManager.start(id, target, socket));
                     this.servers.set(id, server);
                 }
 
@@ -209,7 +211,7 @@ class TeraProxy {
                 const id = arr[i];
                 const target = this.region.data.customServers[id]["remote"];
 
-                const server = net.createServer(socket => this.connectionManager.start(target, socket));
+                const server = net.createServer(socket => this.connectionManager.start(id, target, socket));
                 this.servers.set(id, server);
             }
 
@@ -218,11 +220,13 @@ class TeraProxy {
     }
 
     slsDestroy() {
-        if (this.region.platform === 'console')
+        if (this.region && this.region.platform === 'console')
             return;
 
-        this.slsProxy.close();
-        this.slsProxy = null;
+        if (this.slsProxy) {
+            this.slsProxy.close();
+            this.slsProxy = null;
+        }
     }
 }
 
