@@ -143,6 +143,11 @@ function RegionMigration(region) {
                 migratedFile = "servers/servers-jp.json";
             break;
         }
+        case "KR": {
+            if (customServers["1"] || customServers["8"] || !customServers["9"])
+                migratedFile = "servers/servers-kr.json";
+            break;
+        }
     }
 
     if (migratedFile) {
