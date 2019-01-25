@@ -257,7 +257,7 @@ jQuery(($) => {
 
     ipcRenderer.on('set mods', (_, modInfos) => {
         WaitingForModAction = false;
-        NewExpandedModNames = {};
+        let NewExpandedModNames = {};
         $('.modulesList').empty();
         modInfos.forEach(modInfo => {
             const escapedName = HashString(modInfo.name);
