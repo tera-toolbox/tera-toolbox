@@ -2,10 +2,12 @@
 var fs = require('fs');
 var path = require('path');
 
-var HOSTS = path.join(
-	process.env.SystemRoot || path.join(process.env.SystemDrive || 'C:', 'Windows'),
-	'/System32/drivers/etc/hosts'
-);
+var HOST = process.platform !== 'win32'
+  ? '/etc/hosts'
+  : path.join(
+    process.env.SystemRoot || path.join(process.env.SystemDrive || 'C:', 'Windows'),
+    '/System32/drivers/etc/hosts'
+  );
 
 exports.get = function () {
 	var lines = [];
@@ -68,12 +70,12 @@ exports.remove = function (ip, host) {
 };
 
 exports.writeFile = function (lines) {
-	var data = '';
+	var data = '', isWindows == process.platform === 'win32';
 	lines.forEach(function (line) {
 		if (Array.isArray(line)) {
 			line = line[0] + ' ' + line[1];
 		}
-		data += line + '\r\n';
+		data += line + (isWindows ? '\r\n' : '\n');
 	});
 
 	// Get mode (or set to rw-rw-rw-); check read-only
