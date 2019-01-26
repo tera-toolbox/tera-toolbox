@@ -58,6 +58,29 @@ exports.set = function (ip, host) {
 	exports.writeFile(lines);
 };
 
+exports.setMany = function (hostList) {
+  var lines = exports.get(), host;
+  
+  // Try to update entries, if host already exists in file
+  for (var i = 0, l = hostList.length; i < l; i++) {
+    var didUpdate = false, host = hostList[i];
+    lines = lines.map(function (line) {
+      if (Array.isArray(line) && line[1] === host[1]) {
+        line[0] = host[0];
+        line[2] = 2; // A flag for error reporting to say this line was changed
+        didUpdate = true;
+      }
+    });
+    
+    // If entry did not exist, let's add it
+    if (!didUpdate) {
+      lines.push([host[0], host[1], 1]); // The 1 is a flag for error reporting to say this line is new
+    }
+  }
+  
+  exports.writeFile(lines);
+};
+
 exports.remove = function (ip, host) {
 	var lines = exports.get();
 
@@ -69,11 +92,26 @@ exports.remove = function (ip, host) {
 	exports.writeFile(lines);
 };
 
+exports.removeMany = function (hostList) {
+  var lines = exports.get();
+  
+  // Try to remove entries, if they exist
+  for (let i = 0, l = hostList.length; i < l; i++) {
+    let host = hostList[i];
+    lines = lines.filter(function (line) {
+      return !(Array.isArray(line) && line[0] === host[0] && line[1] === host[1]);
+    });
+  }
+  
+  exports.writeFile(lines);
+};
+
 exports.writeFile = function (lines) {
-	var data = '', isWindows == process.platform === 'win32';
+	var data = '', isWindows == process.platform === 'win32', list = [];
 	lines.forEach(function (line) {
 		if (Array.isArray(line)) {
 			line = line[0] + ' ' + line[1];
+			if (line[2]) { list.push(line); }
 		}
 		data += line + (isWindows ? '\r\n' : '\n');
 	});

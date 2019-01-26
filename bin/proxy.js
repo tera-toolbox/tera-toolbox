@@ -1,28 +1,61 @@
 // Host file modification
 function HostsError(e) {
-    switch (e.code) {
-        case "EACCES":
-            console.error('ERROR: Hosts file is set to read-only.');
-            console.error('  * Make sure no anti-virus software is running.')
-            console.error(`  * Locate "${e.path}", right click the file, click 'Properties', uncheck 'Read-only' then click 'OK'.`);
-            break;
-        case "EBUSY":
-            console.error('ERROR: Hosts file is busy and cannot be written to.');
-            console.error('  * Make sure no anti-virus software is running.');
-            console.error(`  * Try deleting "${e.path}".`);
-            break;
-        case "EPERM":
-            console.error('ERROR: Insufficient permission to modify hosts file.');
-            console.error('  * Make sure no anti-virus software is running.');
-            console.error('  * Right click TeraProxy.bat and select \'Run as administrator\'.');
-            break;
-        case "ENOENT":
-            console.error('ERROR: Unable to write to hosts file.');
-            console.error('  * Make sure no anti-virus software is running.');
-            console.error('  * Right click TeraProxy.bat and select \'Run as administrator\'.');
-            break;
+    if (process.platform === 'win32') {
+        switch (e.code) {
+            case "EACCES":
+                console.error('ERROR: Hosts file is set to read-only.');
+                console.error('  * Make sure no anti-virus software is running.')
+                console.error(`  * Locate "${e.path}", right click the file, click 'Properties', uncheck 'Read-only' then click 'OK'.`);
+                break;
+            case "EBUSY":
+                console.error('ERROR: Hosts file is busy and cannot be written to.');
+                console.error('  * Make sure no anti-virus software is running.');
+                console.error(`  * Try deleting "${e.path}".`);
+                break;
+            case "EPERM":
+                console.error('ERROR: Insufficient permission to modify hosts file.');
+                console.error('  * Make sure no anti-virus software is running.');
+                console.error('  * Right click TeraProxy.bat and select \'Run as administrator\'.');
+                break;
+            case "ENOENT":
+                console.error('ERROR: Unable to write to hosts file.');
+                console.error('  * Make sure no anti-virus software is running.');
+                console.error('  * Right click TeraProxy.bat and select \'Run as administrator\'.');
+                break;
+        }
+    } else {
+        function printEdits() {
+            if (!e.list) {
+                console.error(`  * Either run with 'sudo' (not recommended) or manually add the hosts to ${e.path}`);
+                return;
+            }
+            console.error(`  * Either run with 'sudo' (not recommended) or change the following in ${e.path}:`);
+            for (var i = 0, list = e.list, l = list.length; i < l; i++) {
+                var entry = list[i];
+                if (entry[2] == 1) { console.error(`Add the line: ${entry[0]} ${entry[1]}`); }
+                else { console.error(`Change the line for ${entry[1]} to: ${entry[0]} ${entry[1]}`); }
+            }
+        }
+        switch (e.code) {
+            case "EACCES":
+                console.error('ERROR: Hosts file is set to read-only.');
+                printEdits();
+                break;
+            case "EBUSY":
+                console.error('ERROR: Hosts file is busy and cannot be written to.');
+                console.error(`  * End any processes locking ${e.path}`);
+                printEdits();
+                break;
+            case "EPERM":
+                console.error('ERROR: Insufficient permission to modify hosts file.');
+                printEdits();
+                break;
+            case "ENOENT":
+                console.error('ERROR: Unable to write to hosts file.');
+                printEdits();
+                break;
+        }
     }
-
     throw e;
 }
 
@@ -30,9 +63,10 @@ function HostsInitialize(region) {
     if (region && region.platform !== 'console') {
         try {
             const hosts = require("./hosts");
-            hosts.set(region.data.listenHostname, region.data.hostname);
+            var list = [[region.data.listenHostname, region.data.hostname]];
             for (let x of region.data.altHostnames)
-                hosts.set(region.data.listenHostname, x);
+                list.push([region.data.listenHostname, x]);
+            hosts.setMany(list);
         } catch (e) {
             HostsError(e);
         }
@@ -45,9 +79,10 @@ function HostsClean(region) {
     if (region && region.platform !== 'console') {
         try {
             const hosts = require("./hosts");
-            hosts.remove(region.data.listenHostname, region.data.hostname);
+            var list = [[region.data.listenHostname, region.data.hostname]];
             for (let x of region.data.altHostnames)
-                hosts.remove(region.data.listenHostname, x);
+                list.push([region.data.listenHostname, x]);
+            hosts.removeMany(list);
         } catch (e) {
             HostsError(e);
         }
