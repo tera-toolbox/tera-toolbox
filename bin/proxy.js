@@ -76,7 +76,8 @@ function HostsInitialize(region) {
 }
 
 function HostsClean(region) {
-    if (region && region.platform !== 'console') {
+    // Only clean hosts file on Windows as other platforms (for now) have to do all hosts edits manually
+    if (region && region.platform !== 'console' && process.platform === 'win32') {
         try {
             const hosts = require("./hosts");
             var list = [[region.data.listenHostname, region.data.hostname]];

@@ -2,7 +2,7 @@
 var fs = require('fs');
 var path = require('path');
 
-var HOST = process.platform !== 'win32'
+var HOSTS = process.platform !== 'win32'
   ? '/etc/hosts'
   : path.join(
     process.env.SystemRoot || path.join(process.env.SystemDrive || 'C:', 'Windows'),
@@ -59,13 +59,14 @@ exports.set = function (ip, host) {
 };
 
 exports.setMany = function (hostList) {
-  var lines = exports.get(), host;
-  
+  var lines = exports.get(), host, didUpdate, unchanged = true;
   // Try to update entries, if host already exists in file
   for (var i = 0, l = hostList.length; i < l; i++) {
-    var didUpdate = false, host = hostList[i];
+    didUpdate = false;
+    host = hostList[i];
     lines = lines.map(function (line) {
       if (Array.isArray(line) && line[1] === host[1]) {
+        unchanged = (line[0] == host[0]);
         line[0] = host[0];
         line[2] = 2; // A flag for error reporting to say this line was changed
         didUpdate = true;
@@ -75,10 +76,11 @@ exports.setMany = function (hostList) {
     // If entry did not exist, let's add it
     if (!didUpdate) {
       lines.push([host[0], host[1], 1]); // The 1 is a flag for error reporting to say this line is new
+      unchanged = false;
     }
   }
-  
-  exports.writeFile(lines);
+
+  if (!unchanged) { exports.writeFile(lines); }
 };
 
 exports.remove = function (ip, host) {
@@ -93,25 +95,25 @@ exports.remove = function (ip, host) {
 };
 
 exports.removeMany = function (hostList) {
-  var lines = exports.get();
+  var lines = exports.get(), unchanged = true;
   
   // Try to remove entries, if they exist
   for (let i = 0, l = hostList.length; i < l; i++) {
     let host = hostList[i];
     lines = lines.filter(function (line) {
-      return !(Array.isArray(line) && line[0] === host[0] && line[1] === host[1]);
+      return unchanged=!(Array.isArray(line) && line[0] === host[0] && line[1] === host[1]);
     });
   }
   
-  exports.writeFile(lines);
+  if (!unchanged) { exports.writeFile(lines); }
 };
 
 exports.writeFile = function (lines) {
-	var data = '', isWindows == process.platform === 'win32', list = [];
+	var data = '', isWindows = process.platform === 'win32', list = [];
 	lines.forEach(function (line) {
 		if (Array.isArray(line)) {
-			line = line[0] + ' ' + line[1];
 			if (line[2]) { list.push(line); }
+			line = line[0] + ' ' + line[1];
 		}
 		data += line + (isWindows ? '\r\n' : '\n');
 	});
@@ -125,6 +127,7 @@ exports.writeFile = function (lines) {
 			var err = new Error('EACCES: Permission denied');
 			err.code = 'EACCES';
 			err.path = HOSTS;
+			err.list = list;
 			throw err;
 		}
 	} catch (e) {
@@ -136,5 +139,12 @@ exports.writeFile = function (lines) {
 	}
 
 	// Write file
-	fs.writeFileSync(HOSTS, data, {mode: mode});
+	// In a try-catch of its own for some added safety
+	// due to not checking who the owner is on non-Windows systems
+	try {
+		fs.writeFileSync(HOSTS, data, {mode: mode});
+	} catch (e) {
+		e.list = list;
+		throw e;
+	}
 };
