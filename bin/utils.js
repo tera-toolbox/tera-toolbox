@@ -14,7 +14,7 @@ function initGlobalSettings(DevMode = false) {
     global.TeraProxy = {
         DevMode: !!DevMode,
         DiscordUrl: 'https://discord.gg/dUNDDtw',
-        SupportUrl: '#help channel of https://discord.gg/dUNDDtw',
+        SupportUrl: 'https://discord.gg/659YbNY',
         GUIMode: !!process.versions.electron,
     };
 }

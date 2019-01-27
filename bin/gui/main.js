@@ -113,14 +113,18 @@ jQuery(($) => {
     }
 
     $('ul.tabs li').click(function changeTab() {
-        emitTabEvent(CurrentTab, 'hide');
-        $('ul.tabs li').removeClass('current');
-        $('.tab-content').removeClass('current');
+        if ($(this).attr('tabclickonly') === 'true') {
+            emitTabEvent($(this).attr('tabname'), 'click');
+        } else {
+            emitTabEvent(CurrentTab, 'hide');
+            $('ul.tabs li').removeClass('current');
+            $('.tab-content').removeClass('current');
 
-        CurrentTab = $(this).attr('tabname');
-        $(this).addClass('current');
-        $("#" + CurrentTab + "_loading").addClass('current');
-        emitTabEvent(CurrentTab, 'show');
+            CurrentTab = $(this).attr('tabname');
+            $(this).addClass('current');
+            $("#" + CurrentTab + "_loading").addClass('current');
+            emitTabEvent(CurrentTab, 'show');
+        }
     });
 
     // --------------------------------------------------------------------
@@ -406,6 +410,17 @@ jQuery(($) => {
     addTab(ModsInstallationTabName, {
         show: () => {
             ipcRenderer.send('get installable mods');
+        },
+    });
+
+    // --------------------------------------------------------------------
+    // ----------------------------- HELP TAB -----------------------------
+    // --------------------------------------------------------------------
+    const HelpTabName = 'help';
+
+    addTab(HelpTabName, {
+        click: () => {
+            shell.openExternal(remote.getGlobal('TeraProxy').SupportUrl);
         },
     });
 
