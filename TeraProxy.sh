@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if test "x$(command -v node)" != "x" then
+if test "x$(command -v node)" != "x"; then
   cd "$DIR"
   exec node --use-strict ./bin/index.js
 else
