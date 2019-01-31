@@ -146,6 +146,7 @@ class TeraProtocol {
       vec3fa: 12,
       angle: 2,
 
+      skillid32: 4,
       skillid: 8,
       customize: 8,
     };

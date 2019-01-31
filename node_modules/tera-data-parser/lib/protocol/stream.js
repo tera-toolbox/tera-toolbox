@@ -69,6 +69,21 @@ class Readable {
         return this.int16() * MULT_INT16_TO_RAD
     }
 
+    skillid32() {
+        const raw = this.uint32(),
+            type = (raw >> 26) & 0xf,
+            npc = Boolean(raw & 0x40000000),
+            hasHuntingZone = npc && type === 1
+
+        return new SkillID({
+            id: raw & (hasHuntingZone ? 0xffff : 0x3ffffff),
+            huntingZoneId: hasHuntingZone ? ((raw >> 16) & 0x3ff) : 0,
+            type,
+            npc,
+            reserved: raw >> 31
+        })
+    }
+
     skillid() {
         const raw = this.uint64(),
             type = Number((raw >> 28n) & 0xfn),
@@ -146,12 +161,28 @@ class Writeable {
     }
     angle(r = 0) { this.int16(Math.round(r * MULT_RAD_TO_INT16)) }
 
+    skillid32(obj = {}) {
+        if(typeof obj === 'number')
+            obj = {type: 1, id: obj}
+
+        const hasHuntingZone = Boolean(obj.npc) && obj.type === 1
+
+        let raw = (Number(obj.id) || 0) & (hasHuntingZone ? 0xffff : 0x3ffffff)
+        if (hasHuntingZone)
+            raw |= (obj.huntingZoneId & 0x3ff) << 16
+		raw |= (obj.type & 0xf) << 26
+		raw |= (obj.npc & 1) << 30
+		raw |= (obj.reserved & 1) << 31
+
+        this.uint32(raw)
+    }
+
     skillid(obj = {}) {
         if(typeof obj === 'number')
             obj = {type: 1, id: obj}
 
         const hasHuntingZone = Boolean(obj.npc) && obj.type === 1
-        
+
         let raw = BigInt((Number(obj.id) || 0) & (hasHuntingZone ? 0xffff : 0xfffffff))
         if (hasHuntingZone)
             raw |= BigInt(obj.huntingZoneId & 0xfff) << 16n
