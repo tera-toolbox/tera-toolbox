@@ -78,6 +78,14 @@ module.exports = {
     customServers: require('./servers/servers-kr-test.json'),
     listenHostname: "127.0.0.17"
   },
+  "KR-CLASSIC": {
+    url: "http://tera.nexon.com/launcherOpenTest/sls/servers/list.xml",
+    hostname: "tera.nexon.com",
+    port: 80,
+    customServers: require('./servers/servers-kr-classic.json'),
+    listenHostname: "127.0.0.17",
+    classic: true
+  },
   "RU-TEST": {
     url: "http://ptr.tera-online.ru/launcher/sls/",
     hostname: "ptr.tera-online.ru",
