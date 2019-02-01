@@ -111,8 +111,8 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
 
       // Check if the file is required for the active game region
       let matchesRegion = true;
-      if(typeof filedata === 'object' && filedata["region"]) {
-        if(typeof filedata["region"] == 'object')
+      if (region && typeof filedata === 'object' && filedata["region"]) {
+        if(typeof filedata["region"] === 'object')
           matchesRegion = filedata["region"].includes(region);
         else
           matchesRegion = filedata["region"] === region;

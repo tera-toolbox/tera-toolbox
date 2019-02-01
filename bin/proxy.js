@@ -1,98 +1,78 @@
-// Host file modification
-function HostsError(e) {
-    switch (e.code) {
-        case "EACCES":
-            console.error('ERROR: Hosts file is set to read-only.');
-            console.error('  * Make sure no anti-virus software is running.')
-            console.error(`  * Locate "${e.path}", right click the file, click 'Properties', uncheck 'Read-only' then click 'OK'.`);
-            break;
-        case "EBUSY":
-            console.error('ERROR: Hosts file is busy and cannot be written to.');
-            console.error('  * Make sure no anti-virus software is running.');
-            console.error(`  * Try deleting "${e.path}".`);
-            break;
-        case "EPERM":
-            console.error('ERROR: Insufficient permission to modify hosts file.');
-            console.error('  * Make sure no anti-virus software is running.');
-            console.error('  * Right click TeraProxy.bat and select \'Run as administrator\'.');
-            break;
-        case "ENOENT":
-            console.error('ERROR: Unable to write to hosts file.');
-            console.error('  * Make sure no anti-virus software is running.');
-            console.error('  * Right click TeraProxy.bat and select \'Run as administrator\'.');
-            break;
-    }
-
-    throw e;
-}
-
-function HostsInitialize(region) {
-    if (region && region.platform !== 'console') {
-        try {
-            const hosts = require("./hosts");
-            hosts.set(region.data.listenHostname, region.data.hostname);
-            for (let x of region.data.altHostnames)
-                hosts.set(region.data.listenHostname, x);
-        } catch (e) {
-            HostsError(e);
-        }
-
-        console.log("[proxy] hosts file patched");
-    }
-}
-
-function HostsClean(region) {
-    if (region && region.platform !== 'console') {
-        try {
-            const hosts = require("./hosts");
-            hosts.remove(region.data.listenHostname, region.data.hostname);
-            for (let x of region.data.altHostnames)
-                hosts.remove(region.data.listenHostname, x);
-        } catch (e) {
-            HostsError(e);
-        }
-    }
-}
-
-// Proxy implementation
-function ListenError(e, port) {
-    switch (e.code) {
-        case "EADDRINUSE":
-            console.error("ERROR: Another instance of TeraProxy is already running, please close it then try again.");
-            break;
-        case "EACCES":
-            console.error(`ERROR: Another process is already using port ${port}.\nPlease close or uninstall the application first:`);
-            require("./netstat")(port);
-            break;
+﻿function RegionFromLanguage(language) {
+    switch (language.toUpperCase()) {
+        case 'USA':
+            return 'NA';
+        case 'EUR':
+        case 'FRA':
+        case 'GER':
+            return 'EU';
+        case 'KOR':
+            return 'KR';
+        case 'JP':
+            return 'JP';
+        case 'TW':
+            return 'TW';
+        case 'THA':
+        case 'SE':
+            return 'TH';
+        case 'RUS':
+            return 'RU';
         default:
-            throw e;
+            throw new Error('Invalid language!');
     }
+}
 
-    process.exit();
+function ProxyTagFromLanguage(language) {
+    switch (language.toUpperCase()) {
+        case 'USA':
+            return ' (Proxy)';
+        case 'EUR':
+        case 'FRA':
+        case 'GER':
+            return ' (Proxy)';
+        case 'KOR':
+            return ' (대리)';
+        case 'JP':
+            return '（プロキシ）';
+        case 'TW':
+            return '（代理）';
+        case 'THA':
+        case 'SE':
+            return ' (Proxy)';
+        case 'RUS':
+            return ' (Прокси)';
+        default:
+            throw new Error('Invalid language!');
+    }
 }
 
 class TeraProxy {
-    constructor(moduleFolder, config, region) {
+    constructor(moduleFolder, config) {
         this.moduleFolder = moduleFolder;
         this.config = config;
-        this.region = region;
         this.running = false;
 
         this.servers = new Map();
-        this.slsInit();
+        this.listenIp = config.listenip || '127.0.0.20';
+        this.listenPort = config.listenport || 9250;
 
         const ConnectionManager = require('./connectionManager');
-        this.connectionManager = new ConnectionManager(moduleFolder, this.region.id, this.region.idShort, this.region.platform);
+        this.connectionManager = new ConnectionManager(moduleFolder);
+
+        const ClientInterfaceServer = require('tera-client-interface');
+        this.clientInterfaceServer = new ClientInterfaceServer('127.0.0.10', 9250, client => this.onClientInterfaceConnected(client));
     }
 
     destructor() {
+        if (this.clientInterfaceServer) {
+            this.clientInterfaceServer.destructor();
+            this.clientInterfaceServer = null;
+        }
+
         if (this.connectionManager) {
             this.connectionManager.destructor();
             this.connectionManager = null;
         }
-
-        HostsClean(this.region);
-        this.slsDestroy();
 
         this.servers.forEach(server => server.close());
         this.servers.clear();
@@ -103,130 +83,88 @@ class TeraProxy {
     run() {
         this.running = true;
 
-        console.log(`[proxy] Tera-Proxy configured for region ${this.region.id}!`);
-
-        // TODO remove this - show GUI update notification
-        if (!process.versions.electron) {
-            console.log(`[info] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
-            console.log(`[info] Tera-Proxy now comes with an official graphical user interface!`);
-            console.log(`[info] If you want to use it, please check out the #proxy-news channel`);
-            console.log(`[info] in ${global.TeraProxy.DiscordUrl} for further information!`);
-            console.log(`[info] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
-        }
-
-        HostsClean(this.region);
-        this.slsListen();
-
         // TODO: this is a dirty hack, implement a proper API for client/startup mods
         const { listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
         listModuleInfos(this.moduleFolder).forEach(modInfo => {
-            if (modInfo.options.loadOn === "startup") {
+            if (modInfo.options.loadOn === 'startup') {
                 console.log(`[proxy] Loading startup module ${modInfo.name}`);
                 try {
                     const modConstructor = require(modInfo.path);
-                    modConstructor(this.region.idShort);
+                    modConstructor(null);
                 } catch (e) {
                     console.log(`[proxy] Error loading startup module ${modInfo.name}:`);
                     console.log(e);
                 }
             }
         });
+
+        console.log('Ready, waiting for game client start!');
     }
 
     get hasActiveConnections() {
         return this.connectionManager.hasActiveConnections;
     }
 
-    slsInit() {
-        if (this.region.platform !== 'console') {
-            const SlsProxy = require("tera-proxy-sls");
-            this.slsProxy = new SlsProxy(this.region.data);
-        } else {
-            this.slsProxy = null;
-        }
+    redirect(id, name, ip, port, region, regionShort, platform) {
+        // Try to find server that's already listening
+        const key = `${platform}-${region}-${id}-${ip}:${port}`;
+        const cached = this.servers.get(key);
+        if (cached)
+            return { ip: cached.address().address, port: cached.address().port };
+
+        // Create a new server
+        const net = require('net');
+        const server = net.createServer(socket => this.connectionManager.start(id, { ip, port }, socket, region, regionShort, platform));
+        const listenPort = this.listenPort++;
+        server.listen(listenPort, this.listenIp, () => {
+            const { address: listen_ip, port: listen_port } = server.address();
+            console.log(`[proxy] Redirecting ${name} (${region}-${id}) from ${listen_ip}:${listen_port} to ${ip}:${port}`);
+        });
+
+        this.servers.set(key, server);
+        return { ip: this.listenIp, port: listenPort };
     }
 
-    slsListenHandler(err) {
-        if (err) {
-            ListenError(err, this.region.data.port);
-        } else {
-            HostsInitialize(this.region);
-
-            for (let i = this.servers.entries(), step; !(step = i.next()).done;) {
-                const [id, server] = step.value;
-                const currentCustomServer = this.region.data.customServers[id];
-
-                server.listen(currentCustomServer.port, currentCustomServer.ip || "127.0.0.1", () => {
-                    const { address, port } = server.address();
-                    console.log(`[proxy] listening on ${address}:${port}`);
-                });
-            }
-        }
-    }
-
-    slsListen() {
-        const net = require("net");
-
-        if (this.region.platform !== 'console') {
-            const dns = require("dns");
-            dns.setServers(this.config.dnsservers || ["8.8.8.8", "8.8.4.4"]);
-
-            // For some reason, node's http request timeout doesn't always work, so add a workaround here.
-            let slsTimeout = setTimeout(() => {
-                console.error("ERROR: Timeout while trying to load the server list.");
-                console.error("This is NOT a proxy issue. Your connection to the official servers is not working properly!");
-                console.error("Try restarting/resetting your router and your computer. That might solve the issue.");
-                process.exit(1);
-            }, 5000);
-
-            this.slsProxy.fetch((err, gameServers) => {
-                if (err) {
-                    console.error(`ERROR: Unable to load the server list: ${err}`);
-                    console.error("This is almost always caused by");
-                    console.error(" - your setup (invasive virus scanners, viruses, ...)");
-                    console.error(" - your internet connection (unstable/broken connection, improper configuration, geo-IP ban from the game region you're trying to play on, ...)");
-                    console.error(" - game servers being down for maintenance");
-                    console.error("Please test if you can regularly play the game (without proxy). If you can't, it's not a proxy issue, but one of the above.");
-                    console.error("You can also try restarting/resetting your router and your computer.");
-                    process.exit(1);
+    onClientInterfaceConnected(client) {
+        client.on('data', (command, data) => {
+            switch (command) {
+                case 'info': {
+                    client.info = data;
+                    console.log(`[proxy] Client connected (${RegionFromLanguage(data.language)} v${data.major_patch}.${data.minor_patch})`);
+                    break;
                 }
+                case 'get_sls': {
+                    if (client.info) {
+                        let proxy_servers = data.servers.map(server => {
+                            let patched_server = Object.assign({}, server);
 
-                for (let i = 0, arr = Object.keys(this.region.data.customServers), len = arr.length; i < len; ++i) {
-                    const id = arr[i];
-                    const target = gameServers[id];
-                    if (!target) {
-                        console.error(`[sls] WARNING: Server ${id} not found`);
-                        continue;
+                            if (!this.config.noslstags) {
+                                const tag = ProxyTagFromLanguage(client.info.language);
+                                patched_server.name += tag;
+                                patched_server.title += tag;
+                            }
+
+                            const region = RegionFromLanguage(client.info.language);
+                            const platform = (client.info.major_patch <= 27) ? 'classic' : 'pc';
+                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, region, region.toLowerCase(), platform);
+                            patched_server.ip = redirected_server.ip;
+                            patched_server.port = redirected_server.port;
+
+                            return patched_server;
+                        });
+
+                        data.servers = !this.config.noslstags ? [...proxy_servers, ...data.servers] : proxy_servers;
                     }
 
-                    const server = net.createServer(socket => this.connectionManager.start(id, target, socket));
-                    this.servers.set(id, server);
+                    client.send("sls", data);
+                    break;
                 }
-
-                this.slsProxy.listen(this.region.data.listenHostname, err => this.slsListenHandler(err));
-                clearTimeout(slsTimeout);
-            });
-        } else {
-            for (let i = 0, arr = Object.keys(this.region.data.customServers), len = arr.length; i < len; ++i) {
-                const id = arr[i];
-                const target = this.region.data.customServers[id]["remote"];
-
-                const server = net.createServer(socket => this.connectionManager.start(id, target, socket));
-                this.servers.set(id, server);
             }
+        });
 
-            this.slsListenHandler();
-        }
-    }
-
-    slsDestroy() {
-        if (this.region && this.region.platform === 'console')
-            return;
-
-        if (this.slsProxy) {
-            this.slsProxy.close();
-            this.slsProxy = null;
-        }
+        client.on('disconnect', e => {
+            console.log(`[proxy] Client disconnected`);
+        });
     }
 }
 

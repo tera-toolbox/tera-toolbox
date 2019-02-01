@@ -168,13 +168,13 @@ jQuery(($) => {
 
     function onSettingsChanged(newSettings) {
         Settings = newSettings;
-        $(`option:contains(${Settings.region}):first`).prop('selected', true);
         $('#autostart').prop('checked', Settings.gui.autostart);
         $('#updatelog').prop('checked', Settings.updatelog);
         $('#logtimes').prop('checked', Settings.gui.logtimes);
         $('#noupdate').prop('checked', Settings.noupdate);
         $('#noselfupdate').prop('checked', Settings.noselfupdate);
         $('#devmode').prop('checked', Settings.devmode);
+        $('#noslstags').prop('checked', Settings.noslstags);
         $('head').append(`<link rel="stylesheet" href="css/themes/${Themes.indexOf(Settings.gui.theme) < 0 ? Themes[0] : Settings.gui.theme}.css">`);
     }
 
@@ -210,10 +210,6 @@ jQuery(($) => {
     });
 
     // UI events
-    $('#regions').change(() => {
-        updateSetting('region', $('#regions').find(":selected").text());
-    });
-
     $('#autostart').click(() => {
         updateGUISetting('autostart', $('#autostart').is(':checked'));
     });
@@ -244,6 +240,10 @@ jQuery(($) => {
         updateSetting('devmode', $('#devmode').is(':checked'));
     });
 
+    $('#noslstags').click(() => {
+        updateSetting('noslstags', $('#noslstags').is(':checked'));
+    });
+    
     Themes.forEach(theme => {
         $(`#theme_${theme}`).click(() => {
             $('head>link').filter('[rel="stylesheet"]:last').remove();

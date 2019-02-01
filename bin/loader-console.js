@@ -1,6 +1,6 @@
-function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
+function RunProxy(ModuleFolder, ProxyConfig) {
     const TeraProxy = require('./proxy');
-    let proxy = new TeraProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+    let proxy = new TeraProxy(ModuleFolder, ProxyConfig);
     try {
         proxy.run();
     } catch (_) {
@@ -33,7 +33,7 @@ function RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
     process.on("SIGTERM", cleanExit);
 }
 
-module.exports = function LoaderConsole(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
+module.exports = function LoaderConsole(ModuleFolder, ProxyConfig) {
     global.TeraProxy.GUIMode = false;
 
     // Auto-update modules & tera-data and run
@@ -43,10 +43,10 @@ module.exports = function LoaderConsole(ModuleFolder, ProxyConfig, ProxyRegionCo
         console.warn("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
         console.warn("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
         console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+        RunProxy(ModuleFolder, ProxyConfig);
     } else {
         const autoUpdate = require("./update");
-        autoUpdate(ModuleFolder, ProxyConfig.updatelog, true, ProxyRegionConfig.idShort).then(updateResult => {
+        autoUpdate(ModuleFolder, ProxyConfig.updatelog, true).then(updateResult => {
             for (let mod of updateResult["legacy"])
                 console.log("[update] WARNING: Module %s does not support auto-updating!", mod.name);
             for (let mod of updateResult["failed"])
@@ -57,7 +57,7 @@ module.exports = function LoaderConsole(ModuleFolder, ProxyConfig, ProxyRegionCo
             delete require.cache[require.resolve("tera-data-parser")];
             delete require.cache[require.resolve("tera-proxy-game")];
 
-            RunProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+            RunProxy(ModuleFolder, ProxyConfig);
         }).catch(e => {
             console.log("ERROR: Unable to auto-update: %s", e);
         });

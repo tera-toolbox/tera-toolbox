@@ -8,17 +8,6 @@ function SaveConfiguration(newConfig) {
     require('./config').saveConfig(newConfig);
 }
 
-// Region
-function LoadRegion(region) {
-    try {
-        return require('./config').loadRegion(region);
-    } catch (e) {
-        showError(`ERROR: Unable to load region information: ${e}`);
-        showError(`ERROR: Try to fix it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
-        process.exit(1);
-    }
-}
-
 // Installed mod management
 const AvailableModuleListUrl = "https://raw.githubusercontent.com/caali-hackerman/tera-mods/master/modulelist.json";
 const { listModuleInfos, installModule, uninstallModule, toggleAutoUpdate } = require('tera-proxy-game').ModuleInstallation;
@@ -38,12 +27,12 @@ async function getInstallableMods(forceRefresh = false) {
 
 // Proxy Main
 let proxy = null;
-function _StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
+function _StartProxy(ModuleFolder, ProxyConfig) {
     if (proxy)
         return false;
 
     const TeraProxy = require('./proxy');
-    proxy = new TeraProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+    proxy = new TeraProxy(ModuleFolder, ProxyConfig);
     try {
         proxy.run();
         return true;
@@ -54,7 +43,7 @@ function _StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
     }
 }
 
-async function StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
+async function StartProxy(ModuleFolder, ProxyConfig) {
     if (proxy)
         return false;
 
@@ -64,12 +53,12 @@ async function StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
         log("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
         log("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
         log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        return _StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+        return _StartProxy(ModuleFolder, ProxyConfig);
     } else {
         const autoUpdate = require("./update");
 
         try {
-            const updateResult = await autoUpdate(ModuleFolder, ProxyConfig.updatelog, true, ProxyRegionConfig.idShort);
+            const updateResult = await autoUpdate(ModuleFolder, ProxyConfig.updatelog, true);
 
             for (let mod of updateResult["legacy"])
                 log(`[update] WARNING: Module ${mod.name} does not support auto-updating!`);
@@ -81,7 +70,7 @@ async function StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig) {
             delete require.cache[require.resolve("tera-data-parser")];
             delete require.cache[require.resolve("tera-proxy-game")];
 
-            return _StartProxy(ModuleFolder, ProxyConfig, ProxyRegionConfig);
+            return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
             error(`ERROR: Unable to auto-update: ${e}`);
             return false;
@@ -135,7 +124,7 @@ ipcMain.on('init', (event, _) => {
 
     if (config.gui.autostart) {
         log("Starting proxy...");
-        StartProxy(ModuleFolder, config, LoadRegion(config.region)).then((result) => {
+        StartProxy(ModuleFolder, config).then((result) => {
             event.sender.send('proxy running', result);
         });
     }
@@ -143,7 +132,7 @@ ipcMain.on('init', (event, _) => {
 
 ipcMain.on('start proxy', (event, _) => {
     log("Starting proxy...");
-    StartProxy(ModuleFolder, config, LoadRegion(config.region)).then((result) => {
+    StartProxy(ModuleFolder, config).then((result) => {
         event.sender.send('proxy running', result);
     });
 });
@@ -295,7 +284,7 @@ function log(msg) {
         gui.log(msg);
 }
 
-module.exports = function LoaderGUI(ModFolder, ProxyConfig, ProxyRegionConfig) {
+module.exports = function LoaderGUI(ModFolder, ProxyConfig) {
     // Enforce single instance of GUI
     if (!app.requestSingleInstanceLock()) {
         app.quit();
