@@ -18,7 +18,7 @@
         case 'RUS':
             return 'RU';
         default:
-            throw new Error('Invalid language!');
+            throw new Error(`Invalid language "${language}"!`);
     }
 }
 
@@ -42,7 +42,7 @@ function ProxyTagFromLanguage(language) {
         case 'RUS':
             return ' (Прокси)';
         default:
-            throw new Error('Invalid language!');
+            throw new Error(`Invalid language "${language}"!`);
     }
 }
 
