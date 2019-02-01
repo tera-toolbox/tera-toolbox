@@ -280,6 +280,9 @@ function showError(error) {
 }
 
 function log(msg) {
+    if (msg.length === 0)
+        return;
+
     if (gui)
         gui.log(msg);
 }

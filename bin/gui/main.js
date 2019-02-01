@@ -243,7 +243,7 @@ jQuery(($) => {
     $('#noslstags').click(() => {
         updateSetting('noslstags', $('#noslstags').is(':checked'));
     });
-    
+
     Themes.forEach(theme => {
         $(`#theme_${theme}`).click(() => {
             $('head>link').filter('[rel="stylesheet"]:last').remove();
