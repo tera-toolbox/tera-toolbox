@@ -60,7 +60,25 @@ class TeraProxy {
         this.connectionManager = new ConnectionManager(moduleFolder);
 
         const ClientInterfaceServer = require('tera-client-interface');
-        this.clientInterfaceServer = new ClientInterfaceServer('127.0.0.10', 9250, client => this.onClientInterfaceConnected(client));
+        this.clientInterfaceServer = new ClientInterfaceServer('127.0.0.10', 9250,
+            client => {
+                this.onClientInterfaceConnected(client);
+            },
+            () => {
+                console.log('[proxy] Ready, waiting for game client start!');
+            },
+            e => {
+                console.log('[proxy] ERROR: Unable to start client interface server.');
+                switch (e.code) {
+                    case 'EADDRINUSE':
+                        console.log('[proxy] ERROR: Another instance of tera-proxy is already running. Please close it and try again!');
+                        break;
+                    default:
+                        console.log(e);
+                        break;
+                }
+            }
+        );
     }
 
     destructor() {
@@ -98,7 +116,7 @@ class TeraProxy {
             }
         });
 
-        console.log('Ready, waiting for game client start!');
+        this.clientInterfaceServer.run();
     }
 
     get hasActiveConnections() {
