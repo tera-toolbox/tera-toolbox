@@ -32,7 +32,7 @@ function main() {
             dialog.showMessageBox({
                 type: 'error',
                 title: 'Self-update error!',
-                message: `Tera-Proxy was unable to update itself. Please ask in ${global.TeraProxy.SupportUrl} for help!\n\nIt will now be terminated.`
+                message: `Tera-Proxy was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nIt will now be terminated.`
             });
 
             app.quit();
@@ -43,7 +43,7 @@ function main() {
         dialog.showMessageBox({
             type: 'error',
             title: 'Self-update error!',
-            message: `Tera-Proxy was unable to update itself. Please ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe full error message is:\n${e}\n\nProxy will now be terminated.`
+            message: `Tera-Proxy was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nThe full error message is:\n${e}\n\nProxy will now be terminated.`
         });
 
         app.quit();

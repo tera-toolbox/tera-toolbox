@@ -142,7 +142,7 @@ async function autoUpdateSelf(outputConsole, updatelimit = true, serverIndex = 0
 
         if (serverIndex + 1 < TeraProxyAutoUpdateServers.length) {
             outputConsole.log('Attempting to use next update server...\n');
-            return autoUpdateSelf(updatelimit, serverIndex + 1);
+            return autoUpdateSelf(outputConsole, updatelimit, serverIndex + 1);
         } else {
             outputConsole.error(`ERROR: Unable to perform self-update!:\n${e}\n\nPlease join ${DiscordURL} and check the #info and #help channels for further instructions.`);
             return Promise.reject(e);
