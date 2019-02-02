@@ -142,6 +142,21 @@ function loadModuleInfo(rootFolder, name) {
                 moduleManifest = JSON.parse(moduleManifest);
                 result.packets = moduleManifest.defs || result.packets;
             }
+
+            // Try to load module config
+            let moduleConfig = null;
+            try {
+                moduleConfig = fs.readFileSync(path.join(modulePath, 'module.config.json'), 'utf8');
+            } catch (_) {
+                // Ignore
+            }
+
+            if (moduleConfig) {
+                moduleConfig = JSON.parse(moduleConfig);
+                result.disabled = moduleConfig.disabled !== undefined ? moduleConfig.disabled : result.disabled;
+                result.autoUpdateDisabled = moduleConfig.autoUpdateDisabled !== undefined ? moduleConfig.autoUpdateDisabled : result.autoUpdateDisabled;
+                result.drmKey = (moduleConfig.drmKey !== undefined && moduleConfig.drmKey !== null) ? moduleConfig.drmKey : result.drmKey;
+            }
         }
     }
 
@@ -154,25 +169,34 @@ function loadModuleInfo(rootFolder, name) {
 
 
 // Module auto update settings management
-function _loadModuleInfoFile(moduleInfo) {
+function _loadModuleConfigFile(moduleInfo) {
     if (moduleInfo.compatibility !== 'compatible')
-        throw new TypeError(`Trying to change auto update mode for incompatible module ${moduleInfo.name}!`);
+        throw new TypeError(`Trying to change configuration for incompatible module ${moduleInfo.name}!`);
 
-    return JSON.parse(fs.readFileSync(path.join(moduleInfo.path, 'module.json'), 'utf8'));
+    try {
+        return JSON.parse(fs.readFileSync(path.join(moduleInfo.path, 'module.config.json'), 'utf8'));
+    } catch (e) {
+        let res = {};
+        res.disabled = !!moduleInfo.disabled;
+        res.autoUpdateDisabled = !!moduleInfo.autoUpdateDisabled;
+        if (moduleInfo.drmKey !== undefined && moduleInfo.drmKey !== null)
+            res.drmKey = moduleInfo.drmKey;
+        return res;
+    }
 }
 
-function _storeModuleInfoFile(moduleInfo, data) {
+function _storeModuleConfigFile(moduleInfo, data) {
     if (moduleInfo.compatibility !== 'compatible')
-        throw new TypeError(`Trying to change auto update mode for incompatible module ${moduleInfo.name}!`);
+        throw new TypeError(`Trying to change configuration for incompatible module ${moduleInfo.name}!`);
 
-    fs.writeFileSync(path.join(moduleInfo.path, 'module.json'), JSON.stringify(data, null, 4));
+    fs.writeFileSync(path.join(moduleInfo.path, 'module.config.json'), JSON.stringify(data, null, 4));
 }
 
 
 function setAutoUpdateEnabled(moduleInfo, enabled) {
-    let moduleInfoFile = _loadModuleInfoFile(moduleInfo);
-    moduleInfoFile.disableAutoUpdate = !enabled;
-    _storeModuleInfoFile(moduleInfo, moduleInfoFile);
+    let moduleConfigFile = _loadModuleConfigFile(moduleInfo);
+    moduleConfigFile.disableAutoUpdate = !enabled;
+    _storeModuleConfigFile(moduleInfo, moduleConfigFile);
 }
 
 function enableAutoUpdate(moduleInfo) {
@@ -189,9 +213,9 @@ function toggleAutoUpdate(moduleInfo) {
 
 
 function setLoadEnabled(moduleInfo, enabled) {
-    let moduleInfoFile = _loadModuleInfoFile(moduleInfo);
-    moduleInfoFile.disabled = !enabled;
-    _storeModuleInfoFile(moduleInfo, moduleInfoFile);
+    let moduleConfigFile = _loadModuleConfigFile(moduleInfo);
+    moduleConfigFile.disabled = !enabled;
+    _storeModuleConfigFile(moduleInfo, moduleConfigFile);
 }
 
 function enableLoad(moduleInfo) {
