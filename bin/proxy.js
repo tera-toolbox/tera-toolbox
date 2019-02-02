@@ -65,7 +65,23 @@ class TeraProxy {
                 this.onClientInterfaceConnected(client);
             },
             () => {
+                // TODO: this is a dirty hack, implement a proper API for client/startup mods
+                const { listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
+                listModuleInfos(this.moduleFolder).forEach(modInfo => {
+                    if (modInfo.options.loadOn === 'startup') {
+                        console.log(`[proxy] Loading startup module ${modInfo.name}`);
+                        try {
+                            const modConstructor = require(modInfo.path);
+                            modConstructor(null);
+                        } catch (e) {
+                            console.log(`[proxy] Error loading startup module ${modInfo.name}:`);
+                            console.log(e);
+                        }
+                    }
+                });
+
                 console.log('[proxy] Ready, waiting for game client start!');
+                this.running = true;
             },
             e => {
                 console.log('[proxy] ERROR: Unable to start client interface server.');
@@ -99,23 +115,6 @@ class TeraProxy {
     }
 
     run() {
-        this.running = true;
-
-        // TODO: this is a dirty hack, implement a proper API for client/startup mods
-        const { listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
-        listModuleInfos(this.moduleFolder).forEach(modInfo => {
-            if (modInfo.options.loadOn === 'startup') {
-                console.log(`[proxy] Loading startup module ${modInfo.name}`);
-                try {
-                    const modConstructor = require(modInfo.path);
-                    modConstructor(null);
-                } catch (e) {
-                    console.log(`[proxy] Error loading startup module ${modInfo.name}:`);
-                    console.log(e);
-                }
-            }
-        });
-
         this.clientInterfaceServer.run();
     }
 

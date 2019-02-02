@@ -1,5 +1,5 @@
 const path = require('path');
-const { app, BrowserWindow, Tray, Menu, ipcMain } = require('electron');
+const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require('electron');
 const ModuleFolder = path.join(__dirname, "..", "mods");
 
 // Configuration
@@ -225,6 +225,9 @@ ipcMain.on('uninstall mod', (event, modInfo) => {
     event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
+ipcMain.on('show mods folder', () => {
+    shell.openItem(ModuleFolder);
+});
 
 // GUI
 class TeraProxyGUI {
