@@ -8,7 +8,7 @@
             return 'EU';
         case 'KOR':
             return 'KR';
-        case 'JP':
+        case 'JPN':
             return 'JP';
         case 'TW':
             return 'TW';
@@ -32,7 +32,7 @@ function ProxyTagFromLanguage(language) {
             return ' (Proxy)';
         case 'KOR':
             return ' (대리)';
-        case 'JP':
+        case 'JPN':
             return '（プロキシ）';
         case 'TW':
             return '（代理）';
