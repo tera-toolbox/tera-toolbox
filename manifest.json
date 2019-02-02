@@ -13,7 +13,7 @@
     "bin/proxy.js": "03c4a753d8a3d3c8b521f0b701b6d98ea63561ac11977e3ac8942302c8e599e6",
     "bin/utils.js": "33f639991992a7a7a092a490eccec0522f62dd58a837c5bc5fb164a1151f2e3b",
     "bin/update.js": "591bcfeb5774a70f8ad633d36414dd166a84caed171637c9dc92478024c22fc8",
-    "bin/update-self.js": "f729c48debb83162888ce3cb3b530c66c680f09465cc929d57e1cec77c7e25c8",
+    "bin/update-self.js": "fb8815b437d52503f06ec7ac2bf71233b2a177d902bf565f1a8ff9b0c020e153",
     "bin/gui/main.js": "15620dbf42a06955aa0119d9d9561c67385c1192cb02f3e7115b9813747585b4",
     "bin/gui/index.html": "512b6f5db5880f64413d9e4187e20093bc5ce19ee08faa3e3a0fcb2b42cea470",
     "bin/gui/icon.png": "414bb8e8a84a8c26da11087b7e845f8a85651fc92e64652c956dcf4a949bc791",
