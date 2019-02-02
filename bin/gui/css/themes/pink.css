@@ -172,6 +172,28 @@ ul.ModulesList li {
                 background-size: 28px;
             }
 
+        .moduleBody.buttons.loadEnabled {
+            background: url(../../icons/loadEnabledWhite.svg);
+            background-repeat: no-repeat;
+            background-size: 24px;
+            margin-top: 2px;
+        }
+
+            .moduleBody.buttons.loadEnabled:hover {
+                background-size: 26px;
+            }
+
+        .moduleBody.buttons.loadDisabled {
+            background: url(../../icons/loadDisabledWhite.svg);
+            background-repeat: no-repeat;
+            background-size: 24px;
+            margin-top: 2px;
+        }
+
+            .moduleBody.buttons.loadDisabled:hover {
+                background-size: 26px;
+            }
+
 /***********************
  * INSTALLABLE MODULES *
  ***********************/

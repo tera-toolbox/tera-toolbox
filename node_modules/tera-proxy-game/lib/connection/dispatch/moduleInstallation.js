@@ -168,6 +168,7 @@ function _storeModuleInfoFile(moduleInfo, data) {
     fs.writeFileSync(path.join(moduleInfo.path, 'module.json'), JSON.stringify(data, null, 4));
 }
 
+
 function setAutoUpdateEnabled(moduleInfo, enabled) {
     let moduleInfoFile = _loadModuleInfoFile(moduleInfo);
     moduleInfoFile.disableAutoUpdate = !enabled;
@@ -187,4 +188,23 @@ function toggleAutoUpdate(moduleInfo) {
 }
 
 
-module.exports = { CoreModules, isCoreModule, listModules, listModuleInfos, loadModuleInfo, installModule, uninstallModule, setAutoUpdateEnabled, enableAutoUpdate, disableAutoUpdate, toggleAutoUpdate };
+function setLoadEnabled(moduleInfo, enabled) {
+    let moduleInfoFile = _loadModuleInfoFile(moduleInfo);
+    moduleInfoFile.disabled = !enabled;
+    _storeModuleInfoFile(moduleInfo, moduleInfoFile);
+}
+
+function enableLoad(moduleInfo) {
+    setLoadEnabled(moduleInfo, true);
+}
+
+function disableLoad(moduleInfo) {
+    setLoadEnabled(moduleInfo, false);
+}
+
+function toggleLoad(moduleInfo) {
+    setLoadEnabled(moduleInfo, moduleInfo.disabled);
+}
+
+
+module.exports = { CoreModules, isCoreModule, listModules, listModuleInfos, loadModuleInfo, installModule, uninstallModule, setAutoUpdateEnabled, enableAutoUpdate, disableAutoUpdate, toggleAutoUpdate, setLoadEnabled, enableLoad, disableLoad, toggleLoad };

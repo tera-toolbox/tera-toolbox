@@ -290,6 +290,18 @@ ul.tabs {
             margin-left: 10px;
         }
 
+        .moduleBody.buttons.loadEnabled {
+            width: 28px;
+            height: 28px;
+            border: none;
+        }
+
+        .moduleBody.buttons.loadDisabled {
+            width: 28px;
+            height: 28px;
+            border: none;
+        }
+
         .moduleBody.buttons.updateEnabled {
             width: 28px;
             height: 28px;

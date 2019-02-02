@@ -270,11 +270,12 @@ jQuery(($) => {
             const donationId = `moddonate-${escapedName}`;
             const uninstallId = `moduninstall-${escapedName}`;
             const infoId = `modinfo-${escapedName}`;
+            const enabledId = `modenabled-${escapedName}`;
             const updateId = `modupdate-${escapedName}`;
 
             $('.modulesList').append(`
                 <div id="${headerId}" class="moduleHeader">
-                    <div class="moduleHeader name">${displayName(modInfo)}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
+                    <div class="moduleHeader name">${modInfo.disabled ? '[DISABLED] ' : ''}${displayName(modInfo)}${modInfo.version ? `<span style="font-weight: none; font-size: 14px; font-style: italic"> (${modInfo.version})</span>` : ''}</div>
                     ${modInfo.author ? `<div class="moduleHeader author">by ${modInfo.author}${modInfo.drmKey ? ' (paid)' : ''}</div>` : ''}
                 </div>
             `);
@@ -288,7 +289,8 @@ jQuery(($) => {
                         ${!modInfo.isCoreModule ? `<a href="#" id="${uninstallId}" class="moduleBody buttons uninstall"></a>` : ''}
                         ${modInfo.donationUrl ? `<a href="#" id="${donationId}" class="moduleBody buttons donate"></a>` : ''}
                         ${modInfo.supportUrl ? `<a href="#" id="${infoId}" class="moduleBody buttons info"></a>` : ''}
-                        ${(!modInfo.isCoreModule && modInfo.compatibility === 'compatible') ? `<a href="#" id="${updateId}" class="moduleBody buttons update${modInfo.autoUpdateDisabled ? 'Disabled' : 'Enabled'}"></a>` :  ''}
+                        ${(!modInfo.isCoreModule && modInfo.compatibility === 'compatible') ? `<a href="#" id="${updateId}" class="moduleBody buttons update${modInfo.autoUpdateDisabled ? 'Disabled' : 'Enabled'}"></a>` : ''}
+                        ${(!modInfo.isCoreModule && modInfo.compatibility === 'compatible') ? `<a href="#" id="${enabledId}" class="moduleBody buttons load${modInfo.disabled ? 'Disabled' : 'Enabled'}"></a>` : ''}
                     </div>
                 </div>`
             );
@@ -302,6 +304,15 @@ jQuery(($) => {
             $(`#${infoId}`).on('click', (event) => {
                 event.preventDefault();
                 shell.openExternal(modInfo.supportUrl);
+                return false;
+            });
+
+            $(`#${enabledId}`).on('click', (event) => {
+                event.preventDefault();
+                if (!WaitingForModAction) {
+                    ipcRenderer.send('toggle mod load', modInfo);
+                    WaitingForModAction = true;
+                }
                 return false;
             });
 
