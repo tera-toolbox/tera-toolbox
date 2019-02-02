@@ -1,11 +1,46 @@
 const path = require('path');
 const { app, BrowserWindow, Tray, Menu, ipcMain } = require('electron');
+const ModuleFolder = path.join(__dirname, "..", "mods");
 
 // Configuration
+function LoadConfiguration() {
+    try {
+        return require('./config').loadConfig();
+    } catch (_) {
+        const { dialog } = require('electron');
+
+        dialog.showMessageBox({
+            type: 'error',
+            title: 'Invalid settings file!',
+            message: `The config.json file in your proxy folder is malformed. Try to fix it yourself, delete it to generate a new one, or ask in ${global.TeraProxy.SupportUrl} for help!\n\nProxy will now be terminated.`
+        });
+
+        app.quit();
+    }
+}
+
 function SaveConfiguration(newConfig) {
     global.TeraProxy.DevMode = !!newConfig.devmode;
     global.TeraProxy.GUITheme = newConfig.gui.theme;
     require('./config').saveConfig(newConfig);
+}
+
+// Migration
+function Migration() {
+    try {
+        const { ProxyMigration } = require('./migration');
+        ProxyMigration();
+    } catch (e) {
+        const { dialog } = require('electron');
+
+        dialog.showMessageBox({
+            type: 'error',
+            title: 'Migration error!',
+            message: `Unable to migrate files from an old version of Tera-Proxy.\nPlease reinstall a clean copy using the latest installer or ask in ${global.TeraProxy.SupportUrl} for help!\n\nProxy will now be terminated.`
+        });
+
+        app.quit();
+    }
 }
 
 // Installed mod management
@@ -27,24 +62,27 @@ async function getInstallableMods(forceRefresh = false) {
 
 // Proxy Main
 let proxy = null;
+let proxyRunning = false;
 function _StartProxy(ModuleFolder, ProxyConfig) {
-    if (proxy)
+    if (proxy || proxyRunning)
         return false;
 
     const TeraProxy = require('./proxy');
     proxy = new TeraProxy(ModuleFolder, ProxyConfig);
     try {
         proxy.run();
+        proxyRunning = true;
         return true;
     } catch (_) {
         console.error('[proxy] Unable to start proxy!');
         proxy = null;
+        proxyRunning = false;
         return false;
     }
 }
 
 async function StartProxy(ModuleFolder, ProxyConfig) {
-    if (proxy)
+    if (proxy || proxyRunning)
         return false;
 
     if (ProxyConfig.noupdate) {
@@ -79,11 +117,12 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
 }
 
 async function StopProxy() {
-    if (!proxy)
+    if (!proxy || !proxyRunning)
         return false;
 
     proxy.destructor();
     proxy = null;
+    proxyRunning = false;
     return true;
 }
 
@@ -131,6 +170,9 @@ ipcMain.on('init', (event, _) => {
 });
 
 ipcMain.on('start proxy', (event, _) => {
+    if (proxy || proxyRunning)
+        return;
+
     log("Starting proxy...");
     StartProxy(ModuleFolder, config).then((result) => {
         event.sender.send('proxy running', result);
@@ -138,6 +180,9 @@ ipcMain.on('start proxy', (event, _) => {
 });
 
 ipcMain.on('stop proxy', (event, _) => {
+    if (!proxy || !proxyRunning)
+        return;
+
     log("Stopping proxy...");
     StopProxy().then(() => {
         event.sender.send('proxy running', false);
@@ -195,6 +240,31 @@ class TeraProxyGUI {
                 this.window.restore();
             this.window.focus();
             return;
+        }
+
+        // Migration
+        Migration();
+
+        // Load configuration
+        config = LoadConfiguration();
+        global.TeraProxy.GUIMode = true;
+        global.TeraProxy.DevMode = !!config.devmode;
+
+        if (!config.gui) {
+            config.gui = {
+                enabled: true,
+                theme: 'black',
+                autostart: false
+            };
+
+            SaveConfiguration(config);
+        } else {
+            if (config.gui.logtimes === undefined) {
+                config.gui.logtimes = true;
+                SaveConfiguration(config);
+            }
+
+            global.TeraProxy.GUITheme = config.gui.theme || 'black';
         }
 
         // Initialize main window
@@ -269,7 +339,6 @@ class TeraProxyGUI {
 }
 
 // Main
-let ModuleFolder;
 let config;
 let gui;
 
@@ -287,56 +356,38 @@ function log(msg) {
         gui.log(msg);
 }
 
-module.exports = function LoaderGUI(ModFolder, ProxyConfig) {
-    // Enforce single instance of GUI
-    if (!app.requestSingleInstanceLock()) {
-        app.quit();
-        return;
-    } else {
-        app.on('second-instance', () => {
-            if (gui)
-                gui.show();
-        });
-    }
+// Main
+const { initGlobalSettings } = require('./utils');
+initGlobalSettings(false);
 
-    // Boot GUI
-    global.TeraProxy.GUIMode = true;
-
-    ModuleFolder = ModFolder;
-    config = ProxyConfig;
-    if (!config.gui) {
-        config.gui = {
-            enabled: true,
-            theme: 'black',
-            autostart: false
-        };
-
-        SaveConfiguration(config);
-    } else {
-        if (config.gui.logtimes === undefined) {
-            config.gui.logtimes = true;
-            SaveConfiguration(config);
-        }
-
-        global.TeraProxy.GUITheme = ProxyConfig.gui.theme || 'black';
-    }
-
-    gui = new TeraProxyGUI;
-
-    if (app.isReady()) {
-        gui.show();
-    } else {
-        app.on('ready', () => {
+// Enforce single instance of GUI
+if (!app.requestSingleInstanceLock()) {
+    app.quit();
+    return;
+} else {
+    app.on('second-instance', () => {
+        if (gui)
             gui.show();
-        });
-    }
-
-    app.on('window-all-closed', () => {
-        if (process.platform !== 'darwin')
-            app.quit();
     });
+}
 
-    app.on('activate', () => {
+// Boot GUI
+gui = new TeraProxyGUI;
+
+if (app.isReady()) {
+    gui.show();
+} else {
+    app.on('ready', () => {
         gui.show();
     });
-};
+}
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin')
+        app.quit();
+});
+
+app.on('activate', () => {
+    gui.show();
+});
+
