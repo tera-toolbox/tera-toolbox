@@ -28,7 +28,10 @@ jQuery(($) => {
     // ----------------------------- MAIN ---------------------------------
     // --------------------------------------------------------------------
     $('#minimize-btn').click(() => {
-        remote.getCurrentWindow().minimize();
+        if (Settings.gui.minimizetotray)
+            remote.getCurrentWindow().hide();
+        else
+            remote.getCurrentWindow().minimize();
     });
 
     $('#close-btn').click(() => {
@@ -175,6 +178,7 @@ jQuery(($) => {
         $('#noselfupdate').prop('checked', Settings.noselfupdate);
         $('#devmode').prop('checked', Settings.devmode);
         $('#noslstags').prop('checked', Settings.noslstags);
+        $('#minimizetotray').prop('checked', Settings.gui.minimizetotray);
         $('head').append(`<link rel="stylesheet" href="css/themes/${Themes.indexOf(Settings.gui.theme) < 0 ? Themes[0] : Settings.gui.theme}.css">`);
     }
 
@@ -242,6 +246,10 @@ jQuery(($) => {
 
     $('#noslstags').click(() => {
         updateSetting('noslstags', $('#noslstags').is(':checked'));
+    });
+
+    $('#minimizetotray').click(() => {
+        updateGUISetting('minimizetotray', $('#minimizetotray').is(':checked'));
     });
 
     Themes.forEach(theme => {
