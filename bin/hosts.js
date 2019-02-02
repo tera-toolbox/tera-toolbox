@@ -3,11 +3,11 @@ var fs = require('fs');
 var path = require('path');
 
 var HOSTS = process.platform !== 'win32'
-  ? '/etc/hosts'
-  : path.join(
-    process.env.SystemRoot || path.join(process.env.SystemDrive || 'C:', 'Windows'),
-    '/System32/drivers/etc/hosts'
-  );
+	? '/etc/hosts'
+	: path.join(
+		process.env.SystemRoot || path.join(process.env.SystemDrive || 'C:', 'Windows'),
+		'/System32/drivers/etc/hosts'
+	);
 
 exports.get = function () {
 	var lines = [];
@@ -59,28 +59,28 @@ exports.set = function (ip, host) {
 };
 
 exports.setMany = function (hostList) {
-  var lines = exports.get(), host, didUpdate, unchanged = true;
-  // Try to update entries, if host already exists in file
-  for (var i = 0, l = hostList.length; i < l; i++) {
-    didUpdate = false;
-    host = hostList[i];
-    lines = lines.map(function (line) {
-      if (Array.isArray(line) && line[1] === host[1]) {
-        unchanged = (line[0] == host[0]);
-        line[0] = host[0];
-        line[2] = 2; // A flag for error reporting to say this line was changed
-        didUpdate = true;
-      }
-    });
-    
-    // If entry did not exist, let's add it
-    if (!didUpdate) {
-      lines.push([host[0], host[1], 1]); // The 1 is a flag for error reporting to say this line is new
-      unchanged = false;
-    }
-  }
+	var lines = exports.get(), host, didUpdate, unchanged = true;
+	// Try to update entries, if host already exists in file
+	for (var i = 0, l = hostList.length; i < l; i++) {
+		didUpdate = false;
+		host = hostList[i];
+		lines = lines.map(function (line) {
+			if (Array.isArray(line) && line[1] === host[1]) {
+				unchanged = (line[0] == host[0]);
+				line[0] = host[0];
+				line[2] = 2; // A flag for error reporting to say this line was changed
+				didUpdate = true;
+			}
+		});
 
-  if (!unchanged) { exports.writeFile(lines); }
+		// If entry did not exist, let's add it
+		if (!didUpdate) {
+			lines.push([host[0], host[1], 1]); // The 1 is a flag for error reporting to say this line is new
+			unchanged = false;
+		}
+	}
+
+	if (!unchanged) { exports.writeFile(lines); }
 };
 
 exports.remove = function (ip, host) {
@@ -95,17 +95,17 @@ exports.remove = function (ip, host) {
 };
 
 exports.removeMany = function (hostList) {
-  var lines = exports.get(), unchanged = true;
-  
-  // Try to remove entries, if they exist
-  for (let i = 0, l = hostList.length; i < l; i++) {
-    let host = hostList[i];
-    lines = lines.filter(function (line) {
-      return unchanged=!(Array.isArray(line) && line[0] === host[0] && line[1] === host[1]);
-    });
-  }
-  
-  if (!unchanged) { exports.writeFile(lines); }
+	var lines = exports.get(), changed = true;
+
+	// Try to remove entries, if they exist
+	for (let i = 0, l = hostList.length; i < l; i++) {
+		let host = hostList[i];
+		const new_lines = lines.filter((line) => !(Array.isArray(line) && line[0] === host[0] && line[1] === host[1]));
+		changed |= lines.length !== new_lines.length;
+		lines = new_lines;
+	}
+
+	if (changed) { exports.writeFile(lines); }
 };
 
 exports.writeFile = function (lines) {

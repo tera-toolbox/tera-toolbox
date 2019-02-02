@@ -54,10 +54,12 @@ function HostsInitialize(region) {
     if (region && region.platform !== 'console') {
         try {
             const hosts = require("./hosts");
-            var list = [[region.data.listenHostname, region.data.hostname]];
-            for (let x of region.data.altHostnames)
-                list.push([region.data.listenHostname, x]);
-            hosts.setMany(list);
+            const { listenHostname, altHostnames, hostname } = region.data;
+            const toSet = [
+              [ listenHostname, hostname ],
+              ...altHostnames.map(x => [ listenHostname, x ])
+            ];
+            hosts.setMany(toSet);
         } catch (e) {
             HostsError(e);
         }
@@ -67,14 +69,20 @@ function HostsInitialize(region) {
 }
 
 function HostsClean(region) {
-    // Only clean hosts file on Windows as other platforms (for now) have to do all hosts edits manually
-    if (region && region.platform !== 'console' && process.platform === 'win32') {
+    // Don't clean hosts for console..
+    if (region && region.platform !== 'console' &&
+       // .. but do for Windows ..
+       (process.platform === 'win32' ||
+        // .. or with Linux/Darwin/other POSIX systems when running as root
+        (process.getuid() === 0 || process.getgid() === 0))) {
         try {
             const hosts = require("./hosts");
-            var list = [[region.data.listenHostname, region.data.hostname]];
-            for (let x of region.data.altHostnames)
-                list.push([region.data.listenHostname, x]);
-            hosts.removeMany(list);
+            const { listenHostname, altHostnames, hostname } = region.data;
+            const toRem = [
+              [ listenHostname, hostname ],
+              ...altHostnames.map(x => [ listenHostname, x ])
+            ];
+            hosts.removeMany(toRem);
         } catch (e) {
             HostsError(e);
         }
