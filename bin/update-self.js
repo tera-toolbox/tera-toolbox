@@ -66,6 +66,9 @@ async function autoUpdateFile(file, filepath, url, expectedHash = null) {
 }
 
 async function autoUpdateSelf(outputConsole, updatelimit = true, serverIndex = 0) {
+    if (!outputConsole)
+        outputConsole = console;
+
     if (!request) {
         outputConsole.error("ERROR: It looks like you've downloaded my proxy directly from GitHub without properly installing required dependencies!");
         outputConsole.error("ERROR: Please join %s and download the prepackaged release version from the #proxy channel!", DiscordURL);
