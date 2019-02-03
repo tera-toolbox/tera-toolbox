@@ -79,7 +79,7 @@ function loadModuleInfo(rootFolder, name) {
         'drmKey': null,
         'supportUrl': null,
         'disabled': false,
-        'autoUpdateDisabled': null,
+        'disableAutoUpdate': null,
         'dependencies': [],
         'conflicts': [],
         'packets': {},
@@ -126,7 +126,7 @@ function loadModuleInfo(rootFolder, name) {
                 'supportUrl': moduleInfo.supportUrl || result.supportUrl,
                 'dependencies': moduleInfo.dependencies ? Object.keys(moduleInfo.dependencies) : result.dependencies,
                 'conflicts': moduleInfo.conflicts || result.conflicts,
-                'autoUpdateDisabled': !!moduleInfo.disableAutoUpdate,
+                'disableAutoUpdate': !!moduleInfo.disableAutoUpdate,
                 'disabled': !!moduleInfo.disabled,
             });
 
@@ -154,7 +154,7 @@ function loadModuleInfo(rootFolder, name) {
             if (moduleConfig) {
                 moduleConfig = JSON.parse(moduleConfig);
                 result.disabled = moduleConfig.disabled !== undefined ? moduleConfig.disabled : result.disabled;
-                result.autoUpdateDisabled = moduleConfig.autoUpdateDisabled !== undefined ? moduleConfig.autoUpdateDisabled : result.autoUpdateDisabled;
+                result.disableAutoUpdate = moduleConfig.disableAutoUpdate !== undefined ? moduleConfig.disableAutoUpdate : result.disableAutoUpdate;
                 result.drmKey = (moduleConfig.drmKey !== undefined && moduleConfig.drmKey !== null) ? moduleConfig.drmKey : result.drmKey;
             }
         }
@@ -178,7 +178,7 @@ function _loadModuleConfigFile(moduleInfo) {
     } catch (e) {
         let res = {};
         res.disabled = !!moduleInfo.disabled;
-        res.autoUpdateDisabled = !!moduleInfo.autoUpdateDisabled;
+        res.disableAutoUpdate = !!moduleInfo.disableAutoUpdate;
         if (moduleInfo.drmKey !== undefined && moduleInfo.drmKey !== null)
             res.drmKey = moduleInfo.drmKey;
         return res;
@@ -208,7 +208,7 @@ function disableAutoUpdate(moduleInfo) {
 }
 
 function toggleAutoUpdate(moduleInfo) {
-    setAutoUpdateEnabled(moduleInfo, moduleInfo.autoUpdateDisabled);
+    setAutoUpdateEnabled(moduleInfo, moduleInfo.disableAutoUpdate);
 }
 
 

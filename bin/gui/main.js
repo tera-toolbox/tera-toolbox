@@ -297,7 +297,7 @@ jQuery(($) => {
                         ${!modInfo.isCoreModule ? `<a href="#" id="${uninstallId}" class="moduleBody buttons uninstall"></a>` : ''}
                         ${modInfo.donationUrl ? `<a href="#" id="${donationId}" class="moduleBody buttons donate"></a>` : ''}
                         ${modInfo.supportUrl ? `<a href="#" id="${infoId}" class="moduleBody buttons info"></a>` : ''}
-                        ${(!modInfo.isCoreModule && modInfo.compatibility === 'compatible') ? `<a href="#" id="${updateId}" class="moduleBody buttons update${modInfo.autoUpdateDisabled ? 'Disabled' : 'Enabled'}"></a>` : ''}
+                        ${(!modInfo.isCoreModule && modInfo.compatibility === 'compatible') ? `<a href="#" id="${updateId}" class="moduleBody buttons update${modInfo.disableAutoUpdate ? 'Disabled' : 'Enabled'}"></a>` : ''}
                         ${(!modInfo.isCoreModule && modInfo.compatibility === 'compatible') ? `<a href="#" id="${enabledId}" class="moduleBody buttons load${modInfo.disabled ? 'Disabled' : 'Enabled'}"></a>` : ''}
                     </div>
                 </div>`

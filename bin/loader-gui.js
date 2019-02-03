@@ -221,7 +221,7 @@ ipcMain.on('toggle mod load', (event, modInfo) => {
 
 ipcMain.on('toggle mod autoupdate', (event, modInfo) => {
     toggleAutoUpdate(modInfo);
-    log(`${modInfo.autoUpdateDisabled ? 'Enabled' : 'Disabled'} automatic updates for "${modInfo.rawName}"`);
+    log(`${modInfo.disableAutoUpdate ? 'Enabled' : 'Disabled'} automatic updates for "${modInfo.rawName}"`);
     event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
