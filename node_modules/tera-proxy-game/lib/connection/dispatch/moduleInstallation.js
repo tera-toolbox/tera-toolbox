@@ -179,8 +179,7 @@ function _loadModuleConfigFile(moduleInfo) {
         let res = {};
         res.disabled = !!moduleInfo.disabled;
         res.disableAutoUpdate = !!moduleInfo.disableAutoUpdate;
-        if (moduleInfo.drmKey !== undefined && moduleInfo.drmKey !== null)
-            res.drmKey = moduleInfo.drmKey;
+        // Note: we explicitly do not want to set drmKey here, in order to stay compatible with mods that specify it in module.json
         return res;
     }
 }
