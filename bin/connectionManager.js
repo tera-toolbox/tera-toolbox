@@ -30,13 +30,15 @@ class ConnectionManager {
         this.activeConnections.clear();
     }
 
-    start(id, target, socket, region, regionShort, platform) {
+    start(id, target, socket, region, regionShort, platform, majorPatch, minorPatch) {
         socket.setNoDelay(true);
 
         const connection = new Connection(this.moduleFolder, {
             "serverId": id,
             "region": region,
             "regionShort": regionShort,
+            "majorPatch": majorPatch,
+            "minorPatch": minorPatch,
             "console": platform === "console",
             "classic": platform === "classic",
         });

@@ -122,16 +122,16 @@ class TeraProxy {
         return this.connectionManager.hasActiveConnections;
     }
 
-    redirect(id, name, ip, port, region, regionShort, platform) {
+    redirect(id, name, ip, port, region, regionShort, platform, majorPatch, minorPatch) {
         // Try to find server that's already listening
-        const key = `${platform}-${region}-${id}-${ip}:${port}`;
+        const key = `${platform}-${region}-${majorPatch}.${minorPatch}-${id}-${ip}:${port}`;
         const cached = this.servers.get(key);
         if (cached)
             return { ip: cached.address().address, port: cached.address().port };
 
         // Create a new server
         const net = require('net');
-        const server = net.createServer(socket => this.connectionManager.start(id, { ip, port }, socket, region, regionShort, platform));
+        const server = net.createServer(socket => this.connectionManager.start(id, { ip, port }, socket, region, regionShort, platform, majorPatch, minorPatch));
         const listenPort = this.listenPort++;
         server.listen(listenPort, this.listenIp, () => {
             const { address: listen_ip, port: listen_port } = server.address();
@@ -163,7 +163,7 @@ class TeraProxy {
 
                             const region = RegionFromLanguage(client.info.language);
                             const platform = (client.info.major_patch <= 27) ? 'classic' : 'pc';
-                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, region, region.toLowerCase(), platform);
+                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, region, region.toLowerCase(), platform, client.info.major_patch, client.info.minor_patch);
                             patched_server.ip = redirected_server.ip;
                             patched_server.port = redirected_server.port;
 

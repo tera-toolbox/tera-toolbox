@@ -93,12 +93,14 @@ function errStack(err = new Error(), removeFront = true) {
 
 class Dispatch extends EventEmitter {
 	constructor(connection, protocolVersion = 0) {
-		super()
-        this.setMaxListeners(0)
+        super();
+        this.setMaxListeners(0);
 
-        this.proxyAuthor = 'caali'
-
-		this.connection = connection
+        this.connection = connection;
+        this.proxyAuthor = 'caali';
+        this.region = this.connection.info.regionShort;
+        this.majorPatchVersion = this.connection.info.majorPatch;
+        this.minorPatchVersion = this.connection.info.minorPatch;
 
 		// hooks:
 		// { <code>:
@@ -361,68 +363,35 @@ class Dispatch extends EventEmitter {
 
 	setProtocolVersion(version) {
         this.protocolVersion = version;
-        this.region = null;
-        this.majorPatchVersion = null;
-        this.minorPatchVersion = null;
         this.protocolMap = null;
         this.sysmsgMap = null;
 
-        delete require.cache[require.resolve('tera-data/mappings.json')];
-        const protocol_data = require('tera-data/mappings.json');
-        for (const region in protocol_data) {
-            const region_data = protocol_data[region];
-            if(region_data.version === this.protocolVersion) {
-                this.region = this.connection.info.regionShort;
-                this.majorPatchVersion = region_data.major_patch;
-                this.minorPatchVersion = region_data.minor_patch;
-                break;
-            }
-        }
-
-        if (!this.region) {
-            if(this.protocolVersion !== 0) {
-                const expected_data = protocol_data[this.connection.info.region];
-                if(!expected_data) {
-                    log.error(`[dispatch] unrecognized region ${this.connection.info.region}`);
-                } else {
-                    log.error(`[dispatch] mismatching protocol version ${this.protocolVersion}`)
-                    if(this.protocolVersion > expected_data.version) {
-                        log.error('[dispatch] You are trying to play using a new client version that is not yet supported!')
-                        log.error('[dispatch] If there was a game maintenance within the past few hours, please report this!')
-                        log.error('[dispatch] Otherwise, your client might have been updated for an upcoming patch too early.')
-                        if(this.connection.info.regionShort == 'na')
-                            log.error('[dispatch] This is most likely caused by EME\'s shitty patch distribution system.')
-                        log.error('[dispatch] In that case, try a client repair or reinstalling the game from scratch!')
-                    } else {
-                        log.error('[dispatch] You are trying to play using an outdated client version!')
-                        if(this.connection.info.regionShort == 'na')
-                            log.error('[dispatch] This is most likely caused by EME\'s shitty patch distribution system.')
-                        log.error('[dispatch] Try a client repair or reinstalling the game from scratch to fix this!')
-                    }
-                }
-            }
-            return;
-        }
-
 		this.protocolMap = this.protocol.maps.get(this.protocolVersion);
-
         sysmsg.load();
 		this.sysmsgMap = sysmsg.maps.get(this.protocolVersion);
 
 		if(!this.protocolMap || !this.sysmsgMap) {
-			if(this.protocolVersion !== 0) {
-				log.error(`[dispatch] unmapped protocol version ${this.protocolVersion}`)
+            if (this.protocolVersion !== 0) {
+                log.error(`[dispatch] Unmapped protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion}).`);
+                log.error('[dispatch] This can be caused by either of the following:');
+                log.error('[dispatch] 1) You are trying to play using a newly released client version that is not yet supported.');
+                log.error('[dispatch]    If there was a game maintenance within the past few hours, please report this!');
+                log.error('[dispatch]    Otherwise, your client might have been updated for an upcoming patch too early.');
+                log.error('[dispatch] 2) You are trying to play using an outdated client version.');
+                log.error('[dispatch]    Try a client repair or reinstalling the game from scratch to fix this!');
+                if (this.region === 'na')
+                    log.error('[dispatch]   (Both issues occur frequently on NA due to EME\'s shitty patch distribution system.)');
+                log.error(`[dispatch] If you cannot fix this on your own, ask for help here: ${global.TeraProxy.SupportUrl}!`);
 			}
 		} else {
-			log.info(`[dispatch] switching to protocol version ${this.protocolVersion}`)
+            log.info(`[dispatch] Switching to protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion})`);
 
-			const hooks = this.queuedHooks
-			this.queuedHooks = []
-			for(const queued of hooks) {
-				this.addHook(this.createHook(queued.hook, ...queued.args))
-			}
+            const hooks = this.queuedHooks;
+            this.queuedHooks = [];
+            for (const queued of hooks)
+                this.addHook(this.createHook(queued.hook, ...queued.args));
 
-			this.emit('init')
+            this.emit('init');
 		}
 	}
 
