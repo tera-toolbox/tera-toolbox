@@ -3,7 +3,21 @@ const fs = require('fs');
 const ConfigFilePath = path.join(__dirname, '..', 'config.json');
 
 function loadConfig() {
-    return JSON.parse(fs.readFileSync(ConfigFilePath, 'utf8'));
+    let result = null;
+    try {
+        result = fs.readFileSync(ConfigFilePath, 'utf8')
+    } catch (_) {
+        return {
+            "branch": "master",
+            "updatelog": false,
+            "devmode": false,
+            "noselfupdate": false,
+            "noupdate": false,
+            "noslstags": false
+        };
+    }
+
+    return JSON.parse(result);
 }
 
 function saveConfig(newConfig) {
