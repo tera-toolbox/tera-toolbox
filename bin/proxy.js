@@ -152,7 +152,7 @@ class TeraProxy {
                 }
                 case 'get_sls': {
                     if (client.info) {
-                        let proxy_servers = data.servers.map(server => {
+                        let proxy_servers = data.servers.filter(server => !data.servers.some(other_server => other_server.id === server.id && other_server.ip === this.listenIp)).map(server => {
                             let patched_server = Object.assign({}, server);
 
                             if (!this.config.noslstags) {
