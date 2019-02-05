@@ -3,6 +3,7 @@
     "TeraProxy.bat": "9276f3931de8c739119d8731cb3eaf27dab6fb200ae29616115ead62afa0d60a",
     "TeraProxyGUI.bat": "b17acaf812dd4cb930c21ffe5da2743f46642448b5c887c39474bfcfd606e9c8",
     "TeraProxyGUIWithConsole.bat": "9fe68fa43676a4b50a3f49fd3e3bd003cfdf3efcb424a9c26853e39ac80629c9",
+    "config.json": {"overwrite": false, "hash": "5c804ce9d180f2f268ba6d4c0fb02f3001984e7f15e7499e84d4b44ec6657674"},
     "bin/config.js": "5980aa3dc95c744fe56a0ab47d0a903415bb19c6f78bb13228b78c5d10db5fa4",
     "bin/connectionManager.js": "c37b1ab21c34eddde8c6c11f923b39a2c5d27a861b89455e3158314080f9adbe",
     "bin/index-cli.js": "9f628297ef7865defbd8bca2cea4309b7aa10016898bfa1851730a08623b6449",
