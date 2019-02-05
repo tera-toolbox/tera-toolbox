@@ -11,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Constants
-const TeraProxyAutoUpdateServers = ["https://raw.githubusercontent.com/caali-hackerman/tera-proxy/", "http://teralogs.feedia.co/proxy/", "https://teralogs.lima-city.de/proxy/"];
+const TeraProxyAutoUpdateServers = ["https://raw.githubusercontent.com/caali-hackerman/tera-proxy/"];
 const DiscordURL = "https://discord.gg/dUNDDtw";
 
 // Safely load configuration
