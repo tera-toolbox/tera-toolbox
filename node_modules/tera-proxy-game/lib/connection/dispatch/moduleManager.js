@@ -59,6 +59,9 @@ class ModuleManager {
     }
 
     loadAll() {
+        if (!this.dispatch)
+            return;
+
         // List installed modules
         const { listModules, loadModuleInfo } = require('./moduleInstallation');
 
@@ -126,6 +129,9 @@ class ModuleManager {
     }
 
     load(name, logInfo = true) {
+        if (!this.dispatch)
+            return;
+
         let module = this.get(name);
         if (module)
             return module;
@@ -181,6 +187,9 @@ class ModuleManager {
     }
 
     unload(name, logInfo = true) {
+        if (!this.dispatch)
+            return;
+
         const moduleInfo = this.getInfo(name);
         if (!moduleInfo) {
             console.error(`[mods] ERROR: Trying to unload module that is not installed: ${name}`);
