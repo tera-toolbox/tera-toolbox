@@ -110,7 +110,7 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
 
             return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
-            error(`ERROR: Unable to auto-update: ${e}`);
+            log(`ERROR: Unable to auto-update: ${e}`);
             return false;
         }
     }
