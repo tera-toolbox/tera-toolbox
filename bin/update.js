@@ -84,7 +84,7 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
             console.log(`[update] Updating module ${name}`);
 
         const update_url_root = migrateModuleUpdateUrlRoot(updateData["servers"][serverIndex]);
-        if (!checkModuleUpdateUrlBlacklist(update_url_root))
+        if (!update_url_root || !checkModuleUpdateUrlBlacklist(update_url_root))
             return { "defs": {}, "results": [] };
 
         const manifest_file = 'manifest.json';
