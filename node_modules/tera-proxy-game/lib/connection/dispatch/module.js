@@ -318,9 +318,9 @@ class Module {
   get activeIntervals() { return this._intervals; }
 
   // Logging
-  log(msg, ...args) { console.log(`[${this.name}] ${msg}`, ...args); }
-  warn(msg, ...args) { console.warn(`[${this.name}] WARNING: ${msg}`, ...args); }
-  error(msg, ...args) { console.error(`[${this.name}] ERROR: ${msg}`, ...args); }
+  log(...args) { console.log(`[${this.name}]`, ...args); }
+  warn(...args) { console.warn(`[${this.name}] WARNING:`, ...args); }
+  error(...args) { console.error(`[${this.name}] ERROR:`, ...args); }
 }
 
 module.exports = Module;
