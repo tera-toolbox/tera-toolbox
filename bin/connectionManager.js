@@ -30,7 +30,7 @@ class ConnectionManager {
         this.activeConnections.clear();
     }
 
-    start(id, target, socket, region, regionShort, platform, majorPatch, minorPatch) {
+    start(id, target, socket, region, regionShort, platform, majorPatch, minorPatch, clientInterfaceConnection) {
         socket.setNoDelay(true);
 
         const connection = new Connection(this.moduleFolder, {
@@ -41,6 +41,7 @@ class ConnectionManager {
             "minorPatch": minorPatch,
             "console": platform === "console",
             "classic": platform === "classic",
+            "clientInterface": clientInterfaceConnection,
         });
 
         const client = new RealClient(connection, socket);
