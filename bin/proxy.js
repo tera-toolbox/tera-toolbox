@@ -143,8 +143,12 @@ class TeraProxy {
         client.on('data', (command, data) => {
             switch (command) {
                 case 'info': {
-                    client.info = data;
-                    console.log(`[proxy] Client connected (${RegionFromLanguage(data.language)} v${data.major_patch}.${data.minor_patch})`);
+                    if (data.error) {
+                        console.log(`[proxy] Unable to establish connection to client: ${data.error}`);
+                    } else {
+                        client.info = data;
+                        console.log(`[proxy] Client connected (${RegionFromLanguage(data.language)} v${data.major_patch}.${data.minor_patch})`);
+                    }
                     break;
                 }
                 case 'get_sls': {
