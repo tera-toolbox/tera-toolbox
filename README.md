@@ -1,6 +1,7 @@
 # Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
-* It will auto-update your opcode mappings, packet definitions, and compatible installed modules. You no longer need do manually update _anything_!
+* Tons of improvements and additional features: Automatic updates, a graphical user interface, a direct connection to the game client (allowing e.g. realtime datacenter queries), and a lot more!
 * Feel free to visit my Discord server at https://discord.gg/dUNDDtw
+* Please check out [the documentation](doc/main.md)!
 * Originally forked from https://github.com/pinkipi/tera-proxy which was DMCA'd by EME.
 
 # Installation instructions
