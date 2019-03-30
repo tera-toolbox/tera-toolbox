@@ -52,7 +52,6 @@ class TeraProxy {
         this.config = config;
         this.running = false;
 
-        this.servers = new Map();
         this.listenIp = config.listenip || '127.0.0.20';
         this.listenPort = config.listenport || 9250;
 
@@ -108,9 +107,6 @@ class TeraProxy {
             this.connectionManager = null;
         }
 
-        this.servers.forEach(server => server.close());
-        this.servers.clear();
-
         this.running = false;
     }
 
@@ -122,32 +118,37 @@ class TeraProxy {
         return this.connectionManager.hasActiveConnections;
     }
 
-    redirect(id, name, ip, port, region, regionShort, platform, majorPatch, minorPatch) {
+    redirect(id, name, ip, port, region, regionShort, platform, majorPatch, minorPatch, clientInterfaceConnection) {
         // Try to find server that's already listening
         const key = `${platform}-${region}-${majorPatch}.${minorPatch}-${id}-${ip}:${port}`;
-        const cached = this.servers.get(key);
+        const cached = clientInterfaceConnection.proxyServers.get(key);
         if (cached)
             return { ip: cached.address().address, port: cached.address().port };
 
         // Create a new server
         const net = require('net');
-        const server = net.createServer(socket => this.connectionManager.start(id, { ip, port }, socket, region, regionShort, platform, majorPatch, minorPatch));
+        const server = net.createServer(socket => this.connectionManager.start(id, { ip, port }, socket, region, regionShort, platform, majorPatch, minorPatch, clientInterfaceConnection));
         const listenPort = this.listenPort++;
         server.listen(listenPort, this.listenIp, () => {
             const { address: listen_ip, port: listen_port } = server.address();
             console.log(`[proxy] Redirecting ${name} (${region}-${id}) from ${listen_ip}:${listen_port} to ${ip}:${port}`);
         });
 
-        this.servers.set(key, server);
+        clientInterfaceConnection.proxyServers.set(key, server);
         return { ip: this.listenIp, port: listenPort };
     }
 
     onClientInterfaceConnected(client) {
+        client.proxyServers = new Map();
         client.on('data', (command, data) => {
             switch (command) {
                 case 'info': {
-                    client.info = data;
-                    console.log(`[proxy] Client connected (${RegionFromLanguage(data.language)} v${data.major_patch}.${data.minor_patch})`);
+                    if (data.error) {
+                        console.log(`[proxy] Unable to establish connection to client: ${data.error}`);
+                    } else {
+                        client.info = data;
+                        console.log(`[proxy] Client connected (${RegionFromLanguage(data.language)} v${data.major_patch}.${data.minor_patch})`);
+                    }
                     break;
                 }
                 case 'get_sls': {
@@ -163,7 +164,7 @@ class TeraProxy {
 
                             const region = RegionFromLanguage(client.info.language);
                             const platform = (client.info.major_patch <= 27) ? 'classic' : 'pc';
-                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, region, region.toLowerCase(), platform, client.info.major_patch, client.info.minor_patch);
+                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, region, region.toLowerCase(), platform, client.info.major_patch, client.info.minor_patch, client);
                             patched_server.ip = redirected_server.ip;
                             patched_server.port = redirected_server.port;
 
@@ -181,6 +182,8 @@ class TeraProxy {
 
         client.on('disconnect', e => {
             console.log(`[proxy] Client disconnected`);
+            client.proxyServers.forEach(server => server.close());
+            client.proxyServers.clear();
         });
     }
 }
