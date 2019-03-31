@@ -10,7 +10,7 @@ For a module using this feature in a real-world scenario, check out [Flasher](ht
 Using the game client interface, a module can query arbitrary data from the game's currently loaded DataCenter file, with multi-region support (even running game clients from multiple different regions in parallel), as follows:
 
 ### Example 1: Printing the name of each NPC that is spawned
-Note how the resulting node's attributes are accessed.
+Note how the resulting node's attributes are accessed. As the query is performed on the game's loaded DataCenter file, the printed names are inherently localized to the language that the player has selected.
 ```js
 mod.hook('S_SPAWN_NPC', 11, event => {
     // Note: you can also use async/await here, obviously
@@ -49,21 +49,21 @@ mod.queryData('/Abnormality/Abnormal@id=?/', [701420]).then(result => {
 ```
 
 ### Example 5: Implementing a command that prints all huntingZones associated with the player's current zone ID
-5a: using `Promise.then()`
+Option A: using `Promise.then()`
 ```js
-    mod.command.add('huntingzones', () => {
-        mod.queryData('/ContinentData/Continent@id=?/HuntingZone/', [mod.game.me.zone], true).then(results => {
-            results.forEach(data => mod.log(data.attributes.id));
-        });
-    });
-```
-
-5b: using `async/await`
-```js
-    mod.command.add('huntingzones', async () => {
-        const results = await mod.queryData('/ContinentData/Continent@id=?/HuntingZone/', [mod.game.me.zone], true);
+mod.command.add('huntingzones', () => {
+    mod.queryData('/ContinentData/Continent@id=?/HuntingZone/', [mod.game.me.zone], true).then(results => {
         results.forEach(data => mod.log(data.attributes.id));
     });
+});
+```
+
+Option B: using `async/await`
+```js
+mod.command.add('huntingzones', async () => {
+    const results = await mod.queryData('/ContinentData/Continent@id=?/HuntingZone/', [mod.game.me.zone], true);
+    results.forEach(data => mod.log(data.attributes.id));
+});
 ```
 
 ### Error Handling

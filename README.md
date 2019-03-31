@@ -1,17 +1,20 @@
-# Fork of Meishuu's/Pinkie Pie's tera-proxy with built-in support for automatic updates
+# Most popular version of Tera-Proxy
 * Tons of improvements and additional features: Automatic updates, a graphical user interface, a direct connection to the game client (allowing e.g. realtime datacenter queries), and a lot more!
 * Feel free to visit my Discord server at https://discord.gg/dUNDDtw
-* Please check out [the documentation](doc/main.md)!
+* Please check out [the documentation](doc/main.md) (especially if you want to develop your own modules)!
 * Originally forked from https://github.com/pinkipi/tera-proxy which was DMCA'd by EME.
 
 # Installation instructions
-* Download and run the setup from the #proxy channel in the Discord server linked above. A manual installation is possible, but not recommended!
-* The first auto-update after installing the proxy or new mods may take a few seconds. This is because all required files will be downloaded automatically.
-* The most popular modules are already pre-installed for your convenience - check out the `mods` folder. If you don't want to use a particular mod, just delete the corresponding folder or prefix its folder name with an underscore (`_`).
-* Run `TeraProxyGUI.bat` (GUI proxy) or `TeraProxy.bat` (CLI proxy) *as Administrator*, then start the game
+* Download and run the setup from [the #proxy channel in the Discord server](https://discord.gg/dUNDDtw) or [GitHub](https://github.com/caali-hackerman/tera-proxy/releases/download/teraproxy-setup/TeraProxy.exe).
+* Please make sure to read the instructions in the Discord channel. It is highly recommended to install the graphical user interface for convenience. A manual installation from GitHub is possible, but not recommended!
+* Run `TeraProxyGUI.bat` (GUI proxy, you probably want this) or `TeraProxy.bat` (CLI proxy) *as Administrator* (you can try without Administrator, it works in some regions where the game isn't launched as admin).
+* The first startup after installing the proxy may take a few seconds. This is because all updated/required files will be downloaded automatically.
+* The most popular modules are already pre-installed for your convenience - check out the `My Mods` page. If you don't want to use a particular module, just uninstall or disable it there.
+* Check out the `Get More Mods` page for mods you want to install.
+* Once you're all set, press the `Start Proxy` button in the top right corner, then start the game.
 
 # Popular and fully compatible modules
-Almost all tera-proxy modules are compatible with my proxy. For an always up-to-date list, check out [my Discord server](https://discord.gg/dUNDDtw)!
+Almost all tera-proxy modules are compatible with my proxy. For an always up-to-date list, check out [my Discord server](https://discord.gg/dUNDDtw) or the `Get More Mods` page in proxy's user interface!
 
 ## Core Modules (always installed)
 * [Command (core module, always installed)](https://github.com/caali-hackerman/command)
@@ -27,7 +30,8 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 ## Other Modules
 * [Arborean Apparel](https://github.com/iribae/arborean-apparel)
 * [Astral Tera](https://github.com/codeagon/Astral-TERA)
-* [True Everful Nostrum (my fork)](https://github.com/caali-hackerman/true-everful-nostrum)
+* [True Everful Nostrum (my rewrite)](https://github.com/caali-hackerman/true-everful-nostrum)
+* [Flasher](https://github.com/caali-hackerman/flasher)
 * [Socialize](https://github.com/Leyki/Socialize)
 * [Settings Saver](https://github.com/Kaseaa/Tera-Settings-Saver)
 * [Ghillieglade Auto-Reset](https://github.com/Snugglez/GG-Reset)
@@ -94,6 +98,7 @@ Almost all tera-proxy modules are compatible with my proxy. For an always up-to-
 * ... and many more
 
 # Developers: Adding auto-update compatibility to your module
+TBD: this is outdated and will be rewritten/moved to documentation soon.
 * You'll need to create two files in your root update directory (called UpdateRoot from now on): `module.json` and `manifest.json`.
 * `module.json` contains the UpdateRoot URL and optional other data. See [here](https://github.com/caali-hackerman/data-logger/blob/master/update/CaaliLogger/module.json) for an example. If you're distributing paid modules, you can add a `drmKey` parameter representing a unique per-user key (string) there as well. It'll be sent as a HTTP GET parameter when `manifest.json` is requested.
 * `manifest.json` contains a list of all files required for your module (relative to its root directory) and their corresponding SHA256 hashes. Furthermore, you must specify a list of all packet definitions and versions required by your module here. See [here](https://github.com/caali-hackerman/data-logger/blob/master/update/CaaliLogger/manifest.json) for an example. If you have files that shouldn't be overwritten, you can use `{"overwrite": false, "hash": [file hash]}` instead of just a string on a per-file basis. You can also specify for which game regions a file is downloaded.
