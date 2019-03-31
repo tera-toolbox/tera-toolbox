@@ -7,7 +7,7 @@ A module can make the game window flash (just like if a broker negotiation reque
 For a module using this feature in a real-world scenario, check out [Flasher](https://github.com/caali-hackerman/flasher).
 
 ## Querying Data from the Game Client's DataCenter [TBD: further documentation]
-Using the game client interface, a module can query arbitrary data from the game's currently loaded DataCenter file, with multi-region support (even running game clients from multiple different regions in parallel), as follows:
+Using the game client interface, a module can query arbitrary data from the game's currently loaded DataCenter file, with multi-region support (even running game clients from multiple different regions in parallel). Note that you can use either `mod.queryData` or `mod.clientInterface.queryData`, with the former being just a redirect to the latter for shorter code.
 
 ### Example 1: Printing the name of each NPC that is spawned
 Note how the resulting node's attributes are accessed. As the query is performed on the game's loaded DataCenter file, the printed names are inherently localized to the language that the player has selected.
