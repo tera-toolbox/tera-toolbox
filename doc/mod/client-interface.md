@@ -29,7 +29,7 @@ mod.queryData('/SkillData@huntingZoneId=?/Skill@templateId=?&id=?', [0, 16060, 1
 ```
 
 ### Example 3: Querying and building a list of all item names
-Note the "true" here - listing all matching nodes instead of just the first one. This returns a (possibly empty) array of nodes instead of a single node.
+Note the `true` here - listing all matching nodes instead of just the first one. This returns a (possibly empty) array of nodes instead of a single node.
 ```js
 mod.queryData('/StrSheet_Item/String/', [], true).then(result => {
     let ItemNames = {};
@@ -65,3 +65,13 @@ mod.queryData('/Abnormality/Abnormal@id=?/', [701420]).then(result => {
         results.forEach(data => mod.log(data.attributes.id));
     });
 ```
+
+### Error Handling
+If the query fails (e.g. you specify an incorrect query string, missing/mismatching argument count, mismatching argument data types, ...), the promise will be rejected/an exception will be thrown when awaiting it.
+
+### Performance
+In general, it's recommended to cache as much data as possible. If your mod needs a list of all item names, for example, you should query it in your mod's constructor (when the user will still be in login/character selection for quite some time) and cache it.
+
+This is _not_ because of CPU utilization considerations (those barely have any effect as explained earlier), but because the client interface needs to temporarily allocate memory within the game's process in order to gather and send the query results back to proxy. Due to it being a 32-bit process, the available amount of memory is tightly limited.
+
+Note that this also means that you cannot rely on very large queries (e.g. querying all of `SkillData` at once) succeeding. Please consider this limitation and test your mod thoroughly!
