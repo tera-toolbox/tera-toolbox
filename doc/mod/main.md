@@ -1,5 +1,5 @@
 # Proxy Modules
-In the following, you will find an introduction to module development and documentation (+ examples) of proxy features. It assumes that you have a basic understanding of Node.JS/Electron, how the game's network communication works, and programming in general.
+In the following, you will find an introduction to module development and documentation (+ examples) of proxy features. It is assumed that you have a basic understanding of Node.JS/Electron, how the game's network communication works, and programming in general.
 
 ## Terminology
 Let's start by introducing important terminology:

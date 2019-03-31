@@ -13,7 +13,7 @@ module.exports = function MyModule(mod) {
 
 As you can see, `mod.hook()` installs a network traffic hook. The one in our example will trigger if and only if a packet with the name `S_LOAD_TOPO` is processed. It will use version `3` of the packet definitions available for `S_LOAD_TOPO` in order to parse the raw binary data of that packet into the `event` object passed to your hook callback function. This requires that (1) a proper opcode mapping from the name `S_LOAD_TOPO` to the corresponding number (which is randomized whenever a new client patch is distributed), and (2) a valid packet definition for that packet (the contents are subject to change on game updates) are known to proxy. Both mappings (in `map_base`) and definitions (in `protocol`) are maintained in the [tera-data](https://github.com/caali-hackerman/tera-data) repository, which is automatically downloaded by proxy on startup. Outdated mappings and definitions are typically purged from that repository a few weeks after they have become obsolete due to all game regions having been updated to the latest patch.
 
-Taking a look into the definition file of our example, we see that it looks like this:
+Taking a look into the definition file (`S_LOAD_TOPO.3.def`) used in our example, we see that it looks like this:
 ```
 int32 zone
 vec3  loc
