@@ -179,7 +179,8 @@ jQuery(($) => {
         $('#devmode').prop('checked', Settings.devmode);
         $('#noslstags').prop('checked', Settings.noslstags);
         $('#minimizetotray').prop('checked', Settings.gui.minimizetotray);
-        $('head').append(`<link rel="stylesheet" href="css/themes/${Themes.indexOf(Settings.gui.theme) < 0 ? Themes[0] : Settings.gui.theme}.css">`);
+        $('head').append(`<link rel="stylesheet" href="css/themes/pink.css">`);
+        //$('head').append(`<link rel="stylesheet" href="css/themes/${Themes.indexOf(Settings.gui.theme) < 0 ? Themes[0] : Settings.gui.theme}.css">`);
     }
 
     function updateSettings(newSettings) {
