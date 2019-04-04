@@ -19,7 +19,7 @@ The most important metadata files are:
 
 You can find a more thorough explanation and examples of metadata files [here](metadata.md).
 ### Code
-When loading a module, proxy essentially just calls Node.JS's `require` function like this: `require([mods folder]/[module folder name]/)`. This means that by default, it'll load `index.js` in the module folder and expect it to contain the startup code of the module. You can modify that behavior by placing a `package.json` file in the root of your module folder, just as you would do for any `node_module` import in a regular Node.JS application development context.
+When loading a module, proxy essentially just calls Node.JS's `require` function like this: `require([mods folder]/[module folder name]/)`. This means that by default, it'll load `index.js` in the module folder and expect it to contain the startup code of the module. You can modify that behavior by placing a `package.json` file in the root of your module folder, just as you would do for any `node_modules` import in a regular Node.JS application development context.
 
 Whatever file is required by proxy as the root of the module (called `root file` in the following) is expected to export exactly one object. It must be either a class (`constructor()` will be called when the module is loaded and optionally `destructor()` will be called when the module is unloaded) or a function (which will be called when the module is loaded). The module load function will be passed a single argument, which is the interface to be used by the module for any interaction with proxy. It is typically called `mod`.
 

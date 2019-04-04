@@ -33,6 +33,11 @@ jQuery(($) => {
                     valueSelector = $('<input/>', { type: 'text', id: `value_${setting.key}`, minlength: setting.minlength, maxlength: setting.maxlength, size: setting.size });
                     break;
                 }
+                case 'select': {
+                    valueSelector = $('<select/>', { id: `value_${setting.key}` });
+                    setting.options.forEach(option => valueSelector.append($('<option/>', { value: option.key, text: option.name })));
+                    break;
+                }
             }
 
             setting_types[setting.key] = setting.type;
@@ -58,6 +63,10 @@ jQuery(($) => {
                         break;
                     }
                     case 'string': {
+                        value = $(`#value_${setting.key}`).val();
+                        break;
+                    }
+                    case 'select': {
                         value = $(`#value_${setting.key}`).val();
                         break;
                     }
@@ -90,6 +99,10 @@ jQuery(($) => {
                 }
                 case 'string': {
                     valueSelector.prop('value', settings[key]);
+                    break;
+                }
+                case 'select': {
+                    valueSelector.val(settings[key]);
                     break;
                 }
             }

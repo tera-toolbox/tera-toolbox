@@ -106,6 +106,10 @@ body {
         -webkit-app-region: no-drag;
     }
 
+    .setting_value > select {
+        -webkit-app-region: no-drag;
+    }
+
 /*************
  * SCROLLBAR *
  *************/
