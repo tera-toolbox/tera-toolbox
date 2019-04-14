@@ -31,9 +31,9 @@ mod.queryData('/SkillData@huntingZoneId=?/Skill@templateId=?&id=?', [0, 16060, 1
 ### Example 3: Querying and building a list of all item names
 Note the `true` here - listing all matching nodes instead of just the first one. This returns a (possibly empty) array of nodes instead of a single node.
 ```js
-mod.queryData('/StrSheet_Item/String/', [], true).then(result => {
+mod.queryData('/StrSheet_Item/String/', [], true).then(results => {
     let ItemNames = {};
-    result.forEach(entry => ItemNames[entry.attributes.id] = entry.attributes.string);
+    results.forEach(entry => ItemNames[entry.attributes.id] = entry.attributes.string);
 }); 
 ```
 
@@ -63,6 +63,14 @@ Option B: using `async/await`
 mod.command.add('huntingzones', async () => {
     const results = await mod.queryData('/ContinentData/Continent@id=?/HuntingZone/', [mod.game.me.zone], true);
     results.forEach(data => mod.log(data.attributes.id));
+});
+```
+
+### Example 6: Building a list of all items that are tier 12 or higher 
+Note how we're using a different operator (`>=`) here. Currently supported operators: `=`, `!=`, `>=`, `>`, `<=`, and `<`.
+```js
+mod.queryData('/ItemData/Item@rank>=?', [12], true).then(results => {
+    results.forEach(entry => console.log(`Item ${entry.attributes.id} is tier ${entry.attributes.rank}`));
 });
 ```
 
