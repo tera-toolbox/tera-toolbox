@@ -70,7 +70,7 @@ mod.command.add('huntingzones', async () => {
 Note how we're using a different operator (`>=`) here. Currently supported operators: `=`, `!=`, `>=`, `>`, `<=`, and `<`.
 ```js
 mod.queryData('/ItemData/Item@rank>=?/', [12], true).then(results => {
-    results.forEach(entry => console.log(`Item ${entry.attributes.id} is tier ${entry.attributes.rank}`));
+    results.forEach(entry => mod.log(`Item ${entry.attributes.id} is tier ${entry.attributes.rank}`));
 });
 ```
 
