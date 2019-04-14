@@ -69,7 +69,7 @@ mod.command.add('huntingzones', async () => {
 ### Example 6: Building a list of all items that are tier 12 or higher 
 Note how we're using a different operator (`>=`) here. Currently supported operators: `=`, `!=`, `>=`, `>`, `<=`, and `<`.
 ```js
-mod.queryData('/ItemData/Item@rank>=?', [12], true).then(results => {
+mod.queryData('/ItemData/Item@rank>=?/', [12], true).then(results => {
     results.forEach(entry => console.log(`Item ${entry.attributes.id} is tier ${entry.attributes.rank}`));
 });
 ```
