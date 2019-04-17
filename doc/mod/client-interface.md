@@ -6,6 +6,9 @@ A module can make the game window flash (just like if a broker negotiation reque
 
 For a module using this feature in a real-world scenario, check out [Flasher](https://github.com/caali-hackerman/flasher).
 
+## Configuring Camera Shaking Behavior
+Camera shaking feels annoying, or might even cause medical issues, for some people. It cannot be fully disabled using the game's settings, but proxy offers this feature through `mod.clientInterface.configureCameraShake(enabled, power = 1.0, speed = 1.0)`. As an example, `mod.clientInterface.configureCameraShake(false)` simply disables camera shaking altogether. The optional `power` and `speed` params allow you to control the strength (multiples of the default settings) of camera shaking effects, if enabled. You can even set them to really high values if you want!
+
 ## Querying Data from the Game Client's DataCenter [TBD: further documentation]
 Using the game client interface, a module can query arbitrary data from the game's currently loaded DataCenter file, with multi-region support (even running game clients from multiple different regions in parallel). Note that you can use either `mod.queryData` or `mod.clientInterface.queryData`, with the former being just a redirect to the latter for shorter code.
 
