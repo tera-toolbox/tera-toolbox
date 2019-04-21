@@ -31,15 +31,15 @@ We don't just want to be able to read traffic, however, but we also need to modi
 ```js
 module.exports = function MyModule(mod) {
     // S_CHAT is sent by the server to transfer a chat message to the client.
-    mod.hook('S_CHAT', 2, event => {
+    mod.hook('S_CHAT', 3, event => {
         // We don't want to read any messages from Kasea. Ever.
         // This can be achieved by returning false from our hook. It'll block the packet from being sent to the receiving end.
-        if(event.authorName === 'Kasea')
+        if(event.name === 'Kasea')
             return false;
         
         // If we receive a chat message from SaltyMonkey, we want to fix the grammar of the message.
         // In order to do so, we modify the event object and return true from our hook.
-        if(event.authorName === 'SaltyMonkey') {
+        if(event.name === 'SaltyMonkey') {
             event.message = event.message.replace('Here', 'There is');
             return true;
         }
@@ -61,8 +61,8 @@ module.exports = function MyModule(mod) {
         // Movement type 5 means "jump" (see packet definition in tera-data).
         if(event.type === 5) {
             // Send fake chat message (only visible to the player) to the client
-            mod.send('S_CHAT', 2, {
-                authorName: 'PROXY',
+            mod.send('S_CHAT', 3, {
+                name: 'PROXY',
                 message: `Player jumped at ${event.loc.x},${event.loc.y},${event.loc.z}!`,
             });
         }
