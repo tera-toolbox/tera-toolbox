@@ -1,7 +1,7 @@
 # Using the Game Client Interface
 Besides the TCP connection used for game network traffic redirection, proxy also establishes a separate connection to the client used for exchanging commands and data. This is used, for example, to redirect the server list and add proxy servers. Note that this connection is maintained asynchronously within the game client process, so its CPU usage will most likely not affect the client's performance at all (as it's run on a different CPU core). Besides its usage by proxy's core, the client interface also exposes an API for usage by proxy mods. In general, the game client interface can be accessed by mods through `mod.clientInterface`.
 
-## Generic game client information
+## Generic Information
 The `info` object contains some useful information about the linked game client process:
 - `mod.clientInterface.info.pid`: The Windows process ID of the linked game client process.
 - `mod.clientInterface.info.language`: The loaded DataCenter language identifier (e.g. `EUR` for EU-English, `USA` for US-English, etc.)

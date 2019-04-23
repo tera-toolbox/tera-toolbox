@@ -365,6 +365,12 @@ function log(msg) {
         gui.log(msg);
 }
 
+process.on('warning', (warning) => {
+    log(warning.name);
+    log(warning.message);
+    log(warning.stack);
+});
+
 // Main
 const { initGlobalSettings } = require('./utils');
 initGlobalSettings(false);

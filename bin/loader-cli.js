@@ -83,6 +83,12 @@ function RunProxy(ModuleFolder, ProxyConfig) {
 }
 
 // Main
+process.on('warning', (warning) => {
+    console.warn(warning.name);
+    console.warn(warning.message);
+    console.warn(warning.stack);
+});
+
 const { initGlobalSettings } = require('./utils');
 initGlobalSettings(false);
 NodeVersionCheck();
