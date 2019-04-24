@@ -32,7 +32,7 @@ function main() {
         const guiRoot = path.join(__dirname, 'gui');
         const guiIcon = path.join(guiRoot, 'icon.png');
         SplashScreen = new BrowserWindow({
-            title: 'Caali\'s Tera Proxy',
+            title: 'TERA Toolbox',
             width: 960,
             height: 540,
             icon: guiIcon,
@@ -66,7 +66,7 @@ function main() {
             dialog.showMessageBox({
                 type: 'error',
                 title: 'Self-update error!',
-                message: `Tera-Proxy was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nIt will now be terminated.`
+                message: `TERA Toolbox was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nThe program will now be terminated.`
             });
 
             app.quit();
@@ -77,7 +77,7 @@ function main() {
         dialog.showMessageBox({
             type: 'error',
             title: 'Self-update error!',
-            message: `Tera-Proxy was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nThe full error message is:\n${e}\n\nProxy will now be terminated.`
+            message: `TERA Toolbox was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nThe full error message is:\n${e}\n\nThe program will now be terminated.`
         });
 
         app.quit();

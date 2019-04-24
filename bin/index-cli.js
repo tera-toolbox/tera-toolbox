@@ -16,6 +16,6 @@ updateSelf().then((result) => {
     if (result) {
         require("./loader-cli");
     } else {
-        console.log("Failed to auto-update the proxy!");
+        console.log("Failed to auto-update TERA Toolbox!");
     }
 });

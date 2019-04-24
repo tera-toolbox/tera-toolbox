@@ -11,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Constants
-const TeraProxyAutoUpdateServers = ["https://raw.githubusercontent.com/caali-hackerman/tera-proxy/", "https://teralogs.lima-city.de/proxy/"];
+const TeraProxyAutoUpdateServers = ["https://raw.githubusercontent.com/tera-toolbox/tera-toolbox/", "https://teralogs.lima-city.de/proxy/"];
 const DiscordURL = "https://discord.gg/dUNDDtw";
 
 // Safely load configuration
@@ -70,14 +70,14 @@ async function autoUpdateSelf(outputConsole, updatelimit = true, serverIndex = 0
         outputConsole = console;
 
     if (!request) {
-        outputConsole.error("ERROR: It looks like you've downloaded my proxy directly from GitHub without properly installing required dependencies!");
-        outputConsole.error("ERROR: Please join %s and download the prepackaged release version from the #proxy channel!", DiscordURL);
+        outputConsole.error("ERROR: It looks like you've downloaded TERA Toolbox directly from GitHub without properly installing required dependencies!");
+        outputConsole.error("ERROR: Please join %s and download the prepackaged release version from the #toolbox channel!", DiscordURL);
         return Promise.reject("Request not installed");
     }
 
     if (disableSelfUpdate) {
         outputConsole.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        outputConsole.warn("!!!!!    YOU HAVE DISABLED AUTOMATIC PROXY SELF-UPDATING    !!!!!");
+        outputConsole.warn("!!!!!       YOU HAVE DISABLED AUTOMATIC SELF-UPDATING       !!!!!");
         outputConsole.warn("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
         outputConsole.warn("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
         outputConsole.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -85,7 +85,7 @@ async function autoUpdateSelf(outputConsole, updatelimit = true, serverIndex = 0
     }
 
     if (serverIndex === 0)
-        outputConsole.log(`[update] Proxy self-update started (Branch: ${branch})`);
+        outputConsole.log(`[update] Self-update started (Branch: ${branch})`);
 
     try {
         const manifest = await request({ url: TeraProxyAutoUpdateServers[serverIndex] + branch + '/manifest.json', json: true });
@@ -126,12 +126,12 @@ async function autoUpdateSelf(outputConsole, updatelimit = true, serverIndex = 0
             }
 
             if (failedFiles.length > 0)
-                throw "Failed to update the following proxy files:\n - " + failedFiles.join('\n - ');
+                throw "Failed to update the following files:\n - " + failedFiles.join('\n - ');
 
-            outputConsole.log(`[update] Proxy updated (Update server ${serverIndex})!`);
+            outputConsole.log(`[update] TERA Toolbox updated (Update server ${serverIndex})!`);
             return true;
         } else {
-            outputConsole.log(`[update] Proxy is up to date (Update server ${serverIndex})!`);
+            outputConsole.log(`[update] TERA Toolbox is up to date (Update server ${serverIndex})!`);
             return false;
         }
     } catch (e) {

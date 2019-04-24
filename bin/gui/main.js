@@ -57,8 +57,8 @@ jQuery(($) => {
         ProxyRunning = running;
         ProxyStarting = false;
 
-        $('#startproxy').text(ProxyRunning ? 'Stop Proxy' : 'Start Proxy');
-        $('#title-status').text(ProxyRunning ? 'Proxy Running' : 'Proxy Not Running');
+        $('#startproxy').text(ProxyRunning ? 'Stop!' : 'Start!');
+        $('#title-status').text(ProxyRunning ? 'Running' : 'Not Running');
     });
 
     function startProxy() {
@@ -66,7 +66,7 @@ jQuery(($) => {
             return;
 
         ProxyStarting = true;
-        $('#startproxy').text('Proxy starting...');
+        $('#startproxy').text('Starting...');
         ipcRenderer.send('start proxy');
     }
 
@@ -74,7 +74,7 @@ jQuery(($) => {
         if (!ProxyRunning)
             return;
 
-        $('#startproxy').text('Proxy stopping...');
+        $('#startproxy').text('Stopping...');
         ipcRenderer.send('stop proxy');
     }
 
@@ -229,14 +229,14 @@ jQuery(($) => {
     $('#noupdate').click(() => {
         const checked = $('#noupdate').is(':checked');
         if (checked)
-            ShowModal('Warning! You disabled automatic updates for all of your modules. This will break things at some point. We will not provide any assistance unless re-enabled!');
+            ShowModal('Warning! You disabled automatic updates for all of your mods. This will break things at some point. We will not provide any assistance unless re-enabled!');
         updateSetting('noupdate', checked);
     });
 
     $('#noselfupdate').click(() => {
         const checked = $('#noselfupdate').is(':checked');
         if (checked)
-            ShowModal('Warning! You disabled automatic updates for Tera Proxy. This will break things at some point. We will not provide any assistance unless re-enabled!');
+            ShowModal('Warning! You disabled automatic updates for TERA Toolbox. This will break things at some point. We will not provide any assistance unless re-enabled!');
         updateSetting('noselfupdate', checked);
     });
 
@@ -336,7 +336,7 @@ jQuery(($) => {
             $(`#${uninstallId}`).on('click', (event) => {
                 event.preventDefault();
                 if (ProxyRunning) {
-                    ShowModal("You cannot uninstall mods while Tera-Proxy is running. Please stop it first!");
+                    ShowModal("You cannot uninstall mods while TERA Toolbox is running. Please stop it first!");
                 } else if (!WaitingForModAction) {
                     ipcRenderer.send('uninstall mod', modInfo);
                     WaitingForModAction = true;
@@ -409,7 +409,7 @@ jQuery(($) => {
             $(`#${installId}`).on('click', (event) => {
                 event.preventDefault();
                 if (ProxyRunning) {
-                    ShowModal("You cannot install modules while Tera-Proxy is running. Please stop it first!");
+                    ShowModal("You cannot install modules while TERA Toolbox is running. Please stop it first!");
                 } else if (!WaitingForModInstall) {
                     ipcRenderer.send('install mod', modInfo);
                     WaitingForModInstall = true;

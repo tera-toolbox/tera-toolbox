@@ -64,14 +64,14 @@ class TeraProxy {
                 this.onClientInterfaceConnected(client);
             },
             () => {
-                console.log('[proxy] Ready, waiting for game client start!');
+                console.log('[toolbox] Ready, waiting for game client start!');
                 this.running = true;
             },
             e => {
-                console.log('[proxy] ERROR: Unable to start client interface server.');
+                console.log('[toolbox] ERROR: Unable to start client interface server.');
                 switch (e.code) {
                     case 'EADDRINUSE':
-                        console.log('[proxy] ERROR: Another instance of tera-proxy is already running. Please close it and try again!');
+                        console.log('[toolbox] ERROR: Another instance of TERA Toolbox is already running. Please close it and try again!');
                         break;
                     default:
                         console.log(e);
@@ -116,7 +116,7 @@ class TeraProxy {
         const listenPort = this.listenPort++;
         server.listen(listenPort, this.listenIp, () => {
             const { address: listen_ip, port: listen_port } = server.address();
-            console.log(`[proxy] Redirecting ${name} (${region}-${id}) from ${listen_ip}:${listen_port} to ${ip}:${port}`);
+            console.log(`[toolbox] Redirecting ${name} (${region}-${id}) from ${listen_ip}:${listen_port} to ${ip}:${port}`);
         });
 
         clientInterfaceConnection.proxyServers.set(key, server);
@@ -131,14 +131,14 @@ class TeraProxy {
                     const JustStarted = data.just_started;
 
                     if (data.error) {
-                        console.log(`[proxy] Unable to establish connection to client: ${data.error}`);
+                        console.log(`[toolbox] Unable to establish connection to client: ${data.error}`);
                     } else {
                         const region = RegionFromLanguage(data.language);
                         client.info = data;
                         client.info.region = region.toLowerCase();
                         delete client.info.just_started;
 
-                        console.log(`[proxy] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.major_patch}.${data.minor_patch})`);
+                        console.log(`[toolbox] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.major_patch}.${data.minor_patch})`);
 
                         if (JustStarted)
                             client.moduleManager.loadAll();
@@ -180,7 +180,7 @@ class TeraProxy {
         });
 
         client.on('disconnect', e => {
-            console.log(`[proxy] Client disconnected`);
+            console.log(`[toolbox] Client disconnected`);
             client.proxyServers.forEach(server => server.close());
             client.proxyServers.clear();
         });
