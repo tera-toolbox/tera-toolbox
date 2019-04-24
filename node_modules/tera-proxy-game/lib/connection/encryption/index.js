@@ -7,7 +7,7 @@ const TeraCrypto = (() => {
     }
     catch(e)
     {
-        const log = require('../logger');
+        const log = require('../../logger')
         log.warn('WARNING: Unable to load native (much faster) packet encryption, falling back to slower JS-based packet encryption!')
         return require('tera-crypto-js')
     }

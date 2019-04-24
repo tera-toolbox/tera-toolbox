@@ -80,7 +80,7 @@
     "node_modules/tera-proxy-game/lib/connection/dispatch/module.js": "92e72014d577abe9f941b0ea7f1406f68e40335aa635d2890c60528366b7793c",
     "node_modules/tera-proxy-game/lib/connection/dispatch/moduleManager.js": "0ae83e98d81b90cec2fa34dc0ed65b0f8d6400e655da7e39acc650065e68f205",
     "node_modules/tera-proxy-game/lib/connection/dispatch/moduleInstallation.js": "a516ee8d15bcc961f5ee76116c1f35e91c7554d285607c8f1204c562acaecb9f",
-    "node_modules/tera-proxy-game/lib/connection/encryption/index.js": "5f42bdb8bd6327e73af5b2ccff0e1bb5ac6e0f0cf1cf54f4299653bff0c54cee",
+    "node_modules/tera-proxy-game/lib/connection/encryption/index.js": "e5605852c0a137d4c0478a70c76104d71cad2335d7078ff580743caaaef2103d",
     "node_modules/tera-proxy-game/lib/connection/encryption/sha0.js": "49748cdd71917d10232013990dd03ccbbd01a27dc85dfd6c534c211cffe14398",
     "node_modules/tera-crypto-js/index.js": "03f623e76cea70ab9466730d9f502ea55d5a47004243db620ef7ec5d63e5a154",
     "node_modules/tera-crypto-native/binding.gyp": "5ba00e39c867bcc091ba5e375abf76cb0f3e4294bc75c0b572024112f1741fd6",
