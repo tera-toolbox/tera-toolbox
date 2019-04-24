@@ -39,6 +39,7 @@ function ProxyMigration() {
         fs.unlinkSync(path.join(__dirname, "hosts.js"));
         fs.unlinkSync(path.join(__dirname, "netstat.js"));
         fs.unlinkSync(path.join(__dirname, "regions.js"));
+        fs.unlinkSync(path.join(__dirname, "gui", "index.html"));
     } catch (e) {
         // Ignore
     }

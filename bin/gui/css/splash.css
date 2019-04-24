@@ -1,0 +1,25 @@
+html {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+body {
+    user-select: none;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    overflow: hidden;
+}
+
+#status {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    color: #CCCCCC;
+}

@@ -292,7 +292,7 @@ class TeraProxyGUI {
                 devTools: false
             }
         });
-        this.window.loadFile(path.join(guiRoot, 'index.html'));
+        this.window.loadFile(path.join(guiRoot, 'main.html'));
         //this.window.webContents.openDevTools();
 
         //this.window.on('minimize', () => { this.window.hide(); });

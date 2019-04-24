@@ -1,4 +1,5 @@
-const { app } = require('electron');
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
 
 // Boot
 if (!app.requestSingleInstanceLock()) {
@@ -23,9 +24,42 @@ async function updateSelf(outputConsole) {
 }
 
 function main() {
+    // Show splash screen
+    let SplashScreen;
+    try {
+        app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+
+        const guiRoot = path.join(__dirname, 'gui');
+        const guiIcon = path.join(guiRoot, 'icon.png');
+        SplashScreen = new BrowserWindow({
+            title: 'Caali\'s Tera Proxy',
+            width: 960,
+            height: 540,
+            icon: guiIcon,
+            frame: false,
+            backgroundColor: '#292F33',
+            resizable: false,
+            webPreferences: {
+                devTools: false
+            }
+        });
+
+        SplashScreen.loadFile(path.join(guiRoot, 'splash.html'));
+        SplashScreen.show();
+    } catch (e) {
+        // Ignore any error resulting from splash screen
+        SplashScreen = null;
+    }
+
+    // Perform self-update
     updateSelf(console).then(result => {
         if (result) {
             require('./loader-gui');
+
+            if (SplashScreen) {
+                SplashScreen.close();
+                SplashScreen = null;
+            }
         } else {
             const { dialog } = require('electron');
 
