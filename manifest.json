@@ -1,8 +1,8 @@
 {
   "files": {
-    "TeraProxy.bat": "9276f3931de8c739119d8731cb3eaf27dab6fb200ae29616115ead62afa0d60a",
-    "TeraProxyGUI.bat": "b17acaf812dd4cb930c21ffe5da2743f46642448b5c887c39474bfcfd606e9c8",
-    "TeraProxyGUIWithConsole.bat": "9fe68fa43676a4b50a3f49fd3e3bd003cfdf3efcb424a9c26853e39ac80629c9",
+    "TeraProxy.bat": "4a9bdb25591344eaed64e0d58656eaa3c2179ecb7c04037102ef28da996f5500",
+    "TeraProxyGUI.bat": "28888292b5ce970c539d60dc1925e9d49c61af632c5b73a6d5bea31ff127faad",
+    "TeraProxyGUIWithConsole.bat": "7d028d4573a7fa0f37b6c0b21ae34709d642c13745ace62de573cc4cd84775bf",
     "config.json": {"overwrite": false, "hash": "5c804ce9d180f2f268ba6d4c0fb02f3001984e7f15e7499e84d4b44ec6657674"},
     "bin/config.js": "5980aa3dc95c744fe56a0ab47d0a903415bb19c6f78bb13228b78c5d10db5fa4",
     "bin/connectionManager.js": "55d2809bfa3322b53a9bab70fc6f8f4487b5aaf422667eb42e9cf3e84b5ff3b4",
