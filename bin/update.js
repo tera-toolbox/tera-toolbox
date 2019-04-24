@@ -2,9 +2,9 @@ const request = require('request-promise-native');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { CoreModules, listModules, listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
+const { CoreModules, listModules, listModuleInfos } = require('tera-mod-management');
 
-const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/caali-hackerman/tera-data/master/";
+const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/tera-toolbox/tera-data/master/";
 
 function forcedirSync(dir) {
     const sep = path.sep;

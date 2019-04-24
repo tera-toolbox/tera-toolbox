@@ -45,7 +45,7 @@ function Migration() {
 
 // Installed mod management
 const AvailableModuleListUrl = "https://raw.githubusercontent.com/caali-hackerman/tera-mods/master/modulelist.json";
-const { listModuleInfos, installModule, uninstallModule, toggleAutoUpdate, toggleLoad } = require('tera-proxy-game').ModuleInstallation;
+const { listModuleInfos, installModule, uninstallModule, toggleAutoUpdate, toggleLoad } = require('tera-mod-management');
 
 let CachedAvailableModuleList = null;
 async function getInstallableMods(forceRefresh = false) {

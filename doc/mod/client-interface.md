@@ -4,6 +4,7 @@ Besides the TCP connection used for game network traffic redirection, proxy also
 ## Generic Information
 The `info` object contains some useful information about the linked game client process:
 - `mod.clientInterface.info.pid`: The Windows process ID of the linked game client process.
+- `mod.clientInterface.info.region`: The linked game client's region (e.g. `na` for USA); see `mod.region`
 - `mod.clientInterface.info.language`: The loaded DataCenter language identifier (e.g. `EUR` for EU-English, `USA` for US-English, etc.)
 - `mod.clientInterface.info.path`: The full (absolute) path of the folder that contains the linked game client's `TERA.exe` (should always be the `Binaries` subfolder within the client's installation root folder).
 - `mod.clientInterface.info.major_patch`: The major patch version of the linked game client, as specified in `ReleaseRevision.txt`.

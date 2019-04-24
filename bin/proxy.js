@@ -59,26 +59,11 @@ class TeraProxy {
         this.connectionManager = new ConnectionManager(moduleFolder);
 
         const ClientInterfaceServer = require('tera-client-interface');
-        this.clientInterfaceServer = new ClientInterfaceServer('127.0.0.10', 9250,
+        this.clientInterfaceServer = new ClientInterfaceServer('127.0.0.10', 9250, moduleFolder,
             client => {
                 this.onClientInterfaceConnected(client);
             },
             () => {
-                // TODO: this is a dirty hack, implement a proper API for client/startup mods
-                const { listModuleInfos } = require('tera-proxy-game').ModuleInstallation;
-                listModuleInfos(this.moduleFolder).forEach(modInfo => {
-                    if (modInfo.options.loadOn === 'startup') {
-                        console.log(`[proxy] Loading startup module ${modInfo.name}`);
-                        try {
-                            const modConstructor = require(modInfo.path);
-                            modConstructor(null);
-                        } catch (e) {
-                            console.log(`[proxy] Error loading startup module ${modInfo.name}:`);
-                            console.log(e);
-                        }
-                    }
-                });
-
                 console.log('[proxy] Ready, waiting for game client start!');
                 this.running = true;
             },
@@ -143,12 +128,27 @@ class TeraProxy {
         client.on('data', (command, data) => {
             switch (command) {
                 case 'info': {
+                    const JustStarted = data.just_started;
+
                     if (data.error) {
                         console.log(`[proxy] Unable to establish connection to client: ${data.error}`);
                     } else {
+                        const region = RegionFromLanguage(data.language);
                         client.info = data;
-                        console.log(`[proxy] Client connected (${RegionFromLanguage(data.language)} v${data.major_patch}.${data.minor_patch})`);
+                        client.info.region = region.toLowerCase();
+                        delete client.info.just_started;
+
+                        console.log(`[proxy] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.major_patch}.${data.minor_patch})`);
+
+                        if (JustStarted)
+                            client.moduleManager.loadAll();
                     }
+
+                    if (JustStarted)
+                        client.resume();
+                    break;
+                }
+                case 'ready': {
                     break;
                 }
                 case 'get_sls': {
@@ -162,9 +162,8 @@ class TeraProxy {
                                 patched_server.title += tag;
                             }
 
-                            const region = RegionFromLanguage(client.info.language);
                             const platform = (client.info.major_patch <= 27) ? 'classic' : 'pc';
-                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, region, region.toLowerCase(), platform, client.info.major_patch, client.info.minor_patch, client);
+                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, RegionFromLanguage(client.info.language), client.info.region, platform, client.info.major_patch, client.info.minor_patch, client);
                             patched_server.ip = redirected_server.ip;
                             patched_server.port = redirected_server.port;
 
