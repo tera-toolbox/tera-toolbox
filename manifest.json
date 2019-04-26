@@ -56,7 +56,7 @@
     "node_modules/process-list/processlist_node_x64_67.node": "cf75e6db5758862ff15090b1ab3c2052af48a5a3ff4e25055db0be789d334c24",
     "node_modules/process-list/processlist-wrapper.js": "c53e8e6b2d185b43a1650d5ff26048186c16bea499229b2c14671e90b64853fe",
     "node_modules/tera-client-interface/GPKManager.js": "be5db0cef5d55383b657f0f1d16f39e433776448fb24400e6dffa4142cd48b57",
-    "node_modules/tera-client-interface/index.js": "b360d9f475cb2faceb872c8140bf1e0a107c3b7c170477823cd008a9991fde75",
+    "node_modules/tera-client-interface/index.js": "fa8a258a527074b308646276bb824b04c6aa4833766d62aeb65b6a1a3633ff6b",
     "node_modules/tera-client-interface/injector.exe": "e6b94c56ed73706a071033274ebcf893ce4371a9f2f2aa7dad013d10245e5a3c",
     "node_modules/tera-client-interface/module.js": "fb9a02fc00a05bdc9be9ab29e3b5482b298ee20b286baa7f2982c06c7f1da842",
     "node_modules/tera-client-interface/moduleManager.js": "d5a02443ee48e543008769a2b7498bdd9ec367e2c2a51b9a7cd3a74c259fed36",
