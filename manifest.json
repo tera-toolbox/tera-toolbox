@@ -13,7 +13,7 @@
     "bin/migration.js": "572288fe4a03371aa8ecb70574a1e2ce6936cedeb4a37da3b6393cf56fd0d244",
     "bin/proxy.js": "d9c2a44d41ababe97e68ad712502e9830c8b98856c5335f0123c8d9f2acd7a17",
     "bin/utils.js": "33f639991992a7a7a092a490eccec0522f62dd58a837c5bc5fb164a1151f2e3b",
-    "bin/update.js": "b2f89e300c22d6ff542056f58c7f10057360051a86b0ee0849e1bf355b72ec10",
+    "bin/update.js": "98c756196ddf02698d5dd2f7f58b5c0c1534af4da738f0c1d054b3237e7c0206",
     "bin/update-self.js": "22b79879a37776324eab89110f788641d03add29bb2d0c419f92652ca2b70eb1",
     "bin/gui/main.js": "f1f90225acdb75a7b81168f44981faacbc0b51d0116c001d697d948041728869",
     "bin/gui/main.html": "f0f4e8945546457ee3a135e606bfe5f8bdf8c197aae7b434b9ed0dcffeefbd55",

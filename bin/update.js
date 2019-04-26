@@ -169,7 +169,7 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
             });
         }
 
-        return { "defs": manifest["defs"], "results": updatelimit ? promises : (await Promise.all(promises)) };
+        return { "defs": manifest["defs"] || {}, "results": updatelimit ? promises : (await Promise.all(promises)) };
     } catch (e) {
         if (serverIndex + 1 < updateData["servers"].length)
             return autoUpdateModule(name, root, updateData, updatelog, updatelimit, region, serverIndex + 1);
