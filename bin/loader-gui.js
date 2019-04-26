@@ -278,7 +278,7 @@ class TeraProxyGUI {
 
         // Initialize main window
         const guiRoot = path.join(__dirname, 'gui');
-        const guiIcon = path.join(guiRoot, 'icon.png');
+        const guiIcon = path.join(guiRoot, 'icon.ico');
 
         this.window = new BrowserWindow({
             title: 'TERA Toolbox',

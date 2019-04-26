@@ -30,7 +30,7 @@ function main() {
         app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 
         const guiRoot = path.join(__dirname, 'gui');
-        const guiIcon = path.join(guiRoot, 'icon.png');
+        const guiIcon = path.join(guiRoot, 'icon.ico');
         SplashScreen = new BrowserWindow({
             title: 'TERA Toolbox',
             width: 960,
