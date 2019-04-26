@@ -26,6 +26,7 @@ async function updateSelf(outputConsole) {
 function main() {
     // Show splash screen
     let SplashScreen;
+    let SplashShowTime = 0;
     try {
         app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 
@@ -46,6 +47,7 @@ function main() {
 
         SplashScreen.loadFile(path.join(guiRoot, 'splash.html'));
         SplashScreen.show();
+        SplashShowTime = Date.now();
     } catch (e) {
         // Ignore any error resulting from splash screen
         SplashScreen = null;
@@ -54,12 +56,14 @@ function main() {
     // Perform self-update
     updateSelf(console).then(result => {
         if (result) {
-            require('./loader-gui');
+            setTimeout(() => {
+                require('./loader-gui');
 
-            if (SplashScreen) {
-                SplashScreen.close();
-                SplashScreen = null;
-            }
+                if (SplashScreen) {
+                    SplashScreen.close();
+                    SplashScreen = null;
+                }
+            }, SplashScreen ? Math.max(0, 2000 - (Date.now() - SplashShowTime)) : 0);
         } else {
             const { dialog } = require('electron');
 
