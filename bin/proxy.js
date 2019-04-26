@@ -1,4 +1,6 @@
-﻿function RegionFromLanguage(language) {
+﻿const path = require('path');
+
+function RegionFromLanguage(language) {
     switch (language.toUpperCase()) {
         case 'USA':
             return 'NA';
@@ -140,8 +142,10 @@ class TeraProxy {
 
                         console.log(`[toolbox] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.major_patch}.${data.minor_patch})`);
 
-                        if (JustStarted)
+                        if (JustStarted) {
+                            client.GPKManager.initialize(path.join(client.info.path, '..'));
                             client.moduleManager.loadAll();
+                        }
                     }
 
                     if (JustStarted)
@@ -162,8 +166,7 @@ class TeraProxy {
                                 patched_server.title += tag;
                             }
 
-                            const platform = (client.info.major_patch <= 27) ? 'classic' : 'pc';
-                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, RegionFromLanguage(client.info.language), client.info.region, platform, client.info.major_patch, client.info.minor_patch, client);
+                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, RegionFromLanguage(client.info.language), client.info.region, 'pc', client.info.major_patch, client.info.minor_patch, client);
                             patched_server.ip = redirected_server.ip;
                             patched_server.port = redirected_server.port;
 
