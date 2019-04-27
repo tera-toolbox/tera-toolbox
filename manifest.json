@@ -61,7 +61,7 @@
     "node_modules/tera-client-interface/module.js": "5b1f7fb8de994e6ee4c596ea4db5c559e844cf8a9a1f597dc2c6390e69ea654e",
     "node_modules/tera-client-interface/moduleManager.js": "d5a02443ee48e543008769a2b7498bdd9ec367e2c2a51b9a7cd3a74c259fed36",
     "node_modules/tera-client-interface/process-listener.js": "000534ba21b25b9b91b3d527481951d49b26d916207a48d6d81a9d1ac38d2401",
-    "node_modules/tera-client-interface/tera-client-interface.dll": "8864ec92b59166e9440531162bed38dc179e78e5f830b665b32700999f452877",
+    "node_modules/tera-client-interface/tera-client-interface.dll": "0dd5be2fb2569fb349b5e6a469900ab8716b34ac121247023d29f9c1a2bc9af9",
     "node_modules/tera-client-interface/third party licenses": "198998ed77107633cedcc0a272939ef7979bbc1b701b9eeff804036a8cbd5676",
     "node_modules/tera-data-parser/package.json": "1e1ac1bf77aa5716b1fd11307a876e23032d84ac0a908b760c795fa674622880",
     "node_modules/tera-data-parser/lib/index.js": "1dc8646247dbd51dbf389c544d3d1fe1253893ff89c203c93973712f2d1a75f6",
