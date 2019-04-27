@@ -1,8 +1,7 @@
-const EventEmitter = require('events')
 const path = require('path')
 const util = require('util')
 const binarySearch = require('binary-search')
-const { protocol, sysmsg } = require('tera-data-parser')
+const { protocol } = require('tera-data-parser')
 const types = Object.values(require('tera-data-parser').types)
 const log = require('../../logger')
 const ModuleManager = require('./moduleManager')
@@ -91,11 +90,8 @@ function errStack(err = new Error(), removeFront = true) {
 
 // -----------------------------------------------------------------------------
 
-class Dispatch extends EventEmitter {
-	constructor(connection, protocolVersion = 0) {
-        super();
-        this.setMaxListeners(0);
-
+class Dispatch {
+	constructor(connection) {
         this.connection = connection;
         this.proxyAuthor = 'caali';
         this.region = this.connection.info.regionShort;
@@ -112,20 +108,48 @@ class Dispatch extends EventEmitter {
 		//	 ]
 		// }
 		this.hooks = new Map()
-		this.queuedHooks = []
 
+        // Initialize sysmsg maps
+        this.sysmsgMap = {
+            name: new Map(),
+            code: new Map(),
+        };
+        
+        Object.keys(this.connection.info.sysmsg).forEach(name => {
+            this.sysmsgMap.name.set(name, this.connection.info.sysmsg[name]);
+            this.sysmsgMap.code.set(this.connection.info.sysmsg[name], name);
+        });
+
+        // Initialize protocol maps
         this.protocol = protocol.createInstance(this.platform)
-		this.protocol.load(require.resolve('tera-data'))
+        this.protocol.load(require.resolve('tera-data'))
 
-		this.latestDefVersion = new Map()
-		if (this.protocol.messages) {
-			for(const [name, defs] of this.protocol.messages) {
-				this.latestDefVersion.set(name, Math.max(...defs.keys()))
-			}
-		}
+        this.latestDefVersion = new Map()
+        if (this.protocol.messages) {
+            for (const [name, defs] of this.protocol.messages) {
+                this.latestDefVersion.set(name, Math.max(...defs.keys()))
+            }
+        }
 
-		this.setProtocolVersion(protocolVersion)
+        this.protocolVersion = this.connection.info.protocol;
+        this.protocolMap = this.protocol.maps.get(this.protocolVersion);
 
+        if (!this.protocolMap) {
+            log.error(`[dispatch] Unmapped protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion}).`);
+            log.error('[dispatch] This can be caused by either of the following:');
+            log.error('[dispatch] 1) You are trying to play using a newly released client version that is not yet supported.');
+            log.error('[dispatch]    If there was a game maintenance within the past few hours, please report this!');
+            log.error('[dispatch]    Otherwise, your client might have been updated for an upcoming patch too early.');
+            log.error('[dispatch] 2) You are trying to play using an outdated client version.');
+            log.error('[dispatch]    Try a client repair or reinstalling the game from scratch to fix this!');
+            if (this.region === 'na')
+                log.error('[dispatch]   (Both issues occur frequently on NA due to EME\'s shitty patch distribution system.)');
+            log.error(`[dispatch] If you cannot fix this on your own, ask for help here: ${global.TeraProxy.SupportUrl}!`);
+        } else {
+            log.info(`[dispatch] Switching to protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion})`);
+        }
+
+        // Create mod manager
         this.moduleManager = new ModuleManager(this, this.connection.moduleFolder);
 	}
 
@@ -157,16 +181,16 @@ class Dispatch extends EventEmitter {
         return missingDefs;
     }
 
-	isConsole() {
-		return !!this.connection.info.console;
+    isConsole() {
+        return this.platform === 'console';
 	}
 
     isClassic() {
-        return !!this.connection.info.classic;
+        return this.platform === 'classic';
     }
 
     get platform() {
-        return this.isConsole() ? 'console' : (this.isClassic() ? 'classic' : 'pc');
+        return this.connection.info.platform;
     }
 
 	parseSystemMessage(message) {
@@ -292,12 +316,6 @@ class Dispatch extends EventEmitter {
 	}
 
 	hook(...args) {
-		if(!this.protocolVersion) {
-			const hook = {}
-			this.queuedHooks.push({ hook, args })
-			return hook
-		}
-
 		const hook = this.createHook({}, ...args)
 		this.addHook(hook)
 		return hook
@@ -306,11 +324,6 @@ class Dispatch extends EventEmitter {
 	unhook(hook) {
         if(!hook)
             return;
-
-		if(!this.protocolVersion) {
-			this.queuedHooks = this.queuedHooks.filter(h => h !== hook)
-			return
-		}
 
 		if(!this.hooks.has(hook.code)) return
 
@@ -361,63 +374,8 @@ class Dispatch extends EventEmitter {
 		return true
 	}
 
-	setProtocolVersion(version) {
-        this.protocolVersion = version;
-        this.protocolMap = null;
-        this.sysmsgMap = null;
-
-		this.protocolMap = this.protocol.maps.get(this.protocolVersion);
-        sysmsg.load();
-		this.sysmsgMap = sysmsg.maps.get(this.protocolVersion);
-
-		if(!this.protocolMap || !this.sysmsgMap) {
-            if (this.protocolVersion !== 0) {
-                log.error(`[dispatch] Unmapped protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion}).`);
-                log.error('[dispatch] This can be caused by either of the following:');
-                log.error('[dispatch] 1) You are trying to play using a newly released client version that is not yet supported.');
-                log.error('[dispatch]    If there was a game maintenance within the past few hours, please report this!');
-                log.error('[dispatch]    Otherwise, your client might have been updated for an upcoming patch too early.');
-                log.error('[dispatch] 2) You are trying to play using an outdated client version.');
-                log.error('[dispatch]    Try a client repair or reinstalling the game from scratch to fix this!');
-                if (this.region === 'na')
-                    log.error('[dispatch]   (Both issues occur frequently on NA due to EME\'s shitty patch distribution system.)');
-                log.error(`[dispatch] If you cannot fix this on your own, ask for help here: ${global.TeraProxy.SupportUrl}!`);
-			}
-		} else {
-            log.info(`[dispatch] Switching to protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion})`);
-
-            const hooks = this.queuedHooks;
-            this.queuedHooks = [];
-            for (const queued of hooks)
-                this.addHook(this.createHook(queued.hook, ...queued.args));
-
-            this.emit('init');
-		}
-	}
-
 	handle(data, incoming, fake = false) {
 		const code = data.readUInt16LE(2)
-
-		if(code === 19900 && !this.protocolVersion) { // C_CHECK_VERSION
-			// TODO hack; we should probably find a way to hardcode this, but it'll
-			// work for now since this packet should never change (?)
-			const ver = this.protocol.maps.keys().next().value
-
-			try {
-				const parsed = this.protocol.parse(ver, code, 1, data, null),
-					[item] = parsed.version
-
-				if(!item || item.index !== 0) {
-					throw new Error('[dispatch] handle: failed to retrieve protocol version from C_CHECK_VERSION<1> (index != 0)');
-				} else {
-					this.setProtocolVersion(item.value)
-				}
-			}
-			catch(e) {
-				throw new Error(`[dispatch] handle: failed to parse C_CHECK_VERSION<1> for dynamic protocol versioning:\n${e}`);
-			}
-		}
-
 		const copy = Buffer.from(data)
 
 		const globalHooks = this.hooks.get('*')

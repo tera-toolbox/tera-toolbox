@@ -7,8 +7,10 @@ The `info` object contains some useful information about the linked game client 
 - `mod.clientInterface.info.region`: The linked game client's region (e.g. `na` for USA); see `mod.region`
 - `mod.clientInterface.info.language`: The loaded DataCenter language identifier (e.g. `EUR` for EU-English, `USA` for US-English, etc.)
 - `mod.clientInterface.info.path`: The full (absolute) path of the folder that contains the linked game client's `TERA.exe` (should always be the `Binaries` subfolder within the client's installation root folder).
-- `mod.clientInterface.info.major_patch`: The major patch version of the linked game client, as specified in `ReleaseRevision.txt`.
-- `mod.clientInterface.info.minor_patch`: The minor patch version of the linked game client, as specified in `ReleaseRevision.txt`.
+- `mod.clientInterface.info.majorPatchVersion`: The major patch version of the linked game client, as specified in `ReleaseRevision.txt`.
+- `mod.clientInterface.info.minorPatchVersion`: The minor patch version of the linked game client, as specified in `ReleaseRevision.txt`.
+- `mod.clientInterface.info.protocolVersion`: The protocol version (== DataCenter version), as sent in `C_CHECK_VERSION`.
+- `mod.clientInterface.info.sysmsg`: SystemMessage name -> ID map.
 
 ## Flashing the Game Window
 A module can make the game window flash (just like if a broker negotiation request had been received while it's minimized) by calling `mod.clientInterface.flashWindow(count = 5, interval = 0, allowFocused = false)`. By default (calling `mod.clientInterface.flashWindow()` without arguments), it'll behave identically to an incoming broker negotiation request.

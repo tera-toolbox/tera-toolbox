@@ -14,8 +14,6 @@ class ModuleManager {
         this.rootFolder = rootFolder;
         this.installedModules = new Map();
         this.loadedModules = new Map();
-
-        this.dispatch.on('init', () => this._loadAll('versioncheck'));
     }
 
     destructor() {
@@ -44,22 +42,8 @@ class ModuleManager {
         return info && isCoreModule(info);
     }
 
-    _loadAll(loadOn) {
-        // Load core modules first
-        this.installedModules.forEach(mod => {
-            if (this.isCoreModule(mod.name) && !this.isLoaded(mod.name) && mod.options.loadOn === loadOn)
-                this.load(mod.name);
-        });
-
-        // Then load other modules
-        this.installedModules.forEach(mod => {
-            if (!this.isCoreModule(mod.name) && !this.isLoaded(mod.name) && mod.options.loadOn === loadOn)
-                this.load(mod.name);
-        });
-    }
-
     loadAll() {
-        if (!this.dispatch)
+        if (!this.dispatch || !this.dispatch.protocolMap)
             return;
 
         // List installed modules
@@ -123,9 +107,18 @@ class ModuleManager {
             if (this.installedModules.get(k).category !== 'network')
                 this.installedModules.delete(k);
         }
+        
+        // Load core modules first
+        this.installedModules.forEach(mod => {
+            if (this.isCoreModule(mod.name) && !this.isLoaded(mod.name))
+                this.load(mod.name);
+        });
 
-        // Load all modules that are loaded immediately
-        this._loadAll('connect');
+        // Then load other modules
+        this.installedModules.forEach(mod => {
+            if (!this.isCoreModule(mod.name) && !this.isLoaded(mod.name))
+                this.load(mod.name);
+        });
     }
 
     unloadAll() {

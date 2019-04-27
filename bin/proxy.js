@@ -105,7 +105,7 @@ class TeraProxy {
         return this.connectionManager.hasActiveConnections;
     }
 
-    redirect(id, name, ip, port, region, regionShort, platform, majorPatch, minorPatch, clientInterfaceConnection) {
+    redirect(id, name, ip, port, region, regionShort, platform, majorPatch, minorPatch, protocolVersion, sysmsg, clientInterfaceConnection) {
         // Try to find server that's already listening
         const key = `${platform}-${region}-${majorPatch}.${minorPatch}-${id}-${ip}:${port}`;
         const cached = clientInterfaceConnection.proxyServers.get(key);
@@ -114,7 +114,7 @@ class TeraProxy {
 
         // Create a new server
         const net = require('net');
-        const server = net.createServer(socket => this.connectionManager.start(id, { ip, port }, socket, region, regionShort, platform, majorPatch, minorPatch, clientInterfaceConnection));
+        const server = net.createServer(socket => this.connectionManager.start(id, { ip, port }, socket, region, regionShort, platform, majorPatch, minorPatch, protocolVersion, sysmsg, clientInterfaceConnection));
         const listenPort = this.listenPort++;
         server.listen(listenPort, this.listenIp, () => {
             const { address: listen_ip, port: listen_port } = server.address();
@@ -140,7 +140,7 @@ class TeraProxy {
                         client.info.region = region.toLowerCase();
                         delete client.info.just_started;
 
-                        console.log(`[toolbox] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.major_patch}.${data.minor_patch})`);
+                        console.log(`[toolbox] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.majorPatchVersion}.${data.minorPatchVersion})`);
 
                         if (JustStarted) {
                             client.GPKManager.initialize(path.join(client.info.path, '..'));
@@ -153,10 +153,12 @@ class TeraProxy {
                     break;
                 }
                 case 'ready': {
+                    client.info.protocolVersion = data.versionDataCenter;
+                    client.info.sysmsg = data.sysmsg;
                     break;
                 }
                 case 'get_sls': {
-                    if (client.info) {
+                    if (client.info && client.info.protocolVersion) {
                         let proxy_servers = data.servers.filter(server => !data.servers.some(other_server => other_server.id === server.id && other_server.ip === this.listenIp)).map(server => {
                             let patched_server = Object.assign({}, server);
 
@@ -166,7 +168,7 @@ class TeraProxy {
                                 patched_server.title += tag;
                             }
 
-                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, RegionFromLanguage(client.info.language), client.info.region, 'pc', client.info.major_patch, client.info.minor_patch, client);
+                            const redirected_server = this.redirect(server.id, server.name, server.ip, server.port, RegionFromLanguage(client.info.language), client.info.region, 'pc', client.info.majorPatchVersion, client.info.minorPatchVersion, client.info.protocolVersion, client.info.sysmsg, client);
                             patched_server.ip = redirected_server.ip;
                             patched_server.port = redirected_server.port;
 
