@@ -63,7 +63,7 @@ function main() {
                     SplashScreen.close();
                     SplashScreen = null;
                 }
-            }, SplashScreen ? Math.max(0, 2000 - (Date.now() - SplashShowTime)) : 0);
+            }, SplashScreen ? Math.max(0, 1500 - (Date.now() - SplashShowTime)) : 0);
         } else {
             const { dialog } = require('electron');
 
