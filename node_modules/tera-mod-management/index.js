@@ -71,6 +71,7 @@ function loadModuleInfo(rootFolder, name) {
         'name': name.toLowerCase(),
         'rawName': name,
         'path': modulePath,
+        'category': 'network',
         'author': null,
         'description': null,
         'version': null,
@@ -94,7 +95,6 @@ function loadModuleInfo(rootFolder, name) {
         Object.assign(result, {
             'type': 'standalone',
             'compatibility': 'legacy',
-            'category': 'network',
         });
     } else {
         // Try to load module information and manifest files
@@ -106,7 +106,6 @@ function loadModuleInfo(rootFolder, name) {
             Object.assign(result, {
                 'type': 'regular',
                 'compatibility': 'legacy',
-                'category': 'network',
             });
         }
 
@@ -117,7 +116,7 @@ function loadModuleInfo(rootFolder, name) {
             Object.assign(result, {
                 'type': 'regular',
                 'compatibility': 'compatible',
-                'category': moduleInfo.category || 'network',
+                'category': moduleInfo.category || result.category,
                 'name': (moduleInfo.name || result.name).toLowerCase(),
                 'rawName': moduleInfo.name || result.rawName,
                 'author': moduleInfo.author || result.author,
@@ -169,8 +168,6 @@ function loadModuleInfo(rootFolder, name) {
     }
 
     // Post-process data
-    if (!result.options.loadOn)
-        result.options.loadOn = 'versioncheck';
     result.isCoreModule = isCoreModule(result);
     return result;
 }

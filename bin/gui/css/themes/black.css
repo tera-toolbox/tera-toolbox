@@ -198,6 +198,12 @@ ul.ModulesList li {
  * INSTALLABLE MODULES *
  ***********************/
 
+        .installableModulesFilters > label > input[type=text] {
+            color: #BBB;
+            border-color: #393C40;
+            background-color: #222426;
+        }
+
 .installableModuleHeader {
     border-color: #14171A;
     background-color: #222426;
