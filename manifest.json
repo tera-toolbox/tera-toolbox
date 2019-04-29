@@ -9,7 +9,7 @@
     "bin/index-cli.js": "3c6db45cf265c9d938b82f6b2c87d3501f1b416e212872d764663725786c2feb",
     "bin/index-gui.js": "be38b1da6d12e9a7ed2913faee588e357f499ebdd94f2822b951170ea52eb179",
     "bin/loader-cli.js": "774b4adcc8ad78e79901fe3d2e8f5c32aab65523c47c8ebe19b7e5f80bc7b5a5",
-    "bin/loader-gui.js": "f7efa7fb41b475a6f3a2d2f6234836e87f64bd8d603cfb962ef8c0a6d5548dc8",
+    "bin/loader-gui.js": "95e2e266fa353b39b7f6996b5a588096be656d3e55e37ab380f13a18a6643141",
     "bin/migration.js": "572288fe4a03371aa8ecb70574a1e2ce6936cedeb4a37da3b6393cf56fd0d244",
     "bin/proxy.js": "c54aee7c9503421909d95a11887ab7b00c321c58a65622a2211b223c29eab366",
     "bin/utils.js": "33f639991992a7a7a092a490eccec0522f62dd58a837c5bc5fb164a1151f2e3b",
