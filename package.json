@@ -1,14 +1,14 @@
 {
-  "name": "tera-proxy",
-  "version": "0.1.0",
-  "description": "Easy script modding through modular network-based hooks.",
+  "name": "tera-toolbox",
+  "version": "1.0.0",
+  "description": "Comprehensive modding framework for TERA.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tera-toolbox/tera-toolbox.git"
   },
-  "author": "meishu",
+  "author": "Caali / Pinkie Pie / meishu",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=11.4.0"
   },
   "bugs": {
     "url": "https://github.com/tera-toolbox/tera-toolbox/issues"

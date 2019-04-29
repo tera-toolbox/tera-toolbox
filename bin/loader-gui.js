@@ -289,6 +289,7 @@ class TeraProxyGUI {
             backgroundColor: '#292F33',
             resizable: false,
             webPreferences: {
+                nodeIntegration: true,
                 devTools: false
             }
         });
