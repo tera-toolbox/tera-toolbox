@@ -5,4 +5,4 @@ Please note that it is generally encouraged to rely on `tera-game-state` as much
 
 As an example, you should always use `mod.game.on('enter_game', () => ...);` instead of hooking `S_LOGIN` if possible.
 
-You can find the documentation of `tera-game-state` [here](https://github.com/caali-hackerman/tera-game-state/blob/master/README.md).
+You can find the documentation of `tera-game-state` [here](https://github.com/tera-toolbox/tera-game-state/blob/master/README.md).

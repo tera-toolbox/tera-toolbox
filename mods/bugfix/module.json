@@ -7,6 +7,6 @@
     "options": {
         "niceName": "Bugfix"
     },
-    "servers": ["https://raw.githubusercontent.com/caali-hackerman/bugfix/master/"],
+    "servers": ["https://raw.githubusercontent.com/tera-toolbox-mods/bugfix/master/"],
     "conflicts": ["swim-fix", "chat-sanitizer"]
 }

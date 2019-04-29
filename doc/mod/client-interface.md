@@ -15,7 +15,7 @@ The `info` object contains some useful information about the linked game client 
 ## Flashing the Game Window
 A module can make the game window flash (just like if a broker negotiation request had been received while it's minimized) by calling `mod.clientInterface.flashWindow(count = 5, interval = 0, allowFocused = false)`. By default (calling `mod.clientInterface.flashWindow()` without arguments), it'll behave identically to an incoming broker negotiation request.
 
-For a module using this feature in a real-world scenario, check out [Flasher](https://github.com/caali-hackerman/flasher).
+For a module using this feature in a real-world scenario, check out [Flasher](https://github.com/tera-toolbox-mods/flasher).
 
 ## Configuring Camera Shaking Behavior
 Camera shaking feels annoying, or might even cause medical issues, for some people. It cannot be fully disabled using the game's settings, but TERA Toolbox offers this feature through `mod.clientInterface.configureCameraShake(enabled, power = 1.0, speed = 1.0)`. As an example, `mod.clientInterface.configureCameraShake(false)` simply disables camera shaking altogether. The optional `power` and `speed` params allow you to control the strength (multiples of the default settings) of camera shaking effects, if enabled. You can even set them to really high values if you want!
