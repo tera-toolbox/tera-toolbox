@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Caali's Tera Proxy</title>
+		<title>TERA Toolbox</title>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 		<link rel="stylesheet" href="css/main.css">
 		<script>window.$ = window.jQuery = require('./js/jquery-3.2.1.min.js')</script>
@@ -11,9 +11,9 @@
 	<body>
         <!-- Title Bar -->
         <div id="title-bar" class="title-bar">
-            <img src="icon.png" id="title-icon">
-            <div id="title">Caali's Tera Proxy</div>
-            <div id="title-status">Proxy not running</div>
+            <img src="icon.ico" id="title-icon">
+            <div id="title">TERA Toolbox</div>
+            <div id="title-status">Not running</div>
             <button id="minimize-btn" class="nodrag">-</button>
             <button id="close-btn" class="nodrag">&times;</button>
         </div>
@@ -25,14 +25,14 @@
                 <li class="tab-link nodrag current" tabname="log">Log</li>
                 <li class="tab-link nodrag" tabname="mods">My Mods</li>
                 <li class="tab-link nodrag" tabname="newmods">Get More Mods</li>
-                <li class="tab-link nodrag" tabname="settings">Proxy Settings</li>
+                <li class="tab-link nodrag" tabname="settings">Settings</li>
                 <li class="tab-link nodrag" tabname="help" tabclickonly="true">Need Help?</li>
                 <li class="tab-link nodrag" tabname="modsfolder" tabclickonly="true">Show Mods Folder</li>
                 <li class="tab-link nodrag" tabname="credits">Credits</li>
-                <a class="nodrag" id="startproxy">Start Proxy</a>
+                <a class="nodrag" id="startproxy">Start!</a>
             </ul>
 
-            <!-- Proxy Console -->
+            <!-- Console -->
             <div id="log_loading" class="tab-content nodrag">
                 <div class="loading">
                     <div class="loading icon"></div>
@@ -64,11 +64,16 @@
                 </div>
             </div>
             <div id="newmods" class="tab-content nodrag">
+                <div class="installableModulesFilters">
+                    <label>Filter: <input type="text" id="installableModulesFilterString" /></label>
+                    <label><input type="checkbox" id="installableModulesFilterNetwork" checked />Network / Proxy Mods</label>
+                    <label><input type="checkbox" id="installableModulesFilterClient" checked />Client / UI Mods</label>
+                </div>
                 <div class="installableModulesList">
                 </div>
             </div>
 
-            <!-- Proxy Settings -->
+            <!-- Settings -->
             <div id="settings_loading" class="tab-content nodrag">
                 <div class="loading">
                     <div class="loading icon"></div>
@@ -83,7 +88,7 @@
                     <div id="theme_pink" class="theme pink"></div>
                 </div>
                 <div>
-                    <a>Automatically run proxy on startup</a>
+                    <a>Autostart when opening TERA Toolbox</a>
                     <input id="autostart" type="checkbox">
                 </div>
                 <div>
@@ -99,7 +104,7 @@
                     <input id="noupdate" type="checkbox">
                 </div>
                 <div>
-                    <a>Disable proxy update</a>
+                    <a>Disable self-updates</a>
                     <input id="noselfupdate" type="checkbox">
                 </div>
                 <div>
@@ -107,11 +112,11 @@
                     <input id="devmode" type="checkbox">
                 </div>
                 <div>
-                    <a>Hide proxy tag in server list</a>
+                    <a>Hide tags in server list</a>
                     <input id="noslstags" type="checkbox">
                 </div>
                 <div>
-                    <a>Minimize proxy to system tray</a>
+                    <a>Minimize to system tray</a>
                     <input id="minimizetotray" type="checkbox">
                 </div>
             </div>
@@ -126,10 +131,10 @@
             <div id="credits" class="tab-content nodrag">
                 <div class="credits text">
                     Thanks to<br />
-                    SaltyMonkey: Proxy Setup<br />
+                    SaltyMonkey: Installer<br />
                     Mathicha &amp; Pentagon: Core GUI stuff<br />
-                    Meishu / Pinkie Pie: Original Proxy Core<br />
-                    All Proxy Mod Developers
+                    Meishu / Pinkie Pie: Original Tera-Proxy Core<br />
+                    All Mod Developers
                 </div>
             </div>
 
@@ -140,9 +145,6 @@
                     <button id="modalbox-ok" class="modalbox-button">OK</button>
                 </div>
             </div>
-
         </div>
-
 	</body>
-
 </html>

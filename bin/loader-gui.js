@@ -12,7 +12,7 @@ function LoadConfiguration() {
         dialog.showMessageBox({
             type: 'error',
             title: 'Invalid settings file!',
-            message: `The config.json file in your proxy folder is malformed. Try to fix it yourself, delete it to generate a new one, or ask in ${global.TeraProxy.SupportUrl} for help!\n\nProxy will now be terminated.`
+            message: `The config.json file in your TERA Toolbox folder is malformed. Try to fix it yourself, delete it to generate a new one, or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
         });
 
         app.quit();
@@ -36,7 +36,7 @@ function Migration() {
         dialog.showMessageBox({
             type: 'error',
             title: 'Migration error!',
-            message: `Unable to migrate files from an old version of Tera-Proxy.\nPlease reinstall a clean copy using the latest installer or ask in ${global.TeraProxy.SupportUrl} for help!\n\nProxy will now be terminated.`
+            message: `Unable to migrate files from an old version of TERA Toolbox.\nPlease reinstall a clean copy using the latest installer or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
         });
 
         app.quit();
@@ -44,8 +44,8 @@ function Migration() {
 }
 
 // Installed mod management
-const AvailableModuleListUrl = "https://raw.githubusercontent.com/caali-hackerman/tera-mods/master/modulelist.json";
-const { listModuleInfos, installModule, uninstallModule, toggleAutoUpdate, toggleLoad } = require('tera-proxy-game').ModuleInstallation;
+const AvailableModuleListUrl = "https://raw.githubusercontent.com/tera-toolbox/tera-mods/master/modulelist.json";
+const { listModuleInfos, installModule, uninstallModule, toggleAutoUpdate, toggleLoad } = require('tera-mod-management');
 
 let CachedAvailableModuleList = null;
 async function getInstallableMods(forceRefresh = false) {
@@ -74,7 +74,7 @@ function _StartProxy(ModuleFolder, ProxyConfig) {
         proxyRunning = true;
         return true;
     } catch (_) {
-        console.error('[proxy] Unable to start proxy!');
+        console.error('[toolbox] Unable to start the network proxy!');
         proxy = null;
         proxyRunning = false;
         return false;
@@ -130,7 +130,7 @@ async function StopProxy() {
 const isWindows = process.platform === "win32";
 
 function cleanExit() {
-    log("terminating...");
+    log("[toolbox] terminating...");
 
     StopProxy().then(() => {
         if (isWindows)
@@ -155,14 +155,14 @@ ipcMain.on('init', (event, _) => {
 
     if (config.noselfupdate) {
         log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        log("!!!!!    YOU HAVE DISABLED AUTOMATIC PROXY SELF-UPDATING    !!!!!");
+        log("!!!!!       YOU HAVE DISABLED AUTOMATIC SELF-UPDATING       !!!!!");
         log("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
         log("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
         log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     if (config.gui.autostart) {
-        log("Starting proxy...");
+        log("[toolbox] Starting the network proxy...");
         StartProxy(ModuleFolder, config).then((result) => {
             event.sender.send('proxy running', result);
         });
@@ -173,7 +173,7 @@ ipcMain.on('start proxy', (event, _) => {
     if (proxy || proxyRunning)
         return;
 
-    log("Starting proxy...");
+    log("[toolbox] Starting the network proxy...");
     StartProxy(ModuleFolder, config).then((result) => {
         event.sender.send('proxy running', result);
     });
@@ -183,10 +183,10 @@ ipcMain.on('stop proxy', (event, _) => {
     if (!proxy || !proxyRunning)
         return;
 
-    log("Stopping proxy...");
+    log("[toolbox] Stopping the network proxy...");
     StopProxy().then(() => {
         event.sender.send('proxy running', false);
-        log("Proxy stopped!");
+        log("[toolbox] Network proxy stopped!");
     });
 });
 
@@ -278,10 +278,10 @@ class TeraProxyGUI {
 
         // Initialize main window
         const guiRoot = path.join(__dirname, 'gui');
-        const guiIcon = path.join(guiRoot, 'icon.png');
+        const guiIcon = path.join(guiRoot, 'icon.ico');
 
         this.window = new BrowserWindow({
-            title: 'Caali\'s Tera Proxy',
+            title: 'TERA Toolbox',
             width: 1215,
             height: 675,
             icon: guiIcon,
@@ -289,10 +289,11 @@ class TeraProxyGUI {
             backgroundColor: '#292F33',
             resizable: false,
             webPreferences: {
+                nodeIntegration: true,
                 devTools: false
             }
         });
-        this.window.loadFile(path.join(guiRoot, 'index.html'));
+        this.window.loadFile(path.join(guiRoot, 'main.html'));
         //this.window.webContents.openDevTools();
 
         //this.window.on('minimize', () => { this.window.hide(); });
@@ -311,7 +312,7 @@ class TeraProxyGUI {
 
         // Initialize tray icon
         this.tray = new Tray(guiIcon);
-        this.tray.setToolTip('Caali\'s Tera Proxy');
+        this.tray.setToolTip('TERA Toolbox');
         this.tray.setContextMenu(Menu.buildFromTemplate([
             {
                 label: 'Quit',

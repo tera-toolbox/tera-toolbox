@@ -10,7 +10,7 @@ function NodeVersionCheck() {
     } catch (e) {
         switch (e.message) {
             case 'BigInt not supported':
-                console.error('ERROR: Your installed version of Node.JS is too old to run tera-proxy!');
+                console.error('ERROR: Your installed version of Node.JS is too old to run TERA Toolbox!');
                 console.error('ERROR: Please install the latest version from https://nodejs.org/en/download/current/');
                 break;
 
@@ -39,7 +39,7 @@ function Migration() {
         const { ProxyMigration } = require('./migration');
         ProxyMigration();
     } catch (e) {
-        console.log("ERROR: Unable to migrate files from an old version of tera-proxy!");
+        console.log("ERROR: Unable to migrate files from an old version of TERA Toolbox!");
         console.log("ERROR: Please reinstall a clean copy using the latest installer");
         console.log(`ERROR: or ask for help here: ${global.TeraProxy.SupportUrl}!`);
         process.exit();
@@ -53,7 +53,7 @@ function RunProxy(ModuleFolder, ProxyConfig) {
     try {
         proxy.run();
     } catch (_) {
-        console.error('[proxy] Unable to start proxy, terminating...');
+        console.error('[toolbox] Unable to start the network proxy, terminating...');
         process.exit();
     }
 

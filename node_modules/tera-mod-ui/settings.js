@@ -16,6 +16,7 @@ class Settings extends EventEmitter {
             frame: false,
             resizable: false,
             webPreferences: {
+                nodeIntegration: true,
                 devTools: false
             }
         }, options), false, path.join(__dirname, 'settings_ui'));

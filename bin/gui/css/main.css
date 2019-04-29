@@ -319,6 +319,29 @@ ul.tabs {
 /***********************
  * INSTALLABLE MODULES *
  ***********************/
+.installableModulesFilters {
+    width: 100%;
+    margin-bottom: 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+    .installableModulesFilters > label {
+        padding-right: 20px;
+    }
+
+    .installableModulesFilters > label > input[type=checkbox] {
+        position: relative;
+        top: 2px;
+        margin-right: 3px;
+    }
+
+    .installableModulesFilters > label > input[type=text] {
+        border: 1px solid;
+        border-radius: 3px;
+        padding: 2px;
+    }
+
 .installableModulesList {
     display: block;
 }

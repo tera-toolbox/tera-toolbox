@@ -1,5 +1,5 @@
 # Managing Network Traffic Hooks
-The core feature of proxy is obviously granting modules the ability to intercept, read, modify, and send fake network packets. This can be achieved by accessing the corresponding API offered through the `mod` parameter passed to the module's constructor. Note that hooks can be arbitrarily installed and uninstalled at any time, even from within a hook callback.
+The core feature of network mods for TERA Toolbox is obviously the ability to intercept, read, modify, and send fake network packets. This can be achieved by accessing the corresponding API offered through the `mod` parameter passed to the module's constructor. Note that hooks can be arbitrarily installed and uninstalled at any time, even from within a hook callback.
 
 ## Hooking Traffic (Read)
 Let's start by taking apart a very basic example:
@@ -11,7 +11,7 @@ module.exports = function MyModule(mod) {
 }
 ```
 
-As you can see, `mod.hook()` installs a network traffic hook. The one in our example will trigger if and only if a packet with the name `S_LOAD_TOPO` is processed. It will use version `3` of the packet definitions available for `S_LOAD_TOPO` in order to parse the raw binary data of that packet into the `event` object passed to your hook callback function. This requires that (1) a proper opcode mapping from the name `S_LOAD_TOPO` to the corresponding number (which is randomized whenever a new client patch is distributed), and (2) a valid packet definition for that packet (the contents are subject to change on game updates) are known to proxy. Both mappings (in `map_base`) and definitions (in `protocol`) are maintained in the [tera-data](https://github.com/caali-hackerman/tera-data) repository, which is automatically downloaded by proxy on startup. Outdated mappings and definitions are typically purged from that repository a few weeks after they have become obsolete due to all game regions having been updated to the latest patch.
+As you can see, `mod.hook()` installs a network traffic hook. The one in our example will trigger if and only if a packet with the name `S_LOAD_TOPO` is processed. It will use version `3` of the packet definitions available for `S_LOAD_TOPO` in order to parse the raw binary data of that packet into the `event` object passed to your hook callback function. This requires that (1) a proper opcode mapping from the name `S_LOAD_TOPO` to the corresponding number (which is randomized whenever a new client patch is distributed), and (2) a valid packet definition for that packet (the contents are subject to change on game updates) are known to TERA Toolbox. Both mappings (in `map_base`) and definitions (in `protocol`) are maintained in the [tera-data](https://github.com/tera-toolbox/tera-data) repository, which is automatically downloaded by TERA Toolbox on startup. Outdated mappings and definitions are typically purged from that repository a few weeks after they have become obsolete due to all game regions having been updated to the latest patch.
 
 Taking a look into the definition file (`S_LOAD_TOPO.3.def`) used in our example, we see that it looks like this:
 ```
@@ -20,9 +20,9 @@ vec3  loc
 bool  quick # true = no loading screen
 ```
 
-As you can see, the `zone` attribute will be passed to the hook installed in the example above as `event.zone`, `loc` would be passed as `event.loc`, and so on. You can find a documentation of all data types and more [in the tera-data readme](https://github.com/caali-hackerman/tera-data/blob/master/README.md).
+As you can see, the `zone` attribute will be passed to the hook installed in the example above as `event.zone`, `loc` would be passed as `event.loc`, and so on. You can find a documentation of all data types and more [in the tera-data readme](https://github.com/tera-toolbox/tera-data/blob/master/README.md).
 
-Based on that knowledge, we can conclude that our hook callback in the example above prints the new zone ID to proxy's log whenever a zone change is triggered by the server. As an example, teleporting to Highwatch from Velika would print `Switching to zone 7031!`.
+Based on that knowledge, we can conclude that our hook callback in the example above prints the new zone ID to the log whenever a zone change is triggered by the server. As an example, teleporting to Highwatch from Velika would print `Switching to zone 7031!`.
 
 It should be noted that `mod.hook()` works for both directions: Client -> Server packets typically start with the prefix `C_` whereas Server -> Client packets are typically prefixed by `S_`.
 
@@ -62,7 +62,7 @@ module.exports = function MyModule(mod) {
         if(event.type === 5) {
             // Send fake chat message (only visible to the player) to the client
             mod.send('S_CHAT', 3, {
-                name: 'PROXY',
+                name: 'LocationLogger',
                 message: `Player jumped at ${event.loc.x},${event.loc.y},${event.loc.z}!`,
             });
         }

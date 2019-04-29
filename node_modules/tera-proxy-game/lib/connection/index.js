@@ -11,12 +11,12 @@ class Connection {
     this.dispatch = new Dispatch(this);
 
     this.state = -1;
-    this.session = new Encryption(this.info.classic);
+    this.session = new Encryption(this.info.platform === 'classic');
 
-    const bufferType = this.info.console ? require('../packetBufferConsole') : require('../packetBuffer');
+    const bufferType = this.info.platform === 'console' ? require('../packetBufferConsole') : require('../packetBuffer');
     this.buffer = new bufferType();
 
-    this.builder = this.info.console ? require('../packetBuilderConsole') : require('../packetBuilder');
+    this.builder = this.info.platform === 'console' ? require('../packetBuilderConsole') : require('../packetBuilder');
   }
 
   connect(client, opt) {
