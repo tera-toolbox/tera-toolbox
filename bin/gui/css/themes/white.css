@@ -248,7 +248,7 @@ ul.ModulesList li {
  * CONFIG *
  **********/
 
-#settings > div {
+#settings > div > div {
     background-color: #F5F8FA;
 }
 

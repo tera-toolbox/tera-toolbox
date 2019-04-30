@@ -287,7 +287,12 @@ class TeraProxyGUI {
             icon: guiIcon,
             frame: false,
             backgroundColor: '#292F33',
-            resizable: false,
+            resizable: true,
+            minWidth: 960,
+            minHeight: 533,
+            maxWidth: 1215,
+            maxHeight: 675,
+            maximizable: false,
             webPreferences: {
                 nodeIntegration: true,
                 devTools: false
