@@ -92,7 +92,7 @@ mod.queryData('/ItemData/Item@rank>=?/', [12], true).then(results => {
 Note the `false` that indicates that we're only interested in the queried node's attributes, not its children.
 ```js
 mod.queryData('/SkillData@huntingZoneId=?/Skill@templateId=?', [0, 16060], true, false).then(results => {
-    results.forEach(entry => mod.log(entry)`)); // will not have the 'children' member
+    results.forEach(entry => mod.log(entry)); // will not have the 'children' member
 });
 ```
 
@@ -100,7 +100,7 @@ mod.queryData('/SkillData@huntingZoneId=?/Skill@templateId=?', [0, 16060], true,
 Note the list of attribute names that narrows down the returned attributes.
 ```js
 mod.queryData('/ItemData/Item@rank>=?/', [12], true, false, ['id', 'combatItemType']).then(results => {
-    results.forEach(entry => mod.log(entry.attributes)`)); // will only contain 'id' and 'combatItemType'
+    results.forEach(entry => mod.log(entry.attributes)); // will only contain 'id' and 'combatItemType'
 });
 ```
 
