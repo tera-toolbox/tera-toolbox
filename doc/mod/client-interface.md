@@ -88,6 +88,22 @@ mod.queryData('/ItemData/Item@rank>=?/', [12], true).then(results => {
 });
 ```
 
+### Example 7: Optimization - ignoring child nodes
+Note the `false` that indicates that we're only interested in the queried node's attributes, not its children.
+```js
+mod.queryData('/SkillData@huntingZoneId=?/Skill@templateId=?', [0, 16060], true, false).then(results => {
+    results.forEach(entry => mod.log(entry)`)); // will not have the 'children' member
+});
+```
+
+### Example 8: Optimization - filtering attributes
+Note the list of attribute names that narrows down the returned attributes.
+```js
+mod.queryData('/ItemData/Item@rank>=?/', [12], true, false, ['id', 'combatItemType']).then(results => {
+    results.forEach(entry => mod.log(entry.attributes)`)); // will only contain 'id' and 'combatItemType'
+});
+```
+
 ### Error Handling
 If the query fails (e.g. you specify an incorrect query string, missing/mismatching argument count, mismatching argument data types, ...), the promise will be rejected/an exception will be thrown when awaiting it.
 
