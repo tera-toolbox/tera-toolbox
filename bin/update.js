@@ -83,6 +83,12 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
         else if (updatelog)
             console.log(`[update] Updating module ${name}`);
 
+        if (!updateData["servers"]) {
+            console.log(`[update] WARNING: Module ${name} does not have any update servers`);
+            return { results: [] };
+        }
+
+
         const update_url_root = migrateModuleUpdateUrlRoot(updateData["servers"][serverIndex]);
         if (!update_url_root || !checkModuleUpdateUrlBlacklist(update_url_root))
             return { results: [] };
