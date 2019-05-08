@@ -29,6 +29,7 @@ function ProxyMigration() {
 
     // Delete legacy node_modules folders
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-proxy-sls'));
+    rimraf(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'sysmsg'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'long'));
 
     // Delete no longer used files
