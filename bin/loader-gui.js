@@ -105,9 +105,6 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
             if (!updateResult["tera-data"])
                 log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
 
-            delete require.cache[require.resolve("tera-data-parser")];
-            delete require.cache[require.resolve("tera-proxy-game")];
-
             return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
             log(`ERROR: Unable to auto-update: ${e}`);

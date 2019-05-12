@@ -1,4 +1,4 @@
-const { Connection, RealClient } = require("tera-proxy-game");
+const { Connection, RealClient } = require("tera-network-proxy");
 
 function onConnectionError(err) {
     switch (err.code) {

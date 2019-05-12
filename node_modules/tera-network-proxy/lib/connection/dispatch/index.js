@@ -66,20 +66,20 @@ function parseStack(err) {
 
 function errStack(err = new Error(), removeFront = true) {
     const stack = parseStack(err)
-    const libPath = /tera-proxy-game[\\/]lib/
+    const libPath = /tera-network-proxy[\\/]lib/
 
     // remove node internals from end
     while (stack.length > 0 && !path.isAbsolute(stack[stack.length - 1].filename)) {
         stack.pop()
     }
 
-    // remove tera-proxy-game internals from end
+    // remove tera-network-proxy internals from end
     while (stack.length > 0 && libPath.test(stack[stack.length - 1].filename)) {
         stack.pop()
     }
 
     if (removeFront) {
-        // remove tera-proxy-game internals from front
+        // remove tera-network-proxy internals from front
         while (stack.length > 0 && libPath.test(stack[0].filename)) {
             stack.shift()
         }

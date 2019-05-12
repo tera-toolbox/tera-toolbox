@@ -1,10 +1,10 @@
-# tera-proxy-game
+# tera-network-poxy
 
 Hosts a TCP proxy server to read, modify, and inject network data between a TERA game client and server. This modular system built on event-based hooks allows for easy creation and usage of script mods.
 
 This module is primarily intended for use in [`tera-proxy`](https://meishuu.github.io/tera-proxy/).
 
-This document is divided into two sections. Most readers are likely viewing this for documentation on writing modules, so the [module reference](#module-reference) will come first. The latter half, the [API reference](#api-reference), details the classes exported by `require('tera-proxy-game')`, which is not needed for module authors.
+This document is divided into two sections. Most readers are likely viewing this for documentation on writing modules, so the [module reference](#module-reference) will come first. The latter half, the [API reference](#api-reference), details the classes exported by `require('tera-network-proxy')`, which is not needed for module authors.
 
 # Module Reference
 
@@ -130,12 +130,12 @@ Unloads all modules and removes all hooks.
 
 **Note: If you are a module author, you most likely do not need anything from this section and may stop reading.**
 
-`tera-proxy-game` exposes three classes, each of which can be accessed as a property of the same name on the exported object. These allow for setting up the proxy game server and hooking up a client to it.
+`tera-network-proxy` exposes three classes, each of which can be accessed as a property of the same name on the exported object. These allow for setting up the proxy game server and hooking up a client to it.
 
 ## Example
 ```js
 const net = require('net');
-const { Connection, RealClient } = require('tera-proxy-game');
+const { Connection, RealClient } = require('tera-network-proxy');
 
 // Create a regular TCP server.
 const server = net.createServer((socket) => {
