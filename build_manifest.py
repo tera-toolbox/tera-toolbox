@@ -26,7 +26,7 @@ def hash(files):
             
     return hashes
 
-manifest = hash(list_files('./'))
+manifest = {'files': hash(list_files('./'))}
 
 with open('manifest.json', 'w') as fh:
     #fh.write(json.dumps(manifest).replace(' ', ''))
