@@ -190,6 +190,7 @@ async function autoUpdateTeraData(updatelog, updatelimit) {
 
 async function autoUpdate(moduleBase, updatelog, updatelimit) {
     console.log("[update] Auto-update started!");
+    forcedirSync(moduleBase);
     await generateBlacklist();
 
     let successModules = [];
