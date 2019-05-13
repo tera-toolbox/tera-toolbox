@@ -14,7 +14,7 @@
     "bin/loader-gui.js": "812f3d87a47f61818e0ef08969c0d60e6d9a9bc18e20936f03b3844c0accf5d3",
     "bin/migration.js": "5040a5c1c8d284a732bbf0388d2747a4db28340930a6931912f0766fd924db4c",
     "bin/proxy.js": "c54aee7c9503421909d95a11887ab7b00c321c58a65622a2211b223c29eab366",
-    "bin/update-electron-helper.js": "2707503415daf0b9e1fd5a3578fdf66ad642b1de76453cab33ed80069458a3dd",
+    "bin/update-electron-helper.js": "c3dc829c1f399fd27cb93b422e8dff069363137cb4ff0caea3414a77fe74913e",
     "bin/update-electron.js": "42e8b3e34208b316918840f59b3d533eb16ef1b3017f521321534c2481eebe9c",
     "bin/update-self.js": "6d3cc690e3138d89c05be1cfe420114ebd25de98ad09286ecc957d9de0afb5fc",
     "bin/update.js": "63c6535eeba0e53593ad6c492854f4bb970aa463b5ce1dd22f872c48e47d45ee",
