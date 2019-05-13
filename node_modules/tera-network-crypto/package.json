@@ -1,6 +1,6 @@
 {
   "name": "tera-network-crypto",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Encryption and decryption of TERA protocol streams.",
   "repository": {
     "type": "git",
