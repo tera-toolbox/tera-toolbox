@@ -28,6 +28,9 @@ function ProxyMigration() {
     rimraf(path.join(__dirname, 'servers'));
 
     // Delete legacy node_modules folders
+    rimraf(path.join(__dirname, '..', 'node_modules', 'tera-crypto-js'));
+    rimraf(path.join(__dirname, '..', 'node_modules', 'tera-crypto-native'));
+    rimraf(path.join(__dirname, '..', 'node_modules', 'tera-proxy-game'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-proxy-sls'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'sysmsg'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'long'));
