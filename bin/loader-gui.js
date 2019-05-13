@@ -123,6 +123,33 @@ async function StopProxy() {
     return true;
 }
 
+// Periodic update check
+let UpdateCheckInterval = null;
+let UpdateChecker = null;
+function startUpdateCheck(branch, onUpdateAvailable, interval = 30 * 60 * 1000) {
+    if (UpdateCheckInterval || UpdateChecker)
+        return;
+
+    const Updater = require('./update-self');
+    UpdateChecker = new Updater(branch); 
+
+    UpdateCheckInterval = setInterval(async () => {
+        try {
+            const CheckResult = await UpdateChecker.check();
+            if (CheckResult.operations.length > 0)
+                onUpdateAvailable();
+        } catch (_) {
+            // Ignore
+        }
+    }, interval);
+}
+
+function stopUpdateCheck() {
+    clearInterval(UpdateCheckInterval);
+    UpdateCheckInterval = null;
+    UpdateChecker = null;
+}
+
 // Clean exit
 const isWindows = process.platform === "win32";
 
@@ -318,6 +345,14 @@ class TeraProxyGUI {
         ]));
 
         this.tray.on('click', () => { this.window.isVisible() ? this.window.hide() : this.window.show(); });
+
+        // Start periodic update check
+        if (!config.noselfupdate) {
+            startUpdateCheck((config.branch || 'master').toLowerCase(), () => {
+                if (this.window)
+                    this.window.webContents.send('update available');
+            });
+        }
     }
 
     hide() {
@@ -327,6 +362,7 @@ class TeraProxyGUI {
 
     close() {
         if (this.window !== null) {
+            stopUpdateCheck();
             StopProxy();
 
             this.window.close();

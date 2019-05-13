@@ -47,7 +47,8 @@ jQuery(($) => {
         ProxyStarting = false;
 
         $('#startproxy').text(ProxyRunning ? 'Stop!' : 'Start!');
-        $('#title-status').text(ProxyRunning ? 'Running' : 'Not Running');
+        if (!UpdateAvailable)
+            $('#title-status').text(ProxyRunning ? 'Running' : 'Not Running');
     });
 
     function startProxy() {
@@ -72,6 +73,13 @@ jQuery(($) => {
             stopProxy();
         else
             startProxy();
+    });
+
+    // Update available indicator
+    let UpdateAvailable = false;
+    ipcRenderer.on('update available', _ => {
+        UpdateAvailable = true;
+        $('#title-status').text('UPDATE AVAILABLE - PLEASE RESTART');
     });
 
     // --------------------------------------------------------------------
