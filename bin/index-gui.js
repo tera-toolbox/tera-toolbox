@@ -190,9 +190,25 @@ function main() {
 
         // Perform self-update
         updateSelf().then(() => {
-            hideSplashScreen(() => {
-                run();
-            });
+            const { updateRequired, update } = require('./update-electron.js');
+            if (updateRequired()) {
+                setSplashScreenCaption('Downloading Electron update...');
+                setSplashScreenInfo('');
+
+                update().then(() => {
+                    app.quit();
+                }).catch(e => {
+                    dialogAndQuit({
+                        type: 'error',
+                        title: 'Electron update error!',
+                        message: `TERA Toolbox was unable to update Electron. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\n${e}\n\nThe program will now be terminated.`
+                    });
+                });
+            } else {
+                hideSplashScreen(() => {
+                    run();
+                });
+            }
         }).catch(e => {
             dialogAndQuit({
                 type: 'error',
