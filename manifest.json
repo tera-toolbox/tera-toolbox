@@ -116,7 +116,7 @@
     "node_modules/tera-mod-ui/settings_ui/themes/white.css": "206edc68ed7123a566914e7af92ed6c214d90da5d862c3e609cb78460e55d4cd",
     "node_modules/tera-network-crypto/binding.gyp": "13fb991006fc824c809d80f828ba4edbd59d852661c1f1bb4b6daa2a32b32002",
     "node_modules/tera-network-crypto/fallback.js": "a10c5974dd0ec5b0abad291a97a718a663c1df84eafc9efb5cdde4110a6cf2e9",
-    "node_modules/tera-network-crypto/index.js": "e8120e2b79de90ed45e131f44faf25959e5d47053e13481543b5bb35570001a7",
+    "node_modules/tera-network-crypto/index.js": "d166b87bb4ea519747a3b493f9aa0cc982468efb83dd8f8899f61365acda3483",
     "node_modules/tera-network-crypto/LICENSE": "ba4a4bcffc875307bc78c5c112953270c88de2e1d5832ee09324ea7a2a7ec2a5",
     "node_modules/tera-network-crypto/main.cpp": "f63daf08ec3651f18dce54ed7e39bac5ec899a2153bd1d6eb1703a8e1cdbba8e",
     "node_modules/tera-network-crypto/package.json": "20be9292cd958837c8efc7de2e9d7a0efc9d29540fc0f86d09d218be75956d7d",
