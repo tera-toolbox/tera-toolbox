@@ -17,9 +17,16 @@ body {
     overflow: hidden;
 }
 
-#status {
+#caption {
     position: absolute;
     bottom: 8px;
     left: 10px;
+    color: #CCCCCC;
+}
+
+#info {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
     color: #CCCCCC;
 }

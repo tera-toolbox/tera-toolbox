@@ -1,4 +1,4 @@
-# tera-network-poxy
+﻿# tera-network-proxy
 
 Hosts a TCP proxy server to read, modify, and inject network data between a TERA game client and server. This modular system built on event-based hooks allows for easy creation and usage of script mods.
 
