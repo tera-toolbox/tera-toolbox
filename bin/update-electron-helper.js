@@ -27,21 +27,24 @@ function rimraf(dir_path) {
     }
 } 
 
-const zip = new StreamZip({
-    file: ZipPath,
-    storeEntries: true
-});
-
-zip.on('ready', () => {
-    rimraf(ElectronFolder);
-    fs.mkdirSync(ElectronFolder);
-    fs.mkdirSync(path.join(ElectronFolder, 'dist'));
-    zip.extract(null, path.join(ElectronFolder, 'dist'), (err, count) => {
-        zip.close();
-        fs.unlinkSync(ZipPath);
-
-        let main = spawn(path.join(__dirname, '..', 'TeraProxyGUI.bat'), [], { detached: true });
-        main.unref();
-        process.exit();
+// Wait a bit to make sure that Electron is terminated properly.
+setTimeout(() => {
+    const zip = new StreamZip({
+        file: ZipPath,
+        storeEntries: true
     });
-});
+
+    zip.on('ready', () => {
+        rimraf(ElectronFolder);
+        fs.mkdirSync(ElectronFolder);
+        fs.mkdirSync(path.join(ElectronFolder, 'dist'));
+        zip.extract(null, path.join(ElectronFolder, 'dist'), (err, count) => {
+            zip.close();
+            fs.unlinkSync(ZipPath);
+
+            let main = spawn(path.join(__dirname, '..', 'TeraProxyGUI.bat'), [], { detached: true });
+            main.unref();
+            process.exit();
+        });
+    });
+}, 1000);
