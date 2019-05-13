@@ -143,6 +143,19 @@ async function updateSelf() {
         setSplashScreenCaption('Installing update...');
         setSplashScreenInfo(relpath);
     });
+    updater.on('install_error', (relpath, error) => {
+        if (updatelog)
+            console.log(`[update] - Error installing ${relpath}: ${error}`);
+
+        setSplashScreenCaption('Error installing update!');
+        setSplashScreenInfo(relpath);
+
+        dialogAndQuit({
+            type: 'error',
+            title: 'Self-update error!',
+            message: `TERA Toolbox was unable to update itself. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
+        });
+    });
     updater.on('execute_finish', () => {
         if (updatelog)
             console.log(`[update] Update installation finished`);
@@ -151,10 +164,10 @@ async function updateSelf() {
         setSplashScreenInfo('');
     });
 
-    updater.on('run_finish', () => {
-        console.log(`[update] Self-update finished`);
+    updater.on('run_finish', (success) => {
+        console.log(`[update] Self-update ${success ? 'finished' : 'failed'}`);
 
-        setSplashScreenCaption('Self-update finished!');
+        setSplashScreenCaption(`Self-update ${success ? 'finished' : 'failed'}!`);
         setSplashScreenInfo('');
     });
 

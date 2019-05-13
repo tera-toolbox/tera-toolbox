@@ -93,6 +93,7 @@ class Updater extends EventEmitter {
         if (!checkResult)
             checkResult = await this.check();
 
+        let success = true;
         if (checkResult.operations.length > 0) {
             this.emit('prepare_start');
 
@@ -118,9 +119,14 @@ class Updater extends EventEmitter {
                 switch (operation.type) {
                     case 'update': {
                         this.emit('install_start', operation.relpath);
-                        forcedirSync(path.dirname(operation.abspath));
-                        fs.writeFileSync(operation.abspath, operation.data);
-                        this.emit('install_finish', operation.relpath);
+                        try {
+                            forcedirSync(path.dirname(operation.abspath));
+                            fs.writeFileSync(operation.abspath, operation.data);
+                            this.emit('install_finish', operation.relpath);
+                        } catch (e) {
+                            success = false;
+                            this.emit('install_error', operation.relpath, e);
+                        }
                         break;
                     }
                 }
@@ -129,7 +135,7 @@ class Updater extends EventEmitter {
             this.emit('execute_finish');
         }
 
-        this.emit('run_finish');
+        this.emit('run_finish', success);
         return checkResult.operations.length !== 0;
     }
 }
