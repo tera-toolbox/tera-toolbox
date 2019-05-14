@@ -6,7 +6,7 @@
     "TeraToolbox.bat": "ca0fc975289433af1536a51763debef384314078895bd571e290d60c005d5ac8",
     "TeraToolboxCLI.bat": "4a9bdb25591344eaed64e0d58656eaa3c2179ecb7c04037102ef28da996f5500",
     "bin/config.js": "5980aa3dc95c744fe56a0ab47d0a903415bb19c6f78bb13228b78c5d10db5fa4",
-    "bin/connectionManager.js": "85621154a3fcb31a0fd29033abea0d3368ff38301cd26f14f12df57d8b3d35a5",
+    "bin/connectionManager.js": "e354bc7c03c1f8e6ea18c38d127eacb311ac99b4c1f569dbf8eb576c61dfb447",
     "bin/index-cli.js": "a16d77b4364b2e249c75cf13d9af66f6793a65907148f560d86858ff28dd8b84",
     "bin/index-gui.js": "5a4453f7d89c96b323a61c900f2353f12e1619b1b2f05a66e4d9f55ac9b5efac",
     "bin/install-electron.js": "17b03f96f54dccb40eaba88b9ab21c14609eac91cb378ff0883b65b0078f105b",

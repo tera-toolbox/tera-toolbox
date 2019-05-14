@@ -51,8 +51,6 @@ class ConnectionManager {
             port: target.port
         });
 
-        connection.dispatch.moduleManager.loadAll();
-
         // Initialize server connection
         let remote = "???";
 
@@ -62,6 +60,7 @@ class ConnectionManager {
             remote = socket.remoteAddress + ":" + socket.remotePort;
             console.log(`[connection] routing ${remote} to ${srvConn.remoteAddress}:${srvConn.remotePort}`);
 
+            connection.dispatch.moduleManager.loadAll();
             this.activeConnections.add(connection);
         });
 
