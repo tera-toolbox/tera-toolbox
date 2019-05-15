@@ -77,14 +77,19 @@ function main() {
             app.quit();
         }
     }).catch(e => {
-        const { dialog } = require('electron');
+        if (e instanceof TypeError) {
+            app.relaunch();
+            app.exit();
+        } else {
+            const { dialog } = require('electron');
 
-        dialog.showMessageBox({
-            type: 'error',
-            title: 'Self-update error!',
-            message: `TERA Toolbox was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nThe full error message is:\n${e}\n\nThe program will now be terminated.`
-        });
+            dialog.showMessageBox({
+                type: 'error',
+                title: 'Self-update error!',
+                message: `TERA Toolbox was unable to update itself. Please ask in https://discord.gg/659YbNY for help!\n\nThe full error message is:\n${e}\n\nThe program will now be terminated.`
+            });
 
-        app.quit();
+            app.quit();
+        }
     });
 }
