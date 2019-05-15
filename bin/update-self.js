@@ -53,13 +53,17 @@ class Updater extends EventEmitter {
                 const filepath = this.buildPath(relpath);
 
                 let expectedHash = null;
-                let needsUpdate = !fs.existsSync(filepath);
+                let needsUpdate = false;
                 if (typeof filedata === 'object') {
                     expectedHash = filedata.hash.toUpperCase();
-                    needsUpdate = needsUpdate || (filedata.overwrite && hash(fs.readFileSync(filepath)) !== expectedHash);
+
+                    if (filedata.overwrite === 'only')
+                        needsUpdate = fs.existsSync(filepath) && hash(fs.readFileSync(filepath)) !== expectedHash;
+                    else
+                        needsUpdate = !fs.existsSync(filepath) || (filedata.overwrite && hash(fs.readFileSync(filepath)) !== expectedHash);
                 } else {
                     expectedHash = filedata.toUpperCase();
-                    needsUpdate = needsUpdate || hash(fs.readFileSync(filepath)) !== expectedHash;
+                    needsUpdate = !fs.existsSync(filepath) || hash(fs.readFileSync(filepath)) !== expectedHash;
                 }
 
                 if (needsUpdate)
