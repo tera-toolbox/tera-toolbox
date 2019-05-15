@@ -5,11 +5,11 @@
     "README.md": "f9444f6de4d3d7d3014e3df2b65b3abf388f2e6218f31e47e6b345209a1b952e",
     "TeraProxy.bat": {
       "hash": "2be01df14aa650ab696b21c55317bd7014763cd20d485a2cc815dd7aa27e1cea",
-      "override": "only"
+      "overwrite": "only"
     },
     "TeraProxyGUI.bat": {
       "hash": "2be01df14aa650ab696b21c55317bd7014763cd20d485a2cc815dd7aa27e1cea",
-      "override": "only"
+      "overwrite": "only"
     },
     "TeraToolbox.bat": "2be01df14aa650ab696b21c55317bd7014763cd20d485a2cc815dd7aa27e1cea",
     "TeraToolboxCLI.bat": "4a9bdb25591344eaed64e0d58656eaa3c2179ecb7c04037102ef28da996f5500",

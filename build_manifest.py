@@ -25,7 +25,7 @@ def hash(files):
         hashes[path] = hashlib.sha256(data).hexdigest()
         
         if path in ('TeraProxy.bat', 'TeraProxyGUI.bat'):
-            hashes[path] = {'hash': hashes[path], 'override': 'only'}
+            hashes[path] = {'hash': hashes[path], 'overwrite': 'only'}
             
     return hashes
 
