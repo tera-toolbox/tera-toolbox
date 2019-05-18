@@ -15,7 +15,7 @@ function LoadConfiguration() {
             message: `The config.json file in your TERA Toolbox folder is malformed. Try to fix it yourself, delete it to generate a new one, or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
         });
 
-        app.quit();
+        app.exit();
     }
 }
 
@@ -39,7 +39,7 @@ function Migration() {
             message: `Unable to migrate files from an old version of TERA Toolbox.\nPlease reinstall a clean copy using the latest installer or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
         });
 
-        app.quit();
+        app.exit();
     }
 }
 
@@ -105,9 +105,6 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
             if (!updateResult["tera-data"])
                 log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
 
-            delete require.cache[require.resolve("tera-data-parser")];
-            delete require.cache[require.resolve("tera-proxy-game")];
-
             return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
             log(`ERROR: Unable to auto-update: ${e}`);
@@ -124,6 +121,33 @@ async function StopProxy() {
     proxy = null;
     proxyRunning = false;
     return true;
+}
+
+// Periodic update check
+let UpdateCheckInterval = null;
+let UpdateChecker = null;
+function startUpdateCheck(branch, onUpdateAvailable, interval = 30 * 60 * 1000) {
+    if (UpdateCheckInterval || UpdateChecker)
+        return;
+
+    const Updater = require('./update-self');
+    UpdateChecker = new Updater(branch); 
+
+    UpdateCheckInterval = setInterval(async () => {
+        try {
+            const CheckResult = await UpdateChecker.check();
+            if (CheckResult.operations.length > 0)
+                onUpdateAvailable();
+        } catch (_) {
+            // Ignore
+        }
+    }, interval);
+}
+
+function stopUpdateCheck() {
+    clearInterval(UpdateCheckInterval);
+    UpdateCheckInterval = null;
+    UpdateChecker = null;
 }
 
 // Clean exit
@@ -321,6 +345,14 @@ class TeraProxyGUI {
         ]));
 
         this.tray.on('click', () => { this.window.isVisible() ? this.window.hide() : this.window.show(); });
+
+        // Start periodic update check
+        if (!config.noselfupdate) {
+            startUpdateCheck((config.branch || 'master').toLowerCase(), () => {
+                if (this.window)
+                    this.window.webContents.send('update available');
+            });
+        }
     }
 
     hide() {
@@ -330,6 +362,7 @@ class TeraProxyGUI {
 
     close() {
         if (this.window !== null) {
+            stopUpdateCheck();
             StopProxy();
 
             this.window.close();

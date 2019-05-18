@@ -115,9 +115,6 @@ if (ProxyConfig.noupdate) {
         if (!updateResult["tera-data"])
             console.log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
 
-        delete require.cache[require.resolve("tera-data-parser")];
-        delete require.cache[require.resolve("tera-proxy-game")];
-
         RunProxy(ModuleFolder, ProxyConfig);
     }).catch(e => {
         console.log("ERROR: Unable to auto-update: %s", e);

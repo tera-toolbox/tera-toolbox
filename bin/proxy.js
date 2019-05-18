@@ -73,7 +73,10 @@ class TeraProxy {
                 console.log('[toolbox] ERROR: Unable to start client interface server.');
                 switch (e.code) {
                     case 'EADDRINUSE':
-                        console.log('[toolbox] ERROR: Another instance of TERA Toolbox is already running. Please close it and try again!');
+                        console.log('[toolbox] ERROR: Another instance of TERA Toolbox is already running. Please close it or restart your computer and try again!');
+                        break;
+                    case 'EADDRNOTAVAIL':
+                        console.log('[toolbox] ERROR: Address not available. Restart your computer and try again!');
                         break;
                     default:
                         console.log(e);

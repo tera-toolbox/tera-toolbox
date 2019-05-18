@@ -6,7 +6,11 @@
     "type": "git",
     "url": "git+https://github.com/tera-toolbox/tera-toolbox.git"
   },
-  "author": "Caali / Pinkie Pie / meishu",
+  "author": "Caali",
+  "contributors": [
+    "Pinkie Pie",
+    "meishu"
+  ],
   "engines": {
     "node": ">=11.4.0"
   },
@@ -17,10 +21,8 @@
   "dependencies": {
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
+    "process-list": "^1.2.3",
     "tera-data": "github:tera-toolbox/tera-data",
-    "tera-proxy-game": "github:tera-toolbox/tera-proxy-game",
-    "tera-crypto-js": "github:tera-toolbox/tera-crypto-js",
-    "tera-crypto-native": "github:tera-toolbox/tera-crypto-native",
-    "tera-vec3": "github:tera-toolbox/tera-vec3"
+    "tera-network-proxy": "github:tera-toolbox/tera-network-proxy"
   }
 }

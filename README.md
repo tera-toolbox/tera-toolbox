@@ -6,9 +6,9 @@
 
 # Installation Instructions
 * Download and run the setup from [the #toolbox channel in the Discord server](https://discord.gg/dUNDDtw) or [GitHub](https://github.com/tera-toolbox/tera-toolbox/releases/download/teratoolbox-setup/TeraToolbox.exe).
-* Please make sure to read the instructions in the Discord channel. It is highly recommended to install the graphical user interface for convenience. A manual installation from GitHub is possible, but not recommended!
-* Run the shortcut created on your desktop, `TeraProxyGUI.bat` (graphical user interface), or `TeraProxy.bat` (command line interface) *as Administrator* (you can try without Administrator - it works in some regions where the game isn't launched as admin).
-* The first startup after installing TERA Toolbox may take a few seconds. This is because all updated/required files will be downloaded automatically.
+* Please make sure to read the instructions in the Discord channel. A manual installation from GitHub is possible (install Node.JS, download this repository, and run `npm i`), but not recommended!
+* Run the shortcut created on your desktop (or `TeraToolbox.exe` in the installation folder) if you want to use toolbox with a graphical user interface (GUI; highly recommended!), or `TeraToolboxCLI.exe` in the installation folder for a command line interface (CLI).
+* The first startup after installing TERA Toolbox may take a while, depending on your internet connection. This is because all required files will be downloaded and updated automatically.
 * The most popular mods are already pre-installed for your convenience - check out the `My Mods` page. If you don't want to use a particular module, just uninstall or disable it there.
 * Check out the `Get More Mods` page for mods you want to install, and the `Settings` page to configure TERA Toolbox according to your needs.
 * Once you're all set, press the `Start!` button in the top right corner, then start the game as usual.

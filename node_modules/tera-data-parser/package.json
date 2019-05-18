@@ -1,25 +1,16 @@
 {
-  "author": {
-    "name": "Caali / meishu"
-  },
+  "author": "Caali",
+  "contributors": [
+    "Pinkie Pie",
+    "meishu"
+  ],
   "bugs": {
     "url": "https://github.com/tera-toolbox/tera-data-parser-js/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "tera-vec3": "github:tera-toolbox/tera-vec3"
   },
-  "deprecated": false,
   "description": "tera-data-parser",
-  "devDependencies": {
-    "coveralls": "^2.11.16",
-    "eslint": "^3.18.0",
-    "eslint-config-airbnb-base": "^11.1.1",
-    "eslint-plugin-import": "^2.2.0",
-    "sinon": "^2.1.0",
-    "tap": "^10.2.0",
-    "tera-data": "github:tera-toolbox/tera-data"
-  },
   "files": [
     "lib/"
   ],
@@ -27,8 +18,6 @@
   "license": "ISC",
   "main": "lib/index.js",
   "name": "tera-data-parser",
-  "optionalDependencies": {
-  },
   "peerDependencies": {
     "tera-data": "1.x"
   },
@@ -36,9 +25,5 @@
     "type": "git",
     "url": "git+https://github.com/tera-toolbox/tera-data-parser-js.git"
   },
-  "scripts": {
-    "lint": "eslint .",
-    "test": "tap test/*.js"
-  },
-  "version": "0.3.0"
+  "version": "1.0.0"
 }

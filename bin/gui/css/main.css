@@ -49,9 +49,11 @@ body {
 #title-status {
     position: fixed;
     top: 0px;
-    left: 45%;
+    left: 0px;
+    width: 100%;
     line-height: 32px;
-    font-size: 12px
+    font-size: 12px;
+    text-align: center;
 }
 
 #title-icon {
