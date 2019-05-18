@@ -15,7 +15,7 @@ function LoadConfiguration() {
             message: `The config.json file in your TERA Toolbox folder is malformed. Try to fix it yourself, delete it to generate a new one, or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
         });
 
-        app.quit();
+        app.exit();
     }
 }
 
@@ -39,7 +39,7 @@ function Migration() {
             message: `Unable to migrate files from an old version of TERA Toolbox.\nPlease reinstall a clean copy using the latest installer or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
         });
 
-        app.quit();
+        app.exit();
     }
 }
 

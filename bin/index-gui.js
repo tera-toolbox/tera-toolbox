@@ -7,7 +7,7 @@ const path = require('path');
 function dialogAndQuit(data) {
     const { dialog } = require('electron');
     dialog.showMessageBox(data);
-    app.quit();
+    app.exit();
 }
 
 // Splash Screen
@@ -69,6 +69,8 @@ async function updateSelf() {
     delete require.cache[require.resolve('./update-self')];
     const Updater = require('./update-self');
 
+    let error = null;
+
     const updater = new Updater(branch);
     updater.on('run_start', () => {
         console.log(`[update] Self-update started (Branch: ${updater.branch})`);
@@ -91,20 +93,16 @@ async function updateSelf() {
         setSplashScreenCaption('Update check finished!');
         setSplashScreenInfo(`Server ${serverIndex}`);
     });
-    updater.on('check_fail', (serverIndex, error) => {
-        console.log(`[update] Update check failed (Server: ${serverIndex}): ${error}`);
+    updater.on('check_fail', (serverIndex, e) => {
+        console.log(`[update] Update check failed (Server: ${serverIndex}): ${e}`);
 
         setSplashScreenCaption(`Update check finished (server ${serverIndex})!`);
     });
     updater.on('check_fail_all', () => {
+        error = `TERA Toolbox was unable to check for updates. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe program will now be terminated.`;
         console.log('[update] Update check failed');
 
         setSplashScreenCaption('Update check failed!');
-        dialogAndQuit({
-            type: 'error',
-            title: 'Self-update error!',
-            message: `TERA Toolbox was unable to check for updates. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe program will now be terminated.`
-        });
     });
 
     updater.on('prepare_start', () => {
@@ -143,8 +141,8 @@ async function updateSelf() {
         setSplashScreenCaption('Installing update...');
         setSplashScreenInfo(relpath);
     });
-    updater.on('install_error', (relpath, error) => {
-        console.log(`[update] - Error installing ${relpath}: ${error}`);
+    updater.on('install_error', (relpath, e) => {
+        console.log(`[update] - Error installing ${relpath}: ${e}`);
         switch (relpath) {
             case 'node_modules/tera-client-interface/injector.exe':
                 console.log('[update] - Your anti-virus software most likely falsely detected it to be a virus.');
@@ -162,25 +160,13 @@ async function updateSelf() {
 
         switch (relpath) {
             case 'node_modules/tera-client-interface/injector.exe':
-                dialogAndQuit({
-                    type: 'error',
-                    title: 'Self-update error!',
-                    message: `TERA Toolbox was unable to update itself.\nYour anti-virus software most likely falsely detected it to be a virus.\nPlease whitelist TERA Toolbox in your anti-virus!\nCheck the #toolbox-faq channel in ${DiscordURL} for further information.\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
-                });
+                error = `TERA Toolbox was unable to update itself.\nYour anti-virus software most likely falsely detected it to be a virus.\nPlease whitelist TERA Toolbox in your anti-virus!\nCheck the #toolbox-faq channel in ${DiscordURL} for further information.\n\nThe full error message is:\nUnable to install "${relpath}"!\n${e}\n\nThe program will now be terminated.`;
                 break;
             case 'node_modules/tera-client-interface/tera-client-interface.dll':
-                dialogAndQuit({
-                    type: 'error',
-                    title: 'Self-update error!',
-                    message: `TERA Toolbox was unable to update itself.\nThis is most likely caused by an instance of the game that is still running.\nClose all game clients or restart your computer, then try again!\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
-                });
+                error = `TERA Toolbox was unable to update itself.\nThis is most likely caused by an instance of the game that is still running.\nClose all game clients or restart your computer, then try again!\n\nThe full error message is:\nUnable to install "${relpath}"!\n${e}\n\nThe program will now be terminated.`;
                 break;
             default:
-                dialogAndQuit({
-                    type: 'error',
-                    title: 'Self-update error!',
-                    message: `TERA Toolbox was unable to update itself. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
-                });
+                error = `TERA Toolbox was unable to update itself. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\nUnable to install "${relpath}"!\n${e}\n\nThe program will now be terminated.`;
                 break;
         }
     });
@@ -200,8 +186,11 @@ async function updateSelf() {
     });
 
     const filesChanged = await updater.run();
+    if (error)
+        return error;
     if (filesChanged)
-        await updateSelf();
+        return await updateSelf();
+    return null;
 }
 
 // Main function
@@ -217,25 +206,33 @@ function main() {
         showSplashScreen();
 
         // Perform self-update
-        updateSelf().then(() => {
-            const { updateRequired, update } = require('./update-electron.js');
-            if (updateRequired()) {
-                setSplashScreenCaption('Downloading Electron update...');
-                setSplashScreenInfo('');
-
-                update().then(() => {
-                    app.quit();
-                }).catch(e => {
-                    dialogAndQuit({
-                        type: 'error',
-                        title: 'Electron update error!',
-                        message: `TERA Toolbox was unable to update Electron. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\n${e}\n\nThe program will now be terminated.`
-                    });
+        updateSelf().then(e => {
+            if (e) {
+                dialogAndQuit({
+                    type: 'error',
+                    title: 'Self-update error!',
+                    message: e
                 });
             } else {
-                hideSplashScreen(() => {
-                    run();
-                });
+                const { updateRequired, update } = require('./update-electron.js');
+                if (updateRequired()) {
+                    setSplashScreenCaption('Downloading Electron update...');
+                    setSplashScreenInfo('');
+
+                    update().then(() => {
+                        app.exit();
+                    }).catch(e => {
+                        dialogAndQuit({
+                            type: 'error',
+                            title: 'Electron update error!',
+                            message: `TERA Toolbox was unable to update Electron. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\n${e}\n\nThe program will now be terminated.`
+                        });
+                    });
+                } else {
+                    hideSplashScreen(() => {
+                        run();
+                    });
+                }
             }
         }).catch(e => {
             dialogAndQuit({
