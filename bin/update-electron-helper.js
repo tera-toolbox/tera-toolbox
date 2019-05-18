@@ -42,7 +42,7 @@ setTimeout(() => {
             zip.close();
             fs.unlinkSync(ZipPath);
 
-            let main = spawn(path.join(__dirname, '..', 'TeraToolbox.bat'), [], { detached: true });
+            let main = spawn(path.join(__dirname, '..', 'TeraToolbox.exe'), [], { detached: true });
             main.unref();
             process.exit();
         });

@@ -4,15 +4,15 @@
     "package.json": "fdf5fcf6d6e9ddd04b743a7c400c3912ae1cce9d1dc381c8326382b977756741",
     "README.md": "f9444f6de4d3d7d3014e3df2b65b3abf388f2e6218f31e47e6b345209a1b952e",
     "TeraProxy.bat": {
-      "hash": "2be01df14aa650ab696b21c55317bd7014763cd20d485a2cc815dd7aa27e1cea",
+      "hash": "dd8694ffa6d529d5f636e3679b022f25f1424a8dd90a3f06e006b0f72f0a83ca",
       "overwrite": "only"
     },
     "TeraProxyGUI.bat": {
-      "hash": "2be01df14aa650ab696b21c55317bd7014763cd20d485a2cc815dd7aa27e1cea",
+      "hash": "dd8694ffa6d529d5f636e3679b022f25f1424a8dd90a3f06e006b0f72f0a83ca",
       "overwrite": "only"
     },
-    "TeraToolbox.bat": "2be01df14aa650ab696b21c55317bd7014763cd20d485a2cc815dd7aa27e1cea",
-    "TeraToolboxCLI.bat": "4a9bdb25591344eaed64e0d58656eaa3c2179ecb7c04037102ef28da996f5500",
+    "TeraToolbox.exe": "b4a3b50529e6a327c9285507d2a633a6f14804ae99a1f40696167b5fba432d39",
+    "TeraToolboxCLI.exe": "83fa71900636708fdfe8fe23746183f532a6a0e752c000ff22fc9ab70c0ae4ae",
     "bin/config.js": "5980aa3dc95c744fe56a0ab47d0a903415bb19c6f78bb13228b78c5d10db5fa4",
     "bin/connectionManager.js": "e354bc7c03c1f8e6ea18c38d127eacb311ac99b4c1f569dbf8eb576c61dfb447",
     "bin/index-cli.js": "a16d77b4364b2e249c75cf13d9af66f6793a65907148f560d86858ff28dd8b84",
@@ -22,7 +22,7 @@
     "bin/loader-gui.js": "812f3d87a47f61818e0ef08969c0d60e6d9a9bc18e20936f03b3844c0accf5d3",
     "bin/migration.js": "5040a5c1c8d284a732bbf0388d2747a4db28340930a6931912f0766fd924db4c",
     "bin/proxy.js": "ad7023c02c277b06ae01caef2835bd0f8757708c671c6ae5dad1c6cf7515b3e0",
-    "bin/update-electron-helper.js": "c3dc829c1f399fd27cb93b422e8dff069363137cb4ff0caea3414a77fe74913e",
+    "bin/update-electron-helper.js": "7e5293a9dc31bfaccbcae73f4888e973e0d29ed7db79be30ddfbca626450e5d8",
     "bin/update-electron.js": "42e8b3e34208b316918840f59b3d533eb16ef1b3017f521321534c2481eebe9c",
     "bin/update-self.js": "abdbfdc1ebe0a89ac7e3fff63c3c4f252b8ef9c2e10eeaa956ef01a273c22b81",
     "bin/update.js": "63c6535eeba0e53593ad6c492854f4bb970aa463b5ce1dd22f872c48e47d45ee",
