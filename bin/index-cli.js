@@ -18,7 +18,20 @@ async function updateSelf() {
     updater.on('execute_start', () => { if (updatelog) console.log(`[update] Update installation started`); });
     updater.on('install_start', (relpath) => { if (updatelog) console.log(`[update] - Install: ${relpath}`); });
     //updater.on('install_finish', (relpath) => { if (updatelog) console.log(`[update] - Install done: ${relpath}`); });
-    updater.on('install_error', (relpath, error) => { if (updatelog) console.log(`[update] - Error installing ${relpath}: ${error}`); });
+    updater.on('install_error', (relpath, error) => {
+        console.log(`[update] - Error installing ${relpath}: ${error}`);
+        switch (relpath) {
+            case 'node_modules/tera-client-interface/injector.exe':
+                console.log('[update] - Your anti-virus software most likely falsely detected it to be a virus.');
+                console.log('[update] - Please whitelist TERA Toolbox in your anti-virus!');
+                console.log(`[update] - Check the #toolbox-faq channel in ${DiscordURL} for further information.`);
+                break;
+            case 'node_modules/tera-client-interface/tera-client-interface.dll':
+                console.log('[update] - This is most likely caused by an instance of the game that is still running.');
+                console.log('[update] - Close all game clients or restart your computer, then try again!');
+                break;
+        }
+    });
     updater.on('execute_finish', () => { if (updatelog) console.log(`[update] Update installation finished`); });
     updater.on('run_finish', (success) => { console.log(`[update] Self-update ${success ? 'finished' : 'failed'}`); });
 

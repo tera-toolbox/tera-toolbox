@@ -144,17 +144,45 @@ async function updateSelf() {
         setSplashScreenInfo(relpath);
     });
     updater.on('install_error', (relpath, error) => {
-        if (updatelog)
-            console.log(`[update] - Error installing ${relpath}: ${error}`);
+        console.log(`[update] - Error installing ${relpath}: ${error}`);
+        switch (relpath) {
+            case 'node_modules/tera-client-interface/injector.exe':
+                console.log('[update] - Your anti-virus software most likely falsely detected it to be a virus.');
+                console.log('[update] - Please whitelist TERA Toolbox in your anti-virus!');
+                console.log(`[update] - For further information, check the #toolbox-faq channel in ${DiscordURL}!`);
+                break;
+            case 'node_modules/tera-client-interface/tera-client-interface.dll':
+                console.log('[update] - This is most likely caused by an instance of the game that is still running.');
+                console.log('[update] - Close all game clients or restart your computer, then try again!');
+                break;
+        }
 
         setSplashScreenCaption('Error installing update!');
         setSplashScreenInfo(relpath);
 
-        dialogAndQuit({
-            type: 'error',
-            title: 'Self-update error!',
-            message: `TERA Toolbox was unable to update itself. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
-        });
+        switch (relpath) {
+            case 'node_modules/tera-client-interface/injector.exe':
+                dialogAndQuit({
+                    type: 'error',
+                    title: 'Self-update error!',
+                    message: `TERA Toolbox was unable to update itself.\nYour anti-virus software most likely falsely detected it to be a virus.\nPlease whitelist TERA Toolbox in your anti-virus!\nCheck the #toolbox-faq channel in ${DiscordURL} for further information.\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
+                });
+                break;
+            case 'node_modules/tera-client-interface/tera-client-interface.dll':
+                dialogAndQuit({
+                    type: 'error',
+                    title: 'Self-update error!',
+                    message: `TERA Toolbox was unable to update itself.\nThis is most likely caused by an instance of the game that is still running.\nClose all game clients or restart your computer, then try again!\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
+                });
+                break;
+            default:
+                dialogAndQuit({
+                    type: 'error',
+                    title: 'Self-update error!',
+                    message: `TERA Toolbox was unable to update itself. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\nUnable to install "${relpath}"!\n${error}\n\nThe program will now be terminated.`
+                });
+                break;
+        }
     });
     updater.on('execute_finish', () => {
         if (updatelog)
