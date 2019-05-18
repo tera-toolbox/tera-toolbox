@@ -22,7 +22,7 @@
     "bin/migration.js": "5040a5c1c8d284a732bbf0388d2747a4db28340930a6931912f0766fd924db4c",
     "bin/proxy.js": "ad7023c02c277b06ae01caef2835bd0f8757708c671c6ae5dad1c6cf7515b3e0",
     "bin/update-electron-helper.js": "7e5293a9dc31bfaccbcae73f4888e973e0d29ed7db79be30ddfbca626450e5d8",
-    "bin/update-electron.js": "42e8b3e34208b316918840f59b3d533eb16ef1b3017f521321534c2481eebe9c",
+    "bin/update-electron.js": "a487e306f05491a5e1e37670985e6adb1c0f6df895dbbb3ab68b9a8233dad91e",
     "bin/update-self.js": "abdbfdc1ebe0a89ac7e3fff63c3c4f252b8ef9c2e10eeaa956ef01a273c22b81",
     "bin/update.js": "63c6535eeba0e53593ad6c492854f4bb970aa463b5ce1dd22f872c48e47d45ee",
     "bin/utils.js": "33f639991992a7a7a092a490eccec0522f62dd58a837c5bc5fb164a1151f2e3b",
