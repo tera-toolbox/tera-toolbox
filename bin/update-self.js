@@ -109,7 +109,7 @@ class Updater extends EventEmitter {
                         operation.data = await this.downloadRaw(checkResult.serverIndex, operation.relpath);
                         this.emit('download_finish', checkResult.serverIndex, operation.relpath);
                         if (operation.hash !== hash(operation.data))
-                            throw Error(`Hash mismatch for file "${operation.relpath}" (expected: ${operation.hash}, found: ${hash(operation.data)}`);
+                            throw Error(`Hash mismatch for file "${operation.relpath}" (expected: ${operation.hash}, found: ${hash(operation.data)})`);
                         break;
                     }
                 }
