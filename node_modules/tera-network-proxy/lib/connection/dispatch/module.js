@@ -34,8 +34,10 @@ class Module {
                     return this._game;
                 return (this._game = this.manager.load(key, false).instance);
             default:
-                const mod = this.manager.load(key, false);
-                if(!mod)
+                let mod = this.manager.load(key, false);
+                if (!mod && this.clientInterface)
+                    mod = this.clientInterface.moduleManager.get(key);
+                if (!mod)
                   throw new Error(`Required mod not found: ${key}`);
                 return mod.instance;
         }

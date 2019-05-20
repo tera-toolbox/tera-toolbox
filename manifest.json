@@ -147,7 +147,7 @@
     "node_modules/tera-network-proxy/lib/clients/RealClient.js": "f39de1268686ac793e0cdc4e6434cf33e19cb06bc1b5de0b699a3c415e8e4c47",
     "node_modules/tera-network-proxy/lib/connection/index.js": "e5bfa88924edf1382b65c3ec9d31fcba3126570863a4f6cb6b9f91b48ed5df66",
     "node_modules/tera-network-proxy/lib/connection/dispatch/index.js": "0e5bde931486b0ba11278cf80284c12ae7b0ccda6a0e50693e4c01c6d82117c6",
-    "node_modules/tera-network-proxy/lib/connection/dispatch/module.js": "53dd115b7933c73fa9dd492356e0fb2a2f8a772a8bf7959df2bf74d7c662475c",
+    "node_modules/tera-network-proxy/lib/connection/dispatch/module.js": "b46e29d07001b1227bf9504d95449f7d5453a7ad7e8987c624de1a4e0202e858",
     "node_modules/tera-network-proxy/lib/connection/dispatch/moduleManager.js": "9dea95b43ad20180b87cde07a260fd16a0f783c825c72b4f9b94748d4aa9b65d",
     "node_modules/tera-network-proxy/lib/connection/encryption/index.js": "1a231cbecf3f493953390f18d456bdff631553e3282f33a9eaaa00bcc9b4af74",
     "node_modules/tera-network-proxy/lib/connection/encryption/sha0.js": "49748cdd71917d10232013990dd03ccbbd01a27dc85dfd6c534c211cffe14398",
