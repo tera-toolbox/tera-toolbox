@@ -146,11 +146,14 @@ class TeraProxy {
                         console.log(`[toolbox] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.majorPatchVersion}.${data.minorPatchVersion})`);
 
                         if (JustStarted) {
+                            client.canInstallGPKs = true;
                             client.GPKManager.initialize(path.join(client.info.path, '..'));
-                            client.moduleManager.loadAll();
                         }
+
+                        client.moduleManager.loadAll();
                     }
 
+                    client.canInstallGPKs = false;
                     if (JustStarted)
                         client.resume();
                     break;
