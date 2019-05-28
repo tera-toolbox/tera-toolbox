@@ -253,7 +253,7 @@ class Dispatch {
         } else {
             // Check if opcode is mapped
             code = this.protocolMap.name.get(name)
-            if (code === null)
+            if (code === null || typeof code === 'undefined')
                 throw Error(`[dispatch] hook: unmapped packet "${name}"`)
 
             // Check if definition exists
