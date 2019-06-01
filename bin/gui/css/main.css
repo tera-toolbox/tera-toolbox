@@ -187,17 +187,23 @@ ul.tabs {
     }
 
 .log-contents {
-    word-break: break-all;
     position: relative;
     z-index: 99999;
     height: 575px;
     width: 100%;
     overflow: scroll;
     overflow-x: hidden;
-    font-family: Consolas, monaco, monospace;
-    user-select: all;
+    user-select: text;
     resize: none;
+    border: 1px solid;
 }
+
+    .log-contents > div {
+        word-break: break-all;
+        white-space: pre;
+        font-family: Consolas, monaco, monospace;
+        font-size: 12px;
+    }
 
 /***********
  * MODULES *

@@ -139,10 +139,8 @@ jQuery(($) => {
             timeStr = `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}] `;
         }
 
-        msg = $('<div/>').text(`${timeStr}${msg}${msg[msg.length-1] !== '\n' ? '\n' : ''}`).html();
-
         const contents = $('#log-contents');
-        contents.append(msg);
+        contents.append($('<div/>').text(`${timeStr}${msg}`));
         contents.scrollTop(contents[0].scrollHeight);
     }
 
