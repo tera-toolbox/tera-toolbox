@@ -214,6 +214,19 @@ class TeraProxy {
                 }
                 case 'get_sls': {
                     if (client.info && client.info.protocolVersion) {
+                        // Store server list for use by mods
+                        let serverlist = {};
+                        data.servers.filter(server => server.ip !== this.listenIp).forEach(server => {
+                            serverlist[server.id] = {
+                                id: server.id,
+                                category: server.category,
+                                name: server.name,
+                                ip: server.ip,
+                                port: server.port
+                            };
+                        });
+
+                        // Inject / patch proxy servers
                         const proxy_servers = data.servers.filter(server => !data.servers.some(other_server => other_server.id === server.id && other_server.ip === this.listenIp)).map(server => {
                             let patched_server = Object.assign({}, server);
                             if (!this.config.noslstags) {
@@ -224,6 +237,7 @@ class TeraProxy {
 
                             const redirected_server_metadata = {
                                 serverId: server.id,
+                                serverList: serverlist,
                                 platform: 'pc',
                                 region: client.info.region,
                                 environment: 'live', // TODO

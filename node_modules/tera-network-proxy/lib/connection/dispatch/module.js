@@ -186,6 +186,7 @@ class Module {
   get platform() { return this.dispatch.platform; }
   get connection() { return this.dispatch.connection; }
   get serverId() { return this.dispatch.connection.metadata.serverId; }
+  get serverList() { return this.dispatch.connection.metadata.serverList; }
 
   // Default modules
   get command() { return this.require['command']; }
