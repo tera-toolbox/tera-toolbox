@@ -189,8 +189,9 @@ class TeraProxy {
                     client.info.sysmsg = data.sysmsg;
 
                     // Load protocol map
+                    client.info.protocol = data.protocol || {};
                     try {
-                        client.info.protocol = LoadProtocolMap(client.info.protocolVersion);
+                        client.info.protocol = Object.assign(LoadProtocolMap(client.info.protocolVersion), client.info.protocol);
 
                         if (Object.keys(client.info.protocol).length === 0) {
                             console.warn(`[toolbox] WARNING: Unmapped protocol version ${client.info.protocolVersion} (${client.info.region.toUpperCase()} v${client.info.majorPatchVersion}.${client.info.minorPatchVersion}).`);
@@ -205,8 +206,6 @@ class TeraProxy {
                             console.log(`[toolbox] Loaded protocol version ${client.info.protocolVersion} (${client.info.region.toUpperCase()} v${client.info.majorPatchVersion}.${client.info.minorPatchVersion}).`);
                         }
                     } catch (e) {
-                        client.info.protocol = {};
-
                         console.log(`[toolbox] ERROR: Unable to load protocol version ${client.info.protocolVersion} (${client.info.region.toUpperCase()} v${client.info.majorPatchVersion}.${client.info.minorPatchVersion}).`);
                         console.log(e);
                     }
