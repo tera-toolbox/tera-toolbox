@@ -74,7 +74,7 @@ function _StartProxy(ModuleFolder, ProxyConfig) {
         proxyRunning = true;
         return true;
     } catch (_) {
-        console.error('[toolbox] Unable to start the network proxy!');
+        log('[toolbox] Unable to start the network proxy!', 'error');
         proxy = null;
         proxyRunning = false;
         return false;
@@ -86,11 +86,11 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
         return false;
 
     if (ProxyConfig.noupdate) {
-        log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        log("!!!!!      YOU HAVE GLOBALLY DISABLED AUTOMATIC UPDATES     !!!!!");
-        log("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
-        log("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
-        log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
+        log('!!!!!      YOU HAVE GLOBALLY DISABLED AUTOMATIC UPDATES     !!!!!', 'warn');
+        log('!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!', 'warn');
+        log('!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!', 'warn');
+        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
         return _StartProxy(ModuleFolder, ProxyConfig);
     } else {
         const autoUpdate = require("./update");
@@ -99,15 +99,15 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
             const updateResult = await autoUpdate(ModuleFolder, ProxyConfig.updatelog, true);
 
             for (let mod of updateResult["legacy"])
-                log(`[update] WARNING: Module ${mod.name} does not support auto-updating!`);
+                log(`[update] WARNING: Module ${mod.name} does not support auto-updating!`, 'warn');
             for (let mod of updateResult["failed"])
-                log(`[update] ERROR: Module ${mod.name} could not be updated and might be broken!`);
+                log(`[update] ERROR: Module ${mod.name} could not be updated and might be broken!`, 'error');
             if (!updateResult["tera-data"])
-                log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
+                log('[update] ERROR: There were errors updating tera-data. This might result in further errors.', 'error');
 
             return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
-            log(`ERROR: Unable to auto-update: ${e}`);
+            log(`ERROR: Unable to auto-update: ${e}`, 'error');
             return false;
         }
     }
@@ -154,7 +154,7 @@ function stopUpdateCheck() {
 const isWindows = process.platform === "win32";
 
 function cleanExit() {
-    log("[toolbox] terminating...");
+    log('[toolbox] terminating...');
 
     StopProxy().then(() => {
         if (isWindows)
@@ -178,15 +178,15 @@ ipcMain.on('init', (event, _) => {
     event.sender.send('set config', config);
 
     if (config.noselfupdate) {
-        log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        log("!!!!!       YOU HAVE DISABLED AUTOMATIC SELF-UPDATING       !!!!!");
-        log("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
-        log("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
-        log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
+        log('!!!!!       YOU HAVE DISABLED AUTOMATIC SELF-UPDATING       !!!!!', 'warn');
+        log('!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!', 'warn');
+        log('!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!', 'warn');
+        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
     }
 
     if (config.gui.autostart) {
-        log("[toolbox] Starting the network proxy...");
+        log('[toolbox] Starting the network proxy...');
         StartProxy(ModuleFolder, config).then((result) => {
             event.sender.send('proxy running', result);
         });
@@ -197,7 +197,7 @@ ipcMain.on('start proxy', (event, _) => {
     if (proxy || proxyRunning)
         return;
 
-    log("[toolbox] Starting the network proxy...");
+    log('[toolbox] Starting the network proxy...');
     StartProxy(ModuleFolder, config).then((result) => {
         event.sender.send('proxy running', result);
     });
@@ -207,10 +207,10 @@ ipcMain.on('stop proxy', (event, _) => {
     if (!proxy || !proxyRunning)
         return;
 
-    log("[toolbox] Stopping the network proxy...");
+    log('[toolbox] Stopping the network proxy...');
     StopProxy().then(() => {
         event.sender.send('proxy running', false);
-        log("[toolbox] Network proxy stopped!");
+        log('[toolbox] Network proxy stopped!');
     });
 });
 
@@ -326,13 +326,17 @@ class TeraProxyGUI {
         // Redirect console to built-in one
         const nodeConsole = require('console');
         console = new nodeConsole.Console(process.stdout, process.stderr);
-        ['stdout', 'stderr'].forEach(mode => {
-            const oldLogger = process[mode].write;
-            process[mode].write = function (msg, ...args) {
-                oldLogger(msg, ...args);
-                log(msg);
-            };
-        });
+
+        const old_stdout = process.stdout.write;
+        process.stdout.write = function (msg, ...args) {
+            old_stdout(msg, ...args);
+            log(msg, 'log');
+        };
+        const old_stderr = process.stderr.write;
+        process.stderr.write = function (msg, ...args) {
+            old_stderr(msg, ...args);
+            log(msg, 'error');
+        };
 
         // Initialize tray icon
         this.tray = new Tray(guiIcon);
@@ -375,9 +379,9 @@ class TeraProxyGUI {
             this.window.webContents.send('error', error);
     }
 
-    log(msg) {
+    log(msg, type = 'log') {
         if (this.window)
-            this.window.webContents.send('log', msg);
+            this.window.webContents.send('log', msg, type);
     }
 }
 
@@ -386,23 +390,23 @@ let config;
 let gui;
 
 function showError(error) {
-    console.log(error);
+    console.error(error);
     if (gui)
         gui.showError(error);
 }
 
-function log(msg) {
+function log(msg, type = 'log') {
     if (msg.length === 0)
         return;
 
     if (gui)
-        gui.log(msg);
+        gui.log(msg, type);
 }
 
 process.on('warning', (warning) => {
-    log(warning.name);
-    log(warning.message);
-    log(warning.stack);
+    log(warning.name, 'warn');
+    log(warning.message, 'warn');
+    log(warning.stack, 'warn');
 });
 
 // Main

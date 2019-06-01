@@ -79,6 +79,18 @@ ul.tabs li {
     color: #BBB;
 }
 
+    .log-contents > div.log {
+        color: #BBB;
+    }
+
+    .log-contents > div.warn {
+        color: red;
+    }
+
+    .log-contents > div.error {
+        color: red;
+    }
+
 #clear-logs {
     color: #BBB;
 }

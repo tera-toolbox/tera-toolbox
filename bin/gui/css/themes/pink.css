@@ -79,6 +79,18 @@ ul.tabs li {
     color: #292F33;
 }
 
+    .log-contents > div.log {
+        color: #292F33;
+    }
+
+    .log-contents > div.warn {
+        color: darkred;
+    }
+
+    .log-contents > div.error {
+        color: darkred;
+    }
+
 #clear-logs {
     color: #292F33;
 }
