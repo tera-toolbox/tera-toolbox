@@ -177,14 +177,15 @@ class Module {
 
   get proxyAuthor() { return this.dispatch.proxyAuthor; }
   get region() { return this.dispatch.region; }
+  get environment() { return this.dispatch.environment; }
   get majorPatchVersion() { return this.dispatch.majorPatchVersion; }
   get minorPatchVersion() { return this.dispatch.minorPatchVersion; }
   get protocolVersion() { return this.dispatch.protocolVersion; }
-  get isConsole() { return this.dispatch.isConsole(); }
-  get isClassic() { return this.dispatch.isClassic(); }
+  get isConsole() { return this.dispatch.isConsole; }
+  get isClassic() { return this.dispatch.isClassic; }
   get platform() { return this.dispatch.platform; }
   get connection() { return this.dispatch.connection; }
-  get serverId() { return this.dispatch.connection.info.serverId; }
+  get serverId() { return this.dispatch.connection.metadata.serverId; }
 
   // Default modules
   get command() { return this.require['command']; }
@@ -324,7 +325,7 @@ class Module {
   error(...args) { console.error(`[${this.name}] ERROR:`, ...args); }
 
   // Client Interface
-  get clientInterface() { return this.dispatch.connection.info.clientInterface; }
+  get clientInterface() { return this.dispatch.connection.clientInterfaceConnection; }
   queryData(...args) { return this.clientInterface.queryData(...args); }
 }
 

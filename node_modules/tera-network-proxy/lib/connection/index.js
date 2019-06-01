@@ -4,19 +4,20 @@ const Dispatch = require('./dispatch');
 const Encryption = require('./encryption');
 
 class Connection {
-    constructor(moduleFolder, info) {
+    constructor(moduleFolder, metadata, clientInterfaceConnection) {
         this.moduleFolder = moduleFolder;
-        this.info = info || {};
+        this.metadata = metadata || {};
+        this.clientInterfaceConnection = clientInterfaceConnection;
         this.client = null;
         this.dispatch = new Dispatch(this);
 
         this.state = -1;
-        this.session = new Encryption(this.info.platform === 'classic');
+        this.session = new Encryption(this.metadata.platform === 'classic');
 
-        const bufferType = this.info.platform === 'console' ? require('../packetBufferConsole') : require('../packetBuffer');
+        const bufferType = this.metadata.platform === 'console' ? require('../packetBufferConsole') : require('../packetBuffer');
         this.buffer = new bufferType();
 
-        this.builder = this.info.platform === 'console' ? require('../packetBuilderConsole') : require('../packetBuilder');
+        this.builder = this.metadata.platform === 'console' ? require('../packetBuilderConsole') : require('../packetBuilder');
     }
 
     connect(client, opt) {

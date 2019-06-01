@@ -4,10 +4,10 @@ class RealClient {
     this.socket = socket;
     this.session = null;
 
-    const bufferType = this.connection.info.platform === 'console' ? require('../packetBufferConsole') : require('../packetBuffer');
+    const bufferType = this.connection.metadata.platform === 'console' ? require('../packetBufferConsole') : require('../packetBuffer');
     this.buffer = new bufferType();
     
-    this.builder = this.connection.info.platform === 'console' ? require('../packetBuilderConsole') : require('../packetBuilder');
+    this.builder = this.connection.metadata.platform === 'console' ? require('../packetBuilderConsole') : require('../packetBuilder');
 
     socket.on('data', (data) => {
       if (!this.connection) return;

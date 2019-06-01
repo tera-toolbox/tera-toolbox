@@ -93,11 +93,41 @@ function errStack(err = new Error(), removeFront = true) {
 class Dispatch {
     constructor(connection) {
         this.connection = connection;
-        this.proxyAuthor = 'caali';
-        this.region = this.connection.info.regionShort;
-        this.majorPatchVersion = this.connection.info.majorPatch;
-        this.minorPatchVersion = this.connection.info.minorPatch;
 
+        // Initialize protocol maps
+        this.protocolMap = {
+            name: new Map(),
+            code: new Map()
+        };
+
+        Object.keys(this.connection.metadata.maps.protocol).forEach(name => {
+            this.protocolMap.name.set(name, this.connection.metadata.maps.protocol[name]);
+            this.protocolMap.code.set(this.connection.metadata.maps.protocol[name], name);
+        });
+
+        // Initialize sysmsg maps
+        this.sysmsgMap = {
+            name: new Map(),
+            code: new Map()
+        };
+
+        Object.keys(this.connection.metadata.maps.sysmsg).forEach(name => {
+            this.sysmsgMap.name.set(name, this.connection.metadata.maps.sysmsg[name]);
+            this.sysmsgMap.code.set(this.connection.metadata.maps.sysmsg[name], name);
+        });
+
+        // Initialize protocol
+        this.protocol = new protocol(this.protocolMap, this.platform);
+        this.protocol.load(require.resolve('tera-data'));
+
+        this.latestDefVersion = new Map();
+        if (this.protocol.messages) {
+            for (const [name, defs] of this.protocol.messages) {
+                this.latestDefVersion.set(name, Math.max(...defs.keys()));
+            }
+        }
+
+        // Initialize hooks
         // hooks:
         // { <code>:
         //	 [ { <order>
@@ -107,47 +137,7 @@ class Dispatch {
         //		 }
         //	 ]
         // }
-        this.hooks = new Map()
-
-        // Initialize sysmsg maps
-        this.sysmsgMap = {
-            name: new Map(),
-            code: new Map(),
-        };
-
-        Object.keys(this.connection.info.sysmsg).forEach(name => {
-            this.sysmsgMap.name.set(name, this.connection.info.sysmsg[name]);
-            this.sysmsgMap.code.set(this.connection.info.sysmsg[name], name);
-        });
-
-        // Initialize protocol maps
-        this.protocol = protocol.createInstance(this.platform)
-        this.protocol.load(require.resolve('tera-data'))
-
-        this.latestDefVersion = new Map()
-        if (this.protocol.messages) {
-            for (const [name, defs] of this.protocol.messages) {
-                this.latestDefVersion.set(name, Math.max(...defs.keys()))
-            }
-        }
-
-        this.protocolVersion = this.connection.info.protocol;
-        this.protocolMap = this.protocol.maps.get(this.protocolVersion);
-
-        if (!this.protocolMap) {
-            log.error(`[dispatch] Unmapped protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion}).`);
-            log.error('[dispatch] This can be caused by either of the following:');
-            log.error('[dispatch] 1) You are trying to play using a newly released client version that is not yet supported.');
-            log.error('[dispatch]    If there was a game maintenance within the past few hours, please report this!');
-            log.error('[dispatch]    Otherwise, your client might have been updated for an upcoming patch too early.');
-            log.error('[dispatch] 2) You are trying to play using an outdated client version.');
-            log.error('[dispatch]    Try a client repair or reinstalling the game from scratch to fix this!');
-            if (this.region === 'na')
-                log.error('[dispatch]   (Both issues occur frequently on NA due to EME\'s shitty patch distribution system.)');
-            log.error(`[dispatch] If you cannot fix this on your own, ask for help here: ${global.TeraProxy.SupportUrl}!`);
-        } else {
-            log.info(`[dispatch] Switching to protocol version ${this.protocolVersion} (${this.region.toUpperCase()} v${this.majorPatchVersion}.${this.minorPatchVersion})`);
-        }
+        this.hooks = new Map();
 
         // Create mod manager
         this.moduleManager = new ModuleManager(this, this.connection.moduleFolder);
@@ -161,7 +151,7 @@ class Dispatch {
 
     reset() {
         this.moduleManager.unloadAll();
-        this.hooks.clear()
+        this.hooks.clear();
     }
 
     checkDefinitions(defs) {
@@ -172,26 +162,24 @@ class Dispatch {
                 versions = [versions];
 
             const known_versions = this.protocol.messages.get(name);
-            versions.forEach(v => {
-                if (v !== 'raw' && (!known_versions || !known_versions.get(v)))
-                    missingDefs.push({ 'name': name, 'version': v });
+            versions.forEach(version => {
+                if (version !== 'raw' && (!known_versions || !known_versions.get(version)))
+                    missingDefs.push({ name, version });
             });
         });
 
         return missingDefs;
     }
 
-    isConsole() {
-        return this.platform === 'console';
-    }
-
-    isClassic() {
-        return this.platform === 'classic';
-    }
-
-    get platform() {
-        return this.connection.info.platform;
-    }
+    get isConsole() { return this.platform === 'console'; }
+    get isClassic() { return this.platform === 'classic'; }
+    get platform() { return this.connection.metadata.platform; }
+    get region() { return this.connection.metadata.region; }
+    get environment() { return this.connection.metadata.environment; }
+    get majorPatchVersion() { return this.connection.metadata.majorPatchVersion; }
+    get minorPatchVersion() { return this.connection.metadata.minorPatchVersion; }
+    get protocolVersion() { return this.connection.metadata.protocolVersion; }
+    get proxyAuthor() { return 'caali'; }
 
     parseSystemMessage(message) {
         if (message[0] !== '@') throw Error(`Invalid system message "${message}" (expected @)`)
@@ -359,7 +347,7 @@ class Dispatch {
             }
 
             try {
-                data = this.protocol.write(this.protocolVersion, name, version, data, null, null, null)
+                data = this.protocol.write(name, version, data, null, null, null)
             } catch (e) {
                 throw new Error(`[dispatch] write: failed to generate ${getMessageName(this.protocolMap, name, version, name)}:\n${e}`);
             }
@@ -381,7 +369,6 @@ class Dispatch {
         const codeHooks = this.hooks.get(code)
         if (!globalHooks && !codeHooks) return data
 
-        const { protocolVersion } = this
         let modified = false
         let silenced = false
 
@@ -446,7 +433,7 @@ class Dispatch {
                 try {
                     const defVersion = hook.definitionVersion
 
-                    let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(protocolVersion, code, defVersion, data, null))
+                    let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(code, defVersion, data, null))
 
                     objectAttachFlags(lastHook ? event : (event = deepClone(event)))
 
@@ -458,7 +445,7 @@ class Dispatch {
                             silenced = false
 
                             try {
-                                data = this.protocol.write(protocolVersion, code, defVersion, event, null, null, null)
+                                data = this.protocol.write(code, defVersion, event, null, null, null)
                                 bufferAttachFlags(data)
 
                                 eventCache = []
@@ -518,4 +505,4 @@ function deepClone(obj) {
     return copy
 }
 
-module.exports = Dispatch
+module.exports = Dispatch;
