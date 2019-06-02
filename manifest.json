@@ -145,7 +145,7 @@
     "node_modules/tera-network-proxy/lib/packetBuffer.js": "1c9928c8f00d7783b1b8b812100bef554ff601de0f814ec2aebe1cc4e87a8c6f",
     "node_modules/tera-network-proxy/lib/packetBuilder.js": "66f49a4d771a20d9bd15283e8b4933f104da9c7c68652ab154a42354776b6d68",
     "node_modules/tera-network-proxy/lib/clients/FakeClient.js": "b76a3f9d1efa343ccf4599ca2caee7e26369b8705004d778c8e803616ff23579",
-    "node_modules/tera-network-proxy/lib/clients/RealClient.js": "7276a21e3e519a98d700ee9f7c721a4854aadbeecb43d60a887ffe0cc34c780c",
+    "node_modules/tera-network-proxy/lib/clients/RealClient.js": "df3c2d8fe44343efd52ab3f6117a83646a34f773a5d03e83c4cf0f5525f54cc7",
     "node_modules/tera-network-proxy/lib/connection/index.js": "b5d589b007383289dd8be6c5504e2c9547ee9aa5e8185ad07fb4a717f0602de9",
     "node_modules/tera-network-proxy/lib/connection/dispatch/index.js": "9347669518928d6a7a715d827626b065ca9f07b2bc5ebd605ff4fffbc53e4b74",
     "node_modules/tera-network-proxy/lib/connection/dispatch/module.js": "ab01ea579c0a5849102b34b8799b216e1e5971d1772b7bebc751131fb56acabd",
