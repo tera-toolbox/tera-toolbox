@@ -219,6 +219,18 @@ class Dispatch {
         return str
     }
 
+    fromRaw(name, version, data) {
+        return this.protocol.parse(name, version, data, null);
+    }
+
+    toRaw(name, version, data) {
+        return this.protocol.write(name, version, data, null, null, null);
+    }
+
+    resolve(name) {
+        return this.protocol.resolveIdentifier(name);
+    }
+
     createHook(base, name, version, opts, cb) {
         // parse args
         if (typeof version !== 'number' && version !== '*' && version !== 'raw')
