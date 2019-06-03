@@ -62,7 +62,7 @@ function migrateModuleUpdateUrlRoot(update_url_root) {
     if (update_url_root === "https://raw.githubusercontent.com/caali-hackerman/tera-proxy/master/bin/node_modules/command/")
         return "https://raw.githubusercontent.com/caali-hackerman/command/master/";
     else
-        return update_url_root;
+        return update_url_root.replace('https://simplesalt.feedia.co/update/', 'https://saltymonkey.online/update/');
 }
 
 let blacklist = [];
