@@ -10,8 +10,10 @@
       "hash": "dd8694ffa6d529d5f636e3679b022f25f1424a8dd90a3f06e006b0f72f0a83ca",
       "overwrite": "only"
     },
-    "TeraToolbox.exe": "399f16a3185c92603bd180eebc1d3fb0f4482f79def6e7f76499e3a6e9d1a622",
-    "TeraToolboxCLI.exe": "83fa71900636708fdfe8fe23746183f532a6a0e752c000ff22fc9ab70c0ae4ae",
+    "TeraToolbox.exe": "4c3d34bb558f00c8c9cd508e007f1c417a8dea6afb008e73745b451a8ff00b34",
+    "TeraToolboxCLI.exe": "c4bcfb7c6251cb42b91b1152e19364c8c448a0b6a08f95e00fa01d727490c583",
+    "TeraToolboxCLI_NoAdmin.exe": "52c946a1fdc1a4fe7e356e88dce18a8875e768179fe0db2cfc1001d5a76e5250",
+    "TeraToolbox_NoAdmin.exe": "216b917d3b6db17dd6e0c9e65d90c7235af4c5df2a84c08f7f7dcb7d1fb07f72",
     "bin/config.js": "5980aa3dc95c744fe56a0ab47d0a903415bb19c6f78bb13228b78c5d10db5fa4",
     "bin/connectionManager.js": "4ec55eeeeafe02bdf0ad11f96eb19925f959b01be266ba83113e8a783bd51331",
     "bin/index-cli.js": "14d6c961a8af160b1a3ea33810e638a612462934ecf7b48b5a7588748f43beae",
