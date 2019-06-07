@@ -87,7 +87,7 @@ class TeraProxy {
         this.connectionManager = new ConnectionManager(moduleFolder);
 
         const ClientInterfaceServer = require('tera-client-interface');
-        this.clientInterfaceServer = new ClientInterfaceServer('127.0.0.10', 9250, moduleFolder,
+        this.clientInterfaceServer = new ClientInterfaceServer(config.interface_listenip || '127.0.0.10', config.interface_listenport || 9250, moduleFolder,
             client => {
                 this.onClientInterfaceConnected(client);
             },
