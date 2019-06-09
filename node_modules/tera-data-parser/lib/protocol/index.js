@@ -444,7 +444,7 @@ class TeraProtocol {
                         writer.uint16(0);
 
                         // recurse
-                        this.write(null, type, version, element, writer, `${displayName}.${keyPath}`);
+                        this.write(type, version, element, writer, `${displayName}.${keyPath}`);
                     }
                 }
                 // `type` is primitive
