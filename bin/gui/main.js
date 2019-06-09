@@ -132,26 +132,24 @@ jQuery(($) => {
     // --------------------------------------------------------------------
     const LogTabName = 'log';
 
-    function log(msg) {
+    function log(msg, type) {
         let timeStr = '';
         if (Settings.gui.logtimes) {
             const now = new Date();
             timeStr = `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}] `;
         }
 
-        msg = $('<div/>').text(`${timeStr}${msg}${msg[msg.length-1] !== '\n' ? '\n' : ''}`).html();
-
         const contents = $('#log-contents');
-        contents.append(msg);
+        contents.append($('<div/>', { class: type || 'log' }).text(`${timeStr}${msg}`));
         contents.scrollTop(contents[0].scrollHeight);
     }
 
     $('#clear-logs').click(() => {
-        $('#log-contents').text('');
+        $('#log-contents').empty();
     });
 
-    ipcRenderer.on('log', (_, data) => {
-        log(data.toString());
+    ipcRenderer.on('log', (_, data, type) => {
+        log(data.toString(), type);
     });
 
     addTab(LogTabName, {

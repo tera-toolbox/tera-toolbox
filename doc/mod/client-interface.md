@@ -10,6 +10,7 @@ The `info` object contains some useful information about the linked game client 
 - `mod.clientInterface.info.majorPatchVersion`: The major patch version of the linked game client, as specified in `ReleaseRevision.txt`.
 - `mod.clientInterface.info.minorPatchVersion`: The minor patch version of the linked game client, as specified in `ReleaseRevision.txt`.
 - `mod.clientInterface.info.protocolVersion`: The protocol version (== DataCenter version), as sent in `C_CHECK_VERSION`.
+- `mod.clientInterface.info.protocol`: Opcode name -> ID map.
 - `mod.clientInterface.info.sysmsg`: SystemMessage name -> ID map.
 
 ## Flashing the Game Window
