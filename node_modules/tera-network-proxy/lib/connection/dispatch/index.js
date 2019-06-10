@@ -219,12 +219,12 @@ class Dispatch {
         return str
     }
 
-    fromRaw(name, version, data) {
-        return this.protocol.parse(name, version, data, null);
+    fromRaw(name, version, data, customName = null) {
+        return this.protocol.parse(name, version, data, customName);
     }
 
-    toRaw(name, version, data) {
-        return this.protocol.write(name, version, data, null, null, null);
+    toRaw(name, version, data, writer = null, customName = null, customCode = null) {
+        return this.protocol.write(name, version, data, writer, customName, customCode);
     }
 
     resolve(name) {
