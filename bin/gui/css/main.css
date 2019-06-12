@@ -199,8 +199,10 @@ ul.tabs {
 }
 
     .log-contents > div {
+        word-wrap: break-word;
         word-break: break-all;
-        white-space: pre;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
         font-family: Consolas, monaco, monospace;
         font-size: 12px;
     }
