@@ -1,3 +1,4 @@
+const mui = require('tera-toolbox-mui').DefaultInstance;
 const Module = require('./module');
 const { isCoreModule, listModules, loadModuleInfo } = require('tera-mod-management');
 
@@ -54,7 +55,7 @@ class ModuleManager {
             try {
                 moduleInfo = loadModuleInfo(this.rootFolder, name);
             } catch (e) {
-                console.error(`[mods] ERROR: Unable to load module information for "${name}"`);
+                console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/load-module-info-error', { name }));
                 console.error(e);
                 return;
             }
@@ -62,13 +63,13 @@ class ModuleManager {
             if (!moduleInfo.disabled) {
                 // Validate module info
                 if (this.installedModules.has(moduleInfo.name)) {
-                    console.error(`[mods] ERROR: Duplicate module "${name}" detected!`);
+                    console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/duplicate-mod-error', { name }));
                 } else {
                     const missingDefs = this.dispatch.checkDefinitions(moduleInfo.packets);
                     if (missingDefs.length > 0) {
-                        console.error(`[mods] ERROR: Module "${name}" uses the following outdated/unsupported packets:`);
-                        missingDefs.forEach(def => console.error(`[mods] ERROR: - ${def.name}.${def.version}`));
-                        console.error(`[mods] ERROR: Please contact the module's author: ${moduleInfo.supportUrl || global.TeraProxy.SupportUrl}`);
+                        console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/unsupported-def-error-1', { name }));
+                        missingDefs.forEach(def => console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/unsupported-def-error-2', { name: def.name, version: def.version })));
+                        console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/unsupported-def-error-3', { supportUrl: moduleInfo.supportUrl || global.TeraProxy.SupportUrl }));
                     } else {
                         this.installedModules.set(moduleInfo.name, moduleInfo);
                     }
@@ -84,7 +85,7 @@ class ModuleManager {
             this.installedModules.forEach((moduleInfo, moduleName) => {
                 moduleInfo.dependencies.forEach(dependency => {
                     if (!this.isInstalled(dependency)) {
-                        console.error(`[mods] ERROR: Module ${printableName(moduleInfo)} requires "${dependency}" to be installed, but it is not!`);
+                        console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/missing-mod-dependency-error', { name: printableName(moduleInfo), dependency }));
                         this.installedModules.delete(moduleName);
                         ModulesRemoved = true;
                     }
@@ -94,7 +95,7 @@ class ModuleManager {
             this.installedModules.forEach((moduleInfo, moduleName) => {
                 moduleInfo.conflicts.forEach(conflict => {
                     if (this.isInstalled(conflict)) {
-                        console.error(`[mods] ERROR: Module ${printableName(moduleInfo)} cannot be loaded while "${conflict}" is installed!`);
+                        console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-conflict-error', { name: printableName(moduleInfo), conflict }));
                         this.installedModules.delete(moduleName);
                         ModulesRemoved = true;
                     }
@@ -135,7 +136,7 @@ class ModuleManager {
 
         const moduleInfo = this.getInfo(name);
         if (!moduleInfo) {
-            console.error(`[mods] ERROR: Trying to load module that is not installed: ${name}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-load-mod-not-installed', { name }));
         } else {
             try {
                 module = new Module(this, moduleInfo);
@@ -163,7 +164,7 @@ class ModuleManager {
                 this.loadedModules.set(moduleInfo.name, module);
 
                 if (logInfo)
-                    console.log(`[mods] Loaded module ${printableName(moduleInfo)}`);
+                    console.log(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-loaded', { name: printableName(moduleInfo) }));
             } catch (e) {
                 // Remove any hooks that may have been added by the broken module
                 this.dispatch.unhookModule(moduleInfo.name);
@@ -174,8 +175,8 @@ class ModuleManager {
                         delete require.cache[key];
                 });
 
-                console.error(`[mods] ERROR: Module ${printableName(moduleInfo)} could not be loaded!`);
-                console.error(`[mods] ERROR: Please contact the module's author: ${moduleInfo.supportUrl || global.TeraProxy.SupportUrl}`);
+                console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-load-error-1', { name: printableName(moduleInfo) }));
+                console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-load-error-2', { supportUrl: moduleInfo.supportUrl || global.TeraProxy.SupportUrl }));
                 console.error(e);
             }
         }
@@ -189,13 +190,13 @@ class ModuleManager {
 
         const moduleInfo = this.getInfo(name);
         if (!moduleInfo) {
-            console.error(`[mods] ERROR: Trying to unload module that is not installed: ${name}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-unload-mod-not-installed', { name }));
             return false;
         }
 
         let module = this.get(moduleInfo.name);
         if (!module) {
-            console.error(`[mods] ERROR: Trying to unload module that is not loaded: ${printableName(moduleInfo)}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-unload-mod-not-loaded', { name: printableName(moduleInfo) }));
             return false;
         }
 
@@ -211,11 +212,11 @@ class ModuleManager {
             });
 
             if (logInfo)
-                console.log(`[mods] Unloaded module ${printableName(moduleInfo)}`);
+                console.log(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-unloaded', { name: printableName(moduleInfo) }));
             return true;
         } catch (e) {
-            console.error(`[mods] ERROR: Module ${printableName(moduleInfo)} could not be unloaded!`);
-            console.error(`[mods] ERROR: Please contact the module's author: ${moduleInfo.supportUrl || global.TeraProxy.SupportUrl}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-unload-error-1', { name: printableName(moduleInfo) }));
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-unload-error-2', { supportUrl: moduleInfo.supportUrl || global.TeraProxy.SupportUrl }));
             console.error(e);
             return false;
         }
@@ -224,36 +225,36 @@ class ModuleManager {
     reload(name, logInfo = true) {
         const moduleInfo = this.getInfo(name);
         if (!moduleInfo) {
-            console.error(`[mods] ERROR: Trying to reload module that is not installed: ${name}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-reload-mod-not-installed', { name }));
             return false;
         }
         if (!moduleInfo.options.reloadable) {
-            console.error(`[mods] ERROR: Trying to reload module that does not support hot-reload: ${printableName(moduleInfo)}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-reload-mod-not-supported', { name: printableName(moduleInfo) }));
             return false;
         }
 
         let module = this.get(moduleInfo.name);
         if (!module) {
-            console.error(`[mods] ERROR: Trying to reload module that is not loaded: ${printableName(moduleInfo)}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-reload-mod-not-loaded', { name: printableName(moduleInfo) }));
             return false;
         }
 
         const state = module.saveState();
         if (!this.unload(moduleInfo.name, false)) {
-            console.error(`[mods] ERROR: Reload failed: ${printableName(moduleInfo)}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-reload-mod-unload-failed', { name: printableName(moduleInfo) }));
             return false;
         }
 
         const newMod = this.load(name, false);
         if (!newMod) {
-            console.error(`[mods] ERROR: Reload failed: ${printableName(moduleInfo)}`);
+            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-reload-mod-load-failed', { name: printableName(moduleInfo) }));
             return false;
         }
 
         newMod.loadState(state);
 
         if (logInfo)
-            console.log(`[mods] Reloaded module ${printableName(moduleInfo)}`);
+            console.log(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-reloaded', { name: printableName(moduleInfo) }));
         return true;
     }
 }

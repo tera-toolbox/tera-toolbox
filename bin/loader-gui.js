@@ -1,6 +1,6 @@
 const path = require('path');
 const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require('electron');
-const ModuleFolder = path.join(__dirname, "..", "mods");
+const ModuleFolder = path.join(__dirname, '..', 'mods');
 
 // MUI
 const mui = require('tera-toolbox-mui').DefaultInstance;
@@ -19,8 +19,8 @@ function LoadConfiguration() {
 
         dialog.showMessageBox({
             type: 'error',
-            title: 'Invalid settings file!',
-            message: `The config.json file in your TERA Toolbox folder is malformed. Try to fix it yourself, delete it to generate a new one, or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
+            title: mui.get('loader-gui/error-config-file-corrupt/title'),
+            message: mui.get('loader-gui/error-config-file-corrupt/message', { supportUrl: global.TeraProxy.SupportUrl })
         });
 
         app.exit();
@@ -47,8 +47,8 @@ function Migration() {
 
         dialog.showMessageBox({
             type: 'error',
-            title: 'Migration error!',
-            message: `Unable to migrate files from an old version of TERA Toolbox.\nPlease reinstall a clean copy using the latest installer or ask in ${global.TeraProxy.SupportUrl} for help!\n\nThe program will now be terminated.`
+            title: mui.get('loader-gui/error-migration-failed/title'),
+            message: mui.get('loader-gui/error-migration-failed/message', { supportUrl: global.TeraProxy.SupportUrl })
         });
 
         app.exit();
@@ -56,7 +56,7 @@ function Migration() {
 }
 
 // Installed mod management
-const AvailableModuleListUrl = "https://raw.githubusercontent.com/tera-toolbox/tera-mods/master/modulelist.json";
+const AvailableModuleListUrl = 'https://raw.githubusercontent.com/tera-toolbox/tera-mods/master/modulelist.json';
 const { listModuleInfos, installModule, uninstallModule, toggleAutoUpdate, toggleLoad } = require('tera-mod-management');
 
 let CachedAvailableModuleList = null;
@@ -86,7 +86,7 @@ function _StartProxy(ModuleFolder, ProxyConfig) {
         proxyRunning = true;
         return true;
     } catch (_) {
-        log('[toolbox] Unable to start the network proxy!', 'error');
+        console.error(mui.get('loader-gui/error-cannot-start-proxy'));
         proxy = null;
         proxyRunning = false;
         return false;
@@ -98,28 +98,28 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
         return false;
 
     if (ProxyConfig.noupdate) {
-        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
-        log('!!!!!      YOU HAVE GLOBALLY DISABLED AUTOMATIC UPDATES     !!!!!', 'warn');
-        log('!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!', 'warn');
-        log('!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!', 'warn');
-        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
+        console.warn(mui.get('loader-gui/warning-noupdate-1'));
+        console.warn(mui.get('loader-gui/warning-noupdate-2'));
+        console.warn(mui.get('loader-gui/warning-noupdate-3'));
+        console.warn(mui.get('loader-gui/warning-noupdate-4'));
+        console.warn(mui.get('loader-gui/warning-noupdate-5'));
         return _StartProxy(ModuleFolder, ProxyConfig);
     } else {
-        const autoUpdate = require("./update");
+        const autoUpdate = require('./update');
 
         try {
             const updateResult = await autoUpdate(ModuleFolder, ProxyConfig.updatelog, true);
-
-            for (let mod of updateResult["legacy"])
-                log(`[update] WARNING: Module ${mod.name} does not support auto-updating!`, 'warn');
-            for (let mod of updateResult["failed"])
-                log(`[update] ERROR: Module ${mod.name} could not be updated and might be broken!`, 'error');
-            if (!updateResult["tera-data"])
-                log('[update] ERROR: There were errors updating tera-data. This might result in further errors.', 'error');
+            updateResult.legacy.forEach(mod => console.warn(mui.get('loader-gui/warning-update-mod-not-supported', { name: mod.name })));
+            updateResult.failed.forEach(mod => console.error(mui.get('loader-gui/error-update-mod-failed', { name: mod.name })));
+            if (!updateResult['tera-data']) {
+                console.error(mui.get('loader-gui/error-update-tera-data-failed-1'));
+                console.error(mui.get('loader-gui/error-update-tera-data-failed-2'));
+            }
 
             return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
-            log(`ERROR: Unable to auto-update: ${e}`, 'error');
+            console.error(mui.get('loader-gui/error-update-failed'));
+            console.error(e);
             return false;
         }
     }
@@ -163,10 +163,10 @@ function stopUpdateCheck() {
 }
 
 // Clean exit
-const isWindows = process.platform === "win32";
+const isWindows = process.platform === 'win32';
 
 function cleanExit() {
-    log('[toolbox] terminating...');
+    console.log(mui.get('loader-gui/terminating'));
 
     StopProxy().then(() => {
         if (isWindows)
@@ -175,15 +175,15 @@ function cleanExit() {
 }
 
 if (isWindows) {
-    require("readline").createInterface({
+    require('readline').createInterface({
         input: process.stdin,
         output: process.stdout
-    }).on("SIGINT", () => process.emit("SIGINT"));
+    }).on('SIGINT', () => process.emit('SIGINT'));
 }
 
-process.on("SIGHUP", cleanExit);
-process.on("SIGINT", cleanExit);
-process.on("SIGTERM", cleanExit);
+process.on('SIGHUP', cleanExit);
+process.on('SIGINT', cleanExit);
+process.on('SIGTERM', cleanExit);
 
 // IPC
 ipcMain.on('init', (event, _) => {
@@ -191,15 +191,15 @@ ipcMain.on('init', (event, _) => {
     event.sender.send('proxy running', false);
 
     if (config.noselfupdate) {
-        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
-        log('!!!!!       YOU HAVE DISABLED AUTOMATIC SELF-UPDATING       !!!!!', 'warn');
-        log('!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!', 'warn');
-        log('!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!', 'warn');
-        log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
+        console.warn(mui.get('loader-gui/warning-noselfupdate-1'));
+        console.warn(mui.get('loader-gui/warning-noselfupdate-2'));
+        console.warn(mui.get('loader-gui/warning-noselfupdate-3'));
+        console.warn(mui.get('loader-gui/warning-noselfupdate-4'));
+        console.warn(mui.get('loader-gui/warning-noselfupdate-5'));
     }
 
     if (config.gui.autostart) {
-        log('[toolbox] Starting the network proxy...');
+        console.log(mui.get('loader-gui/proxy-starting'));
         StartProxy(ModuleFolder, config).then((result) => {
             event.sender.send('proxy running', result);
         });
@@ -210,7 +210,7 @@ ipcMain.on('start proxy', (event, _) => {
     if (proxy || proxyRunning)
         return;
 
-    log('[toolbox] Starting the network proxy...');
+    console.log(mui.get('loader-gui/proxy-starting'));
     StartProxy(ModuleFolder, config).then((result) => {
         event.sender.send('proxy running', result);
     });
@@ -220,10 +220,10 @@ ipcMain.on('stop proxy', (event, _) => {
     if (!proxy || !proxyRunning)
         return;
 
-    log('[toolbox] Stopping the network proxy...');
+    console.log(mui.get('loader-gui/proxy-stopping'));
     StopProxy().then(() => {
         event.sender.send('proxy running', false);
-        log('[toolbox] Network proxy stopped!');
+        console.log(mui.get('loader-gui/proxy-stopped'));
     });
 });
 
@@ -246,25 +246,25 @@ ipcMain.on('get installable mods', (event, _) => {
 
 ipcMain.on('install mod', (event, modInfo) => {
     installModule(ModuleFolder, modInfo);
-    log(`Installed "${modInfo.name}"`);
+    console.log(mui.get('loader-gui/mod-installed', { name: modInfo.name }));
     getInstallableMods().then(mods => event.sender.send('set installable mods', mods));
 });
 
 ipcMain.on('toggle mod load', (event, modInfo) => {
     toggleLoad(modInfo);
-    log(`${modInfo.disabled ? 'Enabled' : 'Disabled'} "${modInfo.rawName}"`);
+    console.log(mui.get('loader-gui/mod-load-toggled', { enabled: modInfo.disabled, name: modInfo.rawName }));
     event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
 ipcMain.on('toggle mod autoupdate', (event, modInfo) => {
     toggleAutoUpdate(modInfo);
-    log(`${modInfo.disableAutoUpdate ? 'Enabled' : 'Disabled'} automatic updates for "${modInfo.rawName}"`);
+    console.log(mui.get('loader-gui/mod-updates-toggled', { updatesEnabled: modInfo.disableAutoUpdate, name: modInfo.rawName }));
     event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
 ipcMain.on('uninstall mod', (event, modInfo) => {
     uninstallModule(modInfo);
-    log(`Uninstalled "${modInfo.rawName}"`);
+    console.log(mui.get('loader-gui/mod-uninstalled', { name: modInfo.rawName }));
     event.sender.send('set mods', listModuleInfos(ModuleFolder));
 });
 
@@ -359,7 +359,7 @@ class TeraProxyGUI {
         this.tray.setToolTip('TERA Toolbox');
         this.tray.setContextMenu(Menu.buildFromTemplate([
             {
-                label: 'Quit',
+                label: mui.get('loader-gui/tray/quit'),
                 click: () => { app.exit(); }
             }
         ]));
@@ -420,9 +420,9 @@ function log(msg, type = 'log') {
 }
 
 process.on('warning', (warning) => {
-    log(warning.name, 'warn');
-    log(warning.message, 'warn');
-    log(warning.stack, 'warn');
+    console.warn(warning.name);
+    console.warn(warning.message);
+    console.warn(warning.stack);
 });
 
 // Main
