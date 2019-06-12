@@ -444,14 +444,14 @@ ul.tabs {
 
 #settings > div {
     padding: 4px 8px;
-    margin: 4px 340px 4px 340px;
+    margin: 4px 320px 4px 320px;
     border-radius: 4px;
 }
 
     #settings > div > a {
         cursor: default;
         user-select: none;
-        width: 350px;
+        width: 390px;
         display: inline-block;
         text-align: left;
         margin-right: 8px;
