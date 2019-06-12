@@ -1,4 +1,5 @@
-﻿const path = require('path');
+﻿const mui = require('tera-toolbox-mui').DefaultInstance;
+const path = require('path');
 
 function RegionFromLanguage(language) {
     switch (language.toUpperCase()) {
@@ -92,17 +93,17 @@ class TeraProxy {
                 this.onClientInterfaceConnected(client);
             },
             () => {
-                console.log('[toolbox] Ready, waiting for game client start!');
+                console.log(mui.get('proxy/ready'));
                 this.running = true;
             },
             e => {
-                console.log('[toolbox] ERROR: Unable to start client interface server.');
+                console.log(mui.get('proxy/client-interface-error'));
                 switch (e.code) {
                     case 'EADDRINUSE':
-                        console.log('[toolbox] ERROR: Another instance of TERA Toolbox is already running. Please close it or restart your computer and try again!');
+                        console.log(mui.get('proxy/client-interface-error-EADDRINUSE'));
                         break;
                     case 'EADDRNOTAVAIL':
-                        console.log('[toolbox] ERROR: Address not available. Restart your computer and try again!');
+                        console.log(mui.get('proxy/client-interface-error-EADDRNOTAVAIL'));
                         break;
                     default:
                         console.log(e);
@@ -147,7 +148,7 @@ class TeraProxy {
         const listenPort = this.listenPort++;
         server.listen(listenPort, this.listenIp, () => {
             const { address: listen_ip, port: listen_port } = server.address();
-            console.log(`[toolbox] Redirecting ${name} (${metadata.region.toUpperCase()}-${metadata.serverId}) from ${listen_ip}:${listen_port} to ${ip}:${port}`);
+            console.log(mui.get('proxy/redirecting-server', {name, region: metadata.region, serverId: metadata.serverId, listen_ip, listen_port, ip, port}));
         });
 
         clientInterfaceConnection.proxyServers.set(key, server);
@@ -162,14 +163,14 @@ class TeraProxy {
                     const JustStarted = data.just_started;
 
                     if (data.error) {
-                        console.log(`[toolbox] Unable to establish connection to client: ${data.error}`);
+                        console.log(mui.get('proxy/client-interface-connection-error', { error: data.error }));
                     } else {
                         const region = RegionFromLanguage(data.language);
                         client.info = data;
                         client.info.region = region.toLowerCase();
                         delete client.info.just_started;
 
-                        console.log(`[toolbox] Client ${JustStarted ? 'connected' : 'reconnected'} (${region} v${data.majorPatchVersion}.${data.minorPatchVersion})`);
+                        console.log(mui.get('proxy/client-interface-connected', { justStarted: JustStarted, region, majorPatchVersion: data.majorPatchVersion, minorPatchVersion: data.minorPatchVersion }));
 
                         if (JustStarted) {
                             client.canInstallGPKs = true;
@@ -194,19 +195,19 @@ class TeraProxy {
                         client.info.protocol = Object.assign(LoadProtocolMap(client.info.protocolVersion), client.info.protocol);
 
                         if (Object.keys(client.info.protocol).length === 0) {
-                            console.warn(`[toolbox] WARNING: Unmapped protocol version ${client.info.protocolVersion} (${client.info.region.toUpperCase()} v${client.info.majorPatchVersion}.${client.info.minorPatchVersion}).`);
-                            console.warn('[toolbox] WARNING: This can be caused by either of the following:');
-                            console.warn('[toolbox] WARNING: 1) You are trying to play using a newly released client version that is not yet supported.');
-                            console.warn('[toolbox] WARNING:    If there was a game maintenance within the past few hours, please report this!');
-                            console.warn('[toolbox] WARNING:    Otherwise, your client might have been updated for an upcoming patch too early.');
-                            console.warn('[toolbox] WARNING: 2) You are trying to play using an outdated client version.');
-                            console.warn('[toolbox] WARNING:    Try a client repair or reinstalling the game from scratch to fix this!');
-                            console.warn(`[toolbox] WARNING: If you cannot fix this on your own, ask for help here: ${global.TeraProxy.SupportUrl}!`);
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-1', { protocolVersion: client.info.protocolVersion, region: client.info.region, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-2'));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-3'));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-4'));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-5'));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-6'));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-7'));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-8', { supportUrl: global.TeraProxy.SupportUrl }));
                         } else {
-                            console.log(`[toolbox] Loaded protocol version ${client.info.protocolVersion} (${client.info.region.toUpperCase()} v${client.info.majorPatchVersion}.${client.info.minorPatchVersion}).`);
+                            console.log(mui.get('proxy/protocol-loaded', { protocolVersion: client.info.protocolVersion, region: client.info.region, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
                         }
                     } catch (e) {
-                        console.log(`[toolbox] ERROR: Unable to load protocol version ${client.info.protocolVersion} (${client.info.region.toUpperCase()} v${client.info.majorPatchVersion}.${client.info.minorPatchVersion}).`);
+                        console.error(mui.get('proxy/error-cannot-load-protocol', { protocolVersion: client.info.protocolVersion, region: client.info.region, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
                         console.log(e);
                     }
                     break;
@@ -265,7 +266,7 @@ class TeraProxy {
         });
 
         client.on('disconnect', e => {
-            console.log(`[toolbox] Client disconnected`);
+            console.log(mui.get('proxy/client-interface-disconnected'));
             client.proxyServers.forEach(server => server.close());
             client.proxyServers.clear();
         });

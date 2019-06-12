@@ -1,5 +1,13 @@
-const path = require("path");
-const ModuleFolder = path.join(__dirname, "..", "mods");
+const path = require('path');
+const ModuleFolder = path.join(__dirname, '..', 'mods');
+
+// MUI
+const mui = require('tera-toolbox-mui').DefaultInstance;
+
+function InitializeMUI(language) {
+    const { InitializeDefaultInstance } = require('tera-toolbox-mui');
+    InitializeDefaultInstance(language);
+}
 
 // Check node version
 function NodeVersionCheck() {
@@ -94,8 +102,10 @@ initGlobalSettings(false);
 NodeVersionCheck();
 Migration();
 const ProxyConfig = LoadConfiguration();
+InitializeMUI(ProxyConfig.uilanguage);
 global.TeraProxy.DevMode = !!ProxyConfig.devmode;
 global.TeraProxy.GUIMode = false;
+global.TeraProxy.UILanguage = mui.uilanguage;
 
 // Auto-update modules & tera-data and run
 if (ProxyConfig.noupdate) {

@@ -13,7 +13,7 @@
         <div id="title-bar" class="title-bar">
             <img src="icon.ico" id="title-icon">
             <div id="title">TERA Toolbox</div>
-            <div id="title-status">Not running</div>
+            <div id="title-status"></div>
             <button id="minimize-btn" class="nodrag">-</button>
             <button id="close-btn" class="nodrag">&times;</button>
         </div>
@@ -22,21 +22,21 @@
         <div class="container">
             <!-- Tab Header -->
             <ul class="tabs">
-                <li class="tab-link nodrag current" tabname="log">Log</li>
-                <li class="tab-link nodrag" tabname="mods">My Mods</li>
-                <li class="tab-link nodrag" tabname="newmods">Get More Mods</li>
-                <li class="tab-link nodrag" tabname="settings">Settings</li>
-                <li class="tab-link nodrag" tabname="help" tabclickonly="true">Need Help?</li>
-                <li class="tab-link nodrag" tabname="modsfolder" tabclickonly="true">Show Mods Folder</li>
-                <li class="tab-link nodrag" tabname="credits">Credits</li>
-                <a class="nodrag" id="startproxy">Start!</a>
+                <li class="tab-link nodrag current" tabname="log" mui="gui/main/static/tabs/log/title"></li>
+                <li class="tab-link nodrag" tabname="mods" mui="gui/main/static/tabs/mods/title"></li>
+                <li class="tab-link nodrag" tabname="newmods" mui="gui/main/static/tabs/newmods/title"></li>
+                <li class="tab-link nodrag" tabname="settings" mui="gui/main/static/tabs/settings/title"></li>
+                <li class="tab-link nodrag" tabname="help" tabclickonly="true" mui="gui/main/static/tabs/help/title"></li>
+                <li class="tab-link nodrag" tabname="modsfolder" tabclickonly="true" mui="gui/main/static/tabs/modsfolder/title"></li>
+                <li class="tab-link nodrag" tabname="credits" mui="gui/main/static/tabs/credits/title"></li>
+                <a class="nodrag" id="startproxy"></a>
             </ul>
 
             <!-- Console -->
             <div id="log_loading" class="tab-content nodrag">
                 <div class="loading">
                     <div class="loading icon"></div>
-                    <div class="loading text">Loading proxy log...</div>
+                    <div class="loading text" mui="gui/main/static/tabs/log/loading"></div>
                 </div>
             </div>
             <div id="log" class="tab-content nodrag current">
@@ -48,7 +48,7 @@
             <div id="mods_loading" class="tab-content nodrag">
                 <div class="loading">
                     <div class="loading icon"></div>
-                    <div class="loading text">Loading installed mods...</div>
+                    <div class="loading text" mui="gui/main/static/tabs/mods/loading"></div>
                 </div>
             </div>
             <div id="mods" class="tab-content nodrag">
@@ -60,14 +60,14 @@
             <div id="newmods_loading" class="tab-content nodrag">
                 <div class="loading">
                     <div class="loading icon"></div>
-                    <div class="loading text">Loading list of mods...</div>
+                    <div class="loading text" mui="gui/main/static/tabs/newmods/loading"></div>
                 </div>
             </div>
             <div id="newmods" class="tab-content nodrag">
                 <div class="installableModulesFilters">
-                    <label>Filter: <input type="text" id="installableModulesFilterString" /></label>
-                    <label><input type="checkbox" id="installableModulesFilterNetwork" checked />Network / Proxy Mods</label>
-                    <label><input type="checkbox" id="installableModulesFilterClient" checked />Client / UI Mods</label>
+                    <label><span mui="gui/main/static/tabs/newmods/content/filter"></span><input type="text" id="installableModulesFilterString" /></label>
+                    <label><input type="checkbox" id="installableModulesFilterNetwork" checked/><span mui="gui/main/static/tabs/newmods/content/filter/network"></span></label>
+                    <label><input type="checkbox" id="installableModulesFilterClient" checked/><span mui="gui/main/static/tabs/newmods/content/filter/client"></span></label>
                 </div>
                 <div class="installableModulesList">
                 </div>
@@ -77,46 +77,50 @@
             <div id="settings_loading" class="tab-content nodrag">
                 <div class="loading">
                     <div class="loading icon"></div>
-                    <div class="loading text">Loading settings...</div>
+                    <div class="loading text" mui="gui/main/static/tabs/settings/loading"></div>
                 </div>
             </div>
             <div id="settings" class="tab-content nodrag">
                 <div>
-                    <a>Theme</a>
+                    <a mui="gui/main/static/tabs/settings/content/uilanguage"></a>
+                    <select id="uilanguage"></select>
+                </div>
+                <div>
+                    <a mui="gui/main/static/tabs/settings/content/theme"></a>
                     <div id="theme_black" class="theme black"></div>
                     <div id="theme_white" class="theme white"></div>
                     <div id="theme_pink" class="theme pink"></div>
                 </div>
                 <div>
-                    <a>Autostart when opening TERA Toolbox</a>
+                    <a mui="gui/main/static/tabs/settings/content/autostart"></a>
                     <input id="autostart" type="checkbox">
                 </div>
                 <div>
-                    <a>Show detailed update log</a>
+                    <a mui="gui/main/static/tabs/settings/content/updatelog"></a>
                     <input id="updatelog" type="checkbox">
                 </div>
                 <div>
-                    <a>Show time in log</a>
+                    <a mui="gui/main/static/tabs/settings/content/logtimes"></a>
                     <input id="logtimes" type="checkbox">
                 </div>
                 <div>
-                    <a>Disable mod updates</a>
+                    <a mui="gui/main/static/tabs/settings/content/noupdate"></a>
                     <input id="noupdate" type="checkbox">
                 </div>
                 <div>
-                    <a>Disable self-updates</a>
+                    <a mui="gui/main/static/tabs/settings/content/noselfupdate"></a>
                     <input id="noselfupdate" type="checkbox">
                 </div>
                 <div>
-                    <a>Enable Developer Mode</a>
+                    <a mui="gui/main/static/tabs/settings/content/devmode"></a>
                     <input id="devmode" type="checkbox">
                 </div>
                 <div>
-                    <a>Hide tags in server list</a>
+                    <a mui="gui/main/static/tabs/settings/content/noslstags"></a>
                     <input id="noslstags" type="checkbox">
                 </div>
                 <div>
-                    <a>Minimize to system tray</a>
+                    <a mui="gui/main/static/tabs/settings/content/minimizetotray"></a>
                     <input id="minimizetotray" type="checkbox">
                 </div>
             </div>
@@ -125,24 +129,18 @@
             <div id="credits_loading" class="tab-content nodrag">
                 <div class="loading">
                     <div class="loading icon"></div>
-                    <div class="loading text">Loading credits...</div>
+                    <div class="loading text" mui="gui/main/static/tabs/credits/loading"></div>
                 </div>
             </div>
             <div id="credits" class="tab-content nodrag">
-                <div class="credits text">
-                    Thanks to<br />
-                    SaltyMonkey: Installer<br />
-                    Mathicha &amp; Pentagon: Core GUI stuff<br />
-                    Meishu: Original Tera-Proxy Core<br />
-                    All Mod Developers
-                </div>
+                <div class="credits text" mui-html="gui/main/static/tabs/credits/content"></div>
             </div>
 
             <!-- Modal Box -->
             <div id="modalbox" class="modalbox">
                 <div class="modalbox-content">
                     <div id="modalbox-text" class="modalbox-text"></div>
-                    <button id="modalbox-ok" class="modalbox-button">OK</button>
+                    <button id="modalbox-ok" class="modalbox-button" mui="gui/main/modal/buttons/ok"></button>
                 </div>
             </div>
         </div>

@@ -2,6 +2,14 @@ const path = require('path');
 const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require('electron');
 const ModuleFolder = path.join(__dirname, "..", "mods");
 
+// MUI
+const mui = require('tera-toolbox-mui').DefaultInstance;
+
+function InitializeMUI(language) {
+    const { InitializeDefaultInstance } = require('tera-toolbox-mui');
+    InitializeDefaultInstance(language);
+}
+
 // Configuration
 function LoadConfiguration() {
     try {
@@ -22,6 +30,10 @@ function LoadConfiguration() {
 function SaveConfiguration(newConfig) {
     global.TeraProxy.DevMode = !!newConfig.devmode;
     global.TeraProxy.GUITheme = newConfig.gui.theme;
+
+    InitializeMUI(newConfig.uilanguage);
+    global.TeraProxy.UILanguage = mui.uilanguage;
+
     require('./config').saveConfig(newConfig);
 }
 
@@ -176,6 +188,7 @@ process.on("SIGTERM", cleanExit);
 // IPC
 ipcMain.on('init', (event, _) => {
     event.sender.send('set config', config);
+    event.sender.send('proxy running', false);
 
     if (config.noselfupdate) {
         log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'warn');
@@ -280,8 +293,11 @@ class TeraProxyGUI {
 
         // Load configuration
         config = LoadConfiguration();
+        InitializeMUI(config.uilanguage);
+
         global.TeraProxy.GUIMode = true;
         global.TeraProxy.DevMode = !!config.devmode;
+        global.TeraProxy.UILanguage = mui.language;
 
         if (!config.gui) {
             config.gui = {

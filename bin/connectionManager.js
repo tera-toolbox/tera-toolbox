@@ -1,20 +1,21 @@
-const { Connection, RealClient } = require("tera-network-proxy");
+const mui = require('tera-toolbox-mui').DefaultInstance;
+const { Connection, RealClient } = require('tera-network-proxy');
 
 function onConnectionError(err) {
     switch (err.code) {
         case 'ETIMEDOUT':
-            console.error(`[connection] ERROR: Unable to connect to game server at ${err.address}:${err.port} (timeout)! Common reasons for this are:`);
-            console.error("[connection] - An unstable internet connection or a geo-IP ban");
-            console.error("[connection] - Game server maintenance");
+            console.error(mui.get('connectionmanager/error-ETIMEDOUT-1', { address: err.address, port: err.port }));
+            console.error(mui.get('connectionmanager/error-ETIMEDOUT-2'));
+            console.error(mui.get('connectionmanager/error-ETIMEDOUT-3'));
             break;
         case 'ECONNRESET':
         case 'EPIPE':
-            console.error(`[connection] ERROR: ${err.code} - Connection to game server was closed unexpectedly. Common reasons for this are:`);
-            console.error("[connection] - A disconnect caused by an unstable internet connection");
-            console.error("[connection] - An exploit/cheat or broken module that got you kicked");
+            console.error(mui.get('connectionmanager/error-ECONNRESET-EPIPE-1', { code: err.code }));
+            console.error(mui.get('connectionmanager/error-ECONNRESET-EPIPE-2'));
+            console.error(mui.get('connectionmanager/error-ECONNRESET-EPIPE-3'));
             break;
         default:
-            console.warn(err);
+            console.error(err);
             break;
     }
 }
@@ -42,25 +43,25 @@ class ConnectionManager {
         });
 
         // Initialize server connection
-        let remote = "???";
+        let remote = '???';
 
-        socket.on("error", onConnectionError);
+        socket.on('error', onConnectionError);
 
-        srvConn.on("connect", () => {
-            remote = socket.remoteAddress + ":" + socket.remotePort;
-            console.log(`[connection] routing ${remote} to ${srvConn.remoteAddress}:${srvConn.remotePort}`);
+        srvConn.on('connect', () => {
+            remote = `${socket.remoteAddress}:${socket.remotePort}`;
+            console.log(mui.get('connectionmanager/connected', { remote, remoteAddress: srvConn.remoteAddress, remotePort: srvConn.remotePort }));
 
             connection.dispatch.moduleManager.loadAll();
             this.activeConnections.add(connection);
         });
 
-        srvConn.on("error", (err) => {
+        srvConn.on('error', (err) => {
             onConnectionError(err);
             this.activeConnections.delete(connection);
         });
 
-        srvConn.on("close", () => {
-            console.log(`[connection] ${remote} disconnected`);
+        srvConn.on('close', () => {
+            console.log(mui.get('connectionmanager/disconnected', { remote }));
             this.activeConnections.delete(connection);
         });
     }
