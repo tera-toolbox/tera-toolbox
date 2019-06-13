@@ -53,8 +53,12 @@ class Module {
         this._intervals = new Set();
 
         // Use tera-game-state callbacks to clear timers when entering/leaving the game
-        if (this.name !== 'tera-game-state')
-            this.game.on('leave_game', () => { this.clearAllTimeouts(); this.clearAllIntervals(); });
+        if (this.name !== 'tera-game-state') {
+            if (this.game)
+                this.game.on('leave_game', () => { this.clearAllTimeouts(); this.clearAllIntervals(); });
+            else
+                this.warn(mui.get('tera-network-proxy/connection/dispatch/module/tera-game-state-not-loaded'));
+        }
 
         // Load settings
         this.loadSettings();
