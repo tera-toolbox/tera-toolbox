@@ -1,5 +1,13 @@
-const path = require("path");
-const ModuleFolder = path.join(__dirname, "..", "mods");
+const path = require('path');
+const ModuleFolder = path.join(__dirname, '..', 'mods');
+
+// MUI
+const mui = require('tera-toolbox-mui').DefaultInstance;
+
+function InitializeMUI(language) {
+    const { InitializeDefaultInstance } = require('tera-toolbox-mui');
+    InitializeDefaultInstance(language);
+}
 
 // Check node version
 function NodeVersionCheck() {
@@ -10,12 +18,11 @@ function NodeVersionCheck() {
     } catch (e) {
         switch (e.message) {
             case 'BigInt not supported':
-                console.error('ERROR: Your installed version of Node.JS is too old to run TERA Toolbox!');
-                console.error('ERROR: Please install the latest version from https://nodejs.org/en/download/current/');
+                console.error(mui.get('loader-cli/error-node-too-old-1'));
+                console.error(mui.get('loader-cli/error-node-too-old-2'));
                 break;
-
             default:
-                console.error(`ERROR: ${e.message}`);
+                console.error(mui.get('loader-cli/error-runtime-incompatible-default', { message: e.message }));
         }
 
         process.exit();
@@ -27,8 +34,8 @@ function LoadConfiguration() {
     try {
         return require('./config').loadConfig();
     } catch (_) {
-        console.log("ERROR: Whoops, looks like you've fucked up your config.json!");
-        console.log(`ERROR: Try to fix it yourself or ask here: ${global.TeraProxy.SupportUrl}!`);
+        console.error(mui.get('loader-cli/error-config-corrupt-1'));
+        console.error(mui.get('loader-cli/error-config-corrupt-2', { supportUrl: global.TeraProxy.SupportUrl }));
         process.exit();
     }
 }
@@ -39,9 +46,9 @@ function Migration() {
         const { ProxyMigration } = require('./migration');
         ProxyMigration();
     } catch (e) {
-        console.log("ERROR: Unable to migrate files from an old version of TERA Toolbox!");
-        console.log("ERROR: Please reinstall a clean copy using the latest installer");
-        console.log(`ERROR: or ask for help here: ${global.TeraProxy.SupportUrl}!`);
+        console.error(mui.get('loader-cli/error-migration-failed-1'));
+        console.error(mui.get('loader-cli/error-migration-failed-2'));
+        console.error(mui.get('loader-cli/error-migration-failed-3', { supportUrl: global.TeraProxy.SupportUrl }));
         process.exit();
     }
 }
@@ -53,15 +60,15 @@ function RunProxy(ModuleFolder, ProxyConfig) {
     try {
         proxy.run();
     } catch (_) {
-        console.error('[toolbox] Unable to start the network proxy, terminating...');
+        console.error(mui.get('loader-cli/error-cannot-start-proxy'));
         process.exit();
     }
 
     // Set up clean exit
-    const isWindows = process.platform === "win32";
+    const isWindows = process.platform === 'win32';
 
     function cleanExit() {
-        console.log("terminating...");
+        console.log(mui.get('loader-cli/terminating'));
 
         proxy.destructor();
         proxy = null;
@@ -71,15 +78,15 @@ function RunProxy(ModuleFolder, ProxyConfig) {
     }
 
     if (isWindows) {
-        require("readline").createInterface({
+        require('readline').createInterface({
             input: process.stdin,
             output: process.stdout
-        }).on("SIGINT", () => process.emit("SIGINT"));
+        }).on('SIGINT', () => process.emit('SIGINT'));
     }
 
-    process.on("SIGHUP", cleanExit);
-    process.on("SIGINT", cleanExit);
-    process.on("SIGTERM", cleanExit);
+    process.on('SIGHUP', cleanExit);
+    process.on('SIGINT', cleanExit);
+    process.on('SIGTERM', cleanExit);
 }
 
 // Main
@@ -94,29 +101,32 @@ initGlobalSettings(false);
 NodeVersionCheck();
 Migration();
 const ProxyConfig = LoadConfiguration();
+InitializeMUI(ProxyConfig.uilanguage);
 global.TeraProxy.DevMode = !!ProxyConfig.devmode;
 global.TeraProxy.GUIMode = false;
+global.TeraProxy.UILanguage = mui.uilanguage;
 
 // Auto-update modules & tera-data and run
 if (ProxyConfig.noupdate) {
-    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    console.warn("!!!!!      YOU HAVE GLOBALLY DISABLED AUTOMATIC UPDATES     !!!!!");
-    console.warn("!!!!! THERE WILL BE NO SUPPORT FOR ANY KIND OF PROBLEM THAT !!!!!");
-    console.warn("!!!!!      YOU MIGHT ENCOUNTER AS A RESULT OF DOING SO      !!!!!");
-    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    console.warn(mui.get('loader-cli/warning-noupdate-1'));
+    console.warn(mui.get('loader-cli/warning-noupdate-2'));
+    console.warn(mui.get('loader-cli/warning-noupdate-3'));
+    console.warn(mui.get('loader-cli/warning-noupdate-4'));
+    console.warn(mui.get('loader-cli/warning-noupdate-5'));
     RunProxy(ModuleFolder, ProxyConfig);
 } else {
-    const autoUpdate = require("./update");
+    const autoUpdate = require('./update');
     autoUpdate(ModuleFolder, ProxyConfig.updatelog, true).then(updateResult => {
-        for (let mod of updateResult["legacy"])
-            console.log("[update] WARNING: Module %s does not support auto-updating!", mod.name);
-        for (let mod of updateResult["failed"])
-            console.log("[update] ERROR: Module %s could not be updated and might be broken!", mod.name);
-        if (!updateResult["tera-data"])
-            console.log("[update] ERROR: There were errors updating tera-data. This might result in further errors.");
+        updateResult.legacy.forEach(mod => console.warn(mui.get('loader-cli/warning-update-mod-not-supported', { name: mod.name })));
+        updateResult.failed.forEach(mod => console.error(mui.get('loader-cli/error-update-mod-failed', { name: mod.name })));
+        if (!updateResult['tera-data']) {
+            console.error(mui.get('loader-cli/error-update-tera-data-failed-1'));
+            console.error(mui.get('loader-cli/error-update-tera-data-failed-2'));
+        }
 
         RunProxy(ModuleFolder, ProxyConfig);
     }).catch(e => {
-        console.log("ERROR: Unable to auto-update: %s", e);
+        console.error(mui.get('loader-cli/error-update-failed'));
+        console.error(e);
     });
 }

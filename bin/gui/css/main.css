@@ -199,8 +199,10 @@ ul.tabs {
 }
 
     .log-contents > div {
+        word-wrap: break-word;
         word-break: break-all;
-        white-space: pre;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
         font-family: Consolas, monaco, monospace;
         font-size: 12px;
     }
@@ -442,14 +444,14 @@ ul.tabs {
 
 #settings > div {
     padding: 4px 8px;
-    margin: 4px 340px 4px 340px;
+    margin: 4px 260px 4px 260px;
     border-radius: 4px;
 }
 
     #settings > div > a {
         cursor: default;
         user-select: none;
-        width: 350px;
+        width: 470px;
         display: inline-block;
         text-align: left;
         margin-right: 8px;
@@ -491,7 +493,7 @@ ul.tabs {
     .credits.text {
         font-size: 28px;
         line-height: 50px;
-        margin-top: 150px;
+        margin-top: 100px;
         text-align: center;
     }
 
@@ -502,7 +504,7 @@ ul.tabs {
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 20%;
+    padding-top: 15%;
     left: 0;
     top: 0;
     width: 100%;
@@ -517,7 +519,7 @@ ul.tabs {
     padding: 20px;
     border: 1px solid;
     width: 40%;
-    height: 50%;
+    height: 60%;
 }
 
 .modalbox-text {

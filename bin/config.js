@@ -5,15 +5,16 @@ const ConfigFilePath = path.join(__dirname, '..', 'config.json');
 function loadConfig() {
     let result = null;
     try {
-        result = fs.readFileSync(ConfigFilePath, 'utf8')
+        result = fs.readFileSync(ConfigFilePath, 'utf8');
     } catch (_) {
         return {
-            "branch": "master",
-            "updatelog": false,
-            "devmode": false,
-            "noselfupdate": false,
-            "noupdate": false,
-            "noslstags": false
+            branch: 'master',
+            uilanguage: 'en',
+            updatelog: false,
+            devmode: false,
+            noselfupdate: false,
+            noupdate: false,
+            noslstags: false
         };
     }
 

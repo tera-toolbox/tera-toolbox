@@ -1,3 +1,4 @@
+const mui = require('tera-toolbox-mui').DefaultInstance;
 const request = require('request-promise-native');
 const crypto = require('crypto');
 const fs = require('fs');
@@ -22,7 +23,7 @@ function forcedirSync(dir) {
 }
 
 function hash(data) {
-  return crypto.createHash("sha256").update(data).digest().toString("hex").toUpperCase();
+    return crypto.createHash('sha256').update(data).digest().toString('hex').toUpperCase();
 }
 
 function walkdir(dir, listFiles = true, listDirs = false, listRootDir = "") {
@@ -79,16 +80,16 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
     try {
         // If only one file (module.json) exists, it's a fresh install
         if (walkdir(root, true, false).length === 1)
-            console.log(`[update] Installing module ${name}`);
+            console.log(mui.get('update/start-module-install', { name }));
         else if (updatelog)
-            console.log(`[update] Updating module ${name}`);
+            console.log(mui.get('update/start-module-update', { name }));
 
-        if (!updateData["servers"] || updateData["servers"].length === 0) {
-            console.warn(`[update] WARNING: Module ${name} does not have any update servers specified!`);
+        if (!updateData.servers || updateData.servers.length === 0) {
+            console.warn(mui.get('update/warning-module-no-update-servers', { name }));
             return { results: [] };
         }
 
-        const update_url_root = migrateModuleUpdateUrlRoot(updateData["servers"][serverIndex]);
+        const update_url_root = migrateModuleUpdateUrlRoot(updateData.servers[serverIndex]);
         if (!update_url_root || !checkModuleUpdateUrlBlacklist(update_url_root))
             return { results: [] };
 
@@ -96,7 +97,7 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
         const manifest_url = update_url_root + manifest_file;
         const manifest_path = path.join(root, manifest_file);
         if (updatelog)
-            console.log(`[update] - Retrieving update manifest (Server ${serverIndex})`);
+            console.log(mui.get('update/module-download-manifest', { serverIndex }));
 
         let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url, updateData["drmKey"], null);
         if (!manifest_result)
@@ -110,17 +111,17 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
         }
 
         let promises = [];
-        for (let file in manifest["files"]) {
+        for (let file in manifest.files) {
             let filepath = path.join(root, file);
-            let filedata = manifest["files"][file];
+            let filedata = manifest.files[file];
 
             // Check if the file needs to be updated
             let needsUpdate = !fs.existsSync(filepath);
             let expectedHash = null;
             if (!needsUpdate) {
                 if (typeof filedata === 'object') {
-                    expectedHash = filedata["hash"].toUpperCase();
-                    needsUpdate = filedata["overwrite"] && (hash(fs.readFileSync(filepath)) !== expectedHash);
+                    expectedHash = filedata.hash.toUpperCase();
+                    needsUpdate = filedata.overwrite && (hash(fs.readFileSync(filepath)) !== expectedHash);
                 } else {
                     expectedHash = filedata.toUpperCase();
                     needsUpdate = (hash(fs.readFileSync(filepath)) !== expectedHash);
@@ -131,16 +132,16 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
             if (needsUpdate) {
                 const file_url = update_url_root + file;
                 if (updatelog)
-                    console.log(`[update] - Download ${file}`);
+                    console.log(mui.get('update/module-download-file', { file }));
 
-                let promise = autoUpdateFile(file, filepath, file_url, updateData["drmKey"], manifest["no_hash_verification"] ? null : expectedHash);
+                let promise = autoUpdateFile(file, filepath, file_url, updateData.drmKey, manifest.no_hash_verification ? null : expectedHash);
                 promises.push(updatelimit ? (await promise) : promise);
             }
         }
 
         return { results: updatelimit ? promises : (await Promise.all(promises)) };
     } catch (e) {
-        if (serverIndex + 1 < updateData["servers"].length)
+        if (serverIndex + 1 < updateData.servers.length)
             return autoUpdateModule(name, root, updateData, updatelog, updatelimit, serverIndex + 1);
         else
             return Promise.reject(e);
@@ -149,7 +150,7 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
 
 async function autoUpdateTeraData(updatelog, updatelimit) {
     if (updatelog)
-        console.log("[update] Updating tera-data");
+        console.log(mui.get('update/tera-data'));
 
     const tera_data_folder = path.join(__dirname, '..', 'node_modules', 'tera-data');
 
@@ -194,7 +195,7 @@ async function autoUpdateTeraData(updatelog, updatelimit) {
 }
 
 async function autoUpdate(moduleBase, updatelog, updatelimit) {
-    console.log("[update] Auto-update started!");
+    console.log(mui.get('update/started'));
     forcedirSync(moduleBase);
     await generateBlacklist();
 
@@ -213,7 +214,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
                 const coreModuleResult = await autoUpdateFile('module.json', path.join(moduleBase, coreModule, 'module.json'), CoreModules[coreModule]);
                 if (!coreModuleResult[1])
                     throw new Error(`Unable to install core module "${coreModule}: ${coreModuleResult[2]}`);
-                console.log(`[update] Initialized core module "${coreModule}"`);
+                console.log(mui.get('update/core-module-initialized', { coreModule }));
                 installedModulesChanged = true;
                 addedModules.push(coreModule);
             }
@@ -239,7 +240,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
                         const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, dependency, 'module.json'), updateData["dependencies"][dependency]);
                         if (!dependency_result[1])
                             throw new Error(`Unable to install dependency module "${dependency}: ${dependency_result[2]}`);
-                        console.log(`[update] Initialized dependency "${dependency}" for module "${moduleInfo.rawName}"`);
+                        console.log(mui.get('update/dependency-module-initialized', { dependency, name: moduleInfo.rawName }));
                         installedModulesChanged = true;
                         addedModules.push(dependency);
                     }
@@ -248,7 +249,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
                 // Check if auto-update is disabled or if only one file (module.json) exists, then it's a fresh install
                 const isFreshInstalled = walkdir(moduleInfo.path, true, false).length === 1;
                 if (!isFreshInstalled && moduleInfo.disableAutoUpdate) {
-                    console.warn(`[update] WARNING: Auto-update disabled for module ${moduleInfo.rawName}!`);
+                    console.warn(mui.get('update/warning-module-update-disabled', { name: moduleInfo.rawName }));
                     successModules.push({
                         name: moduleInfo.rawName
                     });
@@ -269,7 +270,7 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
                             if (result[0] === "module.json") {
                                 moduleConfigChanged = true;
                                 if (updatelog)
-                                    console.log("[update] - Module configuration changed, restarting update!");
+                                    console.log(mui.get('update/module-config-changed'));
                             }
                         }
                     }
@@ -283,14 +284,14 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
                         });
                     }
                 } catch (e) {
-                    console.error(`[update] ERROR: Unable to auto-update module ${moduleInfo.rawName}:`);
+                    console.error(mui.get('update/module-update-failed-1', { name: moduleInfo.rawName }));
                     console.error(e);
-                    if (updateData["supportUrl"]) {
-                        console.error(`[update] Please go to ${updateData["supportUrl"]} and follow the given instructions or ask for help.`);
-                        if (updateData["supportUrl"] !== global.TeraProxy.DiscordUrl)
-                            console.error(`[update] Alternatively, ask here: ${global.TeraProxy.SupportUrl}`);
+                    if (updateData.supportUrl) {
+                        console.error(mui.get('update/module-update-failed-2-1', { supportUrl: updateData.supportUrl }));
+                        if (updateData.supportUrl !== global.TeraProxy.DiscordUrl)
+                            console.error(mui.get('update/module-update-failed-2-2', { supportUrl: global.TeraProxy.SupportUrl }));
                     } else {
-                        console.error(`[update] Please contact the module author or ask here: ${global.TeraProxy.SupportUrl}`);
+                        console.error(mui.get('update/module-update-failed-3', { supportUrl: global.TeraProxy.SupportUrl }));
                     }
 
                     failedModules.push({
@@ -310,11 +311,11 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
     }
 
     if (failedFiles.length > 0) {
-        console.error(`[update] ERROR: Unable to update the following def/map files. Please ask here for help: ${global.TeraProxy.SupportUrl}`);
+        console.error(mui.get('update/tera-data-update-failed', { supportUrl: global.TeraProxy.SupportUrl }));
         failedFiles.forEach(file => console.error(` - ${file}`));
     }
 
-    console.log("[update] Auto-update complete!");
+    console.log(mui.get('update/finished'));
     return { "tera-data": (failedFiles.length === 0), "updated": successModules, "legacy": legacyModules, "failed": failedModules };
 }
 

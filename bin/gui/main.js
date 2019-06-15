@@ -1,5 +1,8 @@
 const { remote, ipcRenderer, shell } = require('electron');
+const { TeraToolboxMUI, LanguageNames } = require('tera-toolbox-mui');
 const Themes = ['black', 'white', 'pink'];
+
+let mui = null;
 
 function displayName(modInfo) {
     if (modInfo.options) {
@@ -38,25 +41,50 @@ jQuery(($) => {
         return false;
     });
 
+    // MUI
+    function setLanguage(language) {
+        if (mui && language && mui.language === language)
+            return;
+
+        mui = new TeraToolboxMUI(language);
+        $('*').each(function () {
+            const str = $(this).attr('mui');
+            if (str) {
+                $(this).text(mui.get(str));
+            } else {
+                const str_html = $(this).attr('mui-html');
+                if (str_html)
+                    $(this).html(mui.get(str_html));
+            }
+        });
+    }
+
+    // Update available indicator
+    let UpdateAvailable = false;
+    ipcRenderer.on('update available', _ => {
+        UpdateAvailable = true;
+        $('#title-status').text(mui.get('gui/main/status-update-available'));
+    });
+
     // Proxy control
     let ProxyRunning = false;
     let ProxyStarting = false;
 
-    ipcRenderer.on('proxy running', (_, running) => {
+    function setProxyRunning(running) {
         ProxyRunning = running;
         ProxyStarting = false;
 
-        $('#startproxy').text(ProxyRunning ? 'Stop!' : 'Start!');
+        $('#startproxy').text(mui.get(ProxyRunning ? 'gui/main/start-stop-proxy-running' : 'gui/main/start-stop-proxy-not-running'));
         if (!UpdateAvailable)
-            $('#title-status').text(ProxyRunning ? 'Running' : 'Not Running');
-    });
+            $('#title-status').text(mui.get(ProxyRunning ? 'gui/main/status-proxy-running' : 'gui/main/status-proxy-not-running'));
+    }
 
     function startProxy() {
         if (ProxyStarting || ProxyRunning)
             return;
 
         ProxyStarting = true;
-        $('#startproxy').text('Starting...');
+        $('#startproxy').text(mui.get('gui/main/start-stop-proxy-starting'));
         ipcRenderer.send('start proxy');
     }
 
@@ -64,7 +92,7 @@ jQuery(($) => {
         if (!ProxyRunning)
             return;
 
-        $('#startproxy').text('Stopping...');
+        $('#startproxy').text(mui.get('gui/main/start-stop-proxy-stopping'));
         ipcRenderer.send('stop proxy');
     }
 
@@ -75,12 +103,7 @@ jQuery(($) => {
             startProxy();
     });
 
-    // Update available indicator
-    let UpdateAvailable = false;
-    ipcRenderer.on('update available', _ => {
-        UpdateAvailable = true;
-        $('#title-status').text('UPDATE AVAILABLE - PLEASE RESTART');
-    });
+    ipcRenderer.on('proxy running', (_, running) => setProxyRunning(running));
 
     // --------------------------------------------------------------------
     // ----------------------------- TABS ---------------------------------
@@ -166,6 +189,10 @@ jQuery(($) => {
 
     function onSettingsChanged(newSettings) {
         Settings = newSettings;
+        setLanguage(Settings.uilanguage);
+        setProxyRunning(ProxyRunning);
+
+        $('#uilanguage').val(mui.language);
         $('#autostart').prop('checked', Settings.gui.autostart);
         $('#updatelog').prop('checked', Settings.updatelog);
         $('#logtimes').prop('checked', Settings.gui.logtimes);
@@ -197,6 +224,13 @@ jQuery(($) => {
         updateSettings(SettingsCopy);
     }
 
+    function loadSettingsLanguageNames() {
+        const LanguageSelector = $('#uilanguage');
+        Object.keys(LanguageNames).forEach(language_id => LanguageSelector.append($('<option/>', { value: language_id, text: LanguageNames[language_id] })));
+    }
+
+    loadSettingsLanguageNames();
+
     ipcRenderer.on('set config', (_, newConfig) => {
         onSettingsChanged(newConfig);
         tabReady(SettingsTabName);
@@ -209,6 +243,10 @@ jQuery(($) => {
     });
 
     // UI events
+    $('#uilanguage').change(() => {
+        updateSetting('uilanguage', $('#uilanguage').val());
+    });
+
     $('#autostart').click(() => {
         updateGUISetting('autostart', $('#autostart').is(':checked'));
     });
@@ -224,14 +262,14 @@ jQuery(($) => {
     $('#noupdate').click(() => {
         const checked = $('#noupdate').is(':checked');
         if (checked)
-            ShowModal('Warning! You disabled automatic updates for all of your mods. This will break things at some point. We will not provide any assistance unless re-enabled!');
+            ShowModal(mui.get('gui/main/modal/warn-mod-update-disabled'));
         updateSetting('noupdate', checked);
     });
 
     $('#noselfupdate').click(() => {
         const checked = $('#noselfupdate').is(':checked');
         if (checked)
-            ShowModal('Warning! You disabled automatic updates for TERA Toolbox. This will break things at some point. We will not provide any assistance unless re-enabled!');
+            ShowModal(mui.get('gui/main/modal/warn-self-update-disabled'));
         updateSetting('noselfupdate', checked);
     });
 
@@ -333,7 +371,7 @@ jQuery(($) => {
             $(`#${uninstallId}`).on('click', (event) => {
                 event.preventDefault();
                 if (ProxyRunning) {
-                    ShowModal("You cannot uninstall mods while TERA Toolbox is running. Please stop it first!");
+                    ShowModal(mui.get('gui/main/modal/error-cannot-uninstall-mod-while-running'));
                 } else if (!WaitingForModAction) {
                     ipcRenderer.send('uninstall mod', modInfo);
                     WaitingForModAction = true;
@@ -425,7 +463,7 @@ jQuery(($) => {
             $(`#${installId}`).on('click', (event) => {
                 event.preventDefault();
                 if (ProxyRunning)
-                    ShowModal("You cannot install modules while TERA Toolbox is running. Please stop it first!");
+                    ShowModal(mui.get('gui/main/modal/error-cannot-install-mod-while-running'));
                 else if (!WaitingForModInstall)
                     requestInstallMod(modInfo);
                 return false;
