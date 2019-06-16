@@ -136,7 +136,8 @@ class ModuleManager {
 
         const moduleInfo = this.getInfo(name);
         if (!moduleInfo) {
-            console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-load-mod-not-installed', { name }));
+            if (logInfo)
+                console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/cannot-load-mod-not-installed', { name }));
         } else {
             try {
                 module = new Module(this, moduleInfo);
