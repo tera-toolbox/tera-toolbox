@@ -270,6 +270,7 @@ function _transpileWriter(definition, path = '', empty = false) {
                         const tmpCurrentName = `tmpcurrent_${offsetName}`;
                         const curElemName = _elemName(fullName);
 
+                        result += `if (${fullName} && ${fullName}.length > 0) {\n`;
                         result += `let ${tmpLastName} = ${offsetName};\n`;
                         result += `let ${tmpCurrentName} = stream.position;\n`;
                         result += `stream.seek(${_countName(fullName)});\n`;
@@ -294,6 +295,7 @@ function _transpileWriter(definition, path = '', empty = false) {
                             result += _transpileWriter(type, curElemName);
                         }
 
+                        result += '}\n';
                         result += '}\n';
                         break;
                     }

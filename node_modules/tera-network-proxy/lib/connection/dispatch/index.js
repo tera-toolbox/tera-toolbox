@@ -493,6 +493,9 @@ class Dispatch {
         if (typeof definition === 'string')
             definition = require('tera-data-parser').parsers.Def(definition);
         this.protocol.addDefinition(name, version, definition, overwrite);
+
+        if (!this.latestDefVersion.get(name) || this.latestDefVersion.get(name) < version)
+            this.latestDefVersion.set(name, version);
     }
 
     checkDefinitions(defs) {
