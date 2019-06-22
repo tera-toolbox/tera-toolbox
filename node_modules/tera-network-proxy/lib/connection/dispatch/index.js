@@ -100,10 +100,7 @@ class Dispatch {
             code: new Map()
         };
 
-        Object.keys(this.connection.metadata.maps.protocol).forEach(name => {
-            this.protocolMap.name.set(name, this.connection.metadata.maps.protocol[name]);
-            this.protocolMap.code.set(this.connection.metadata.maps.protocol[name], name);
-        });
+        Object.keys(this.connection.metadata.maps.protocol).forEach(name => this.addProtocolMap(name, this.connection.metadata.maps.protocol[name]));
 
         // Initialize sysmsg maps
         this.sysmsgMap = {
@@ -152,23 +149,6 @@ class Dispatch {
     reset() {
         this.moduleManager.unloadAll();
         this.hooks.clear();
-    }
-
-    checkDefinitions(defs) {
-        let missingDefs = [];
-
-        Object.entries(defs).forEach(([name, versions]) => {
-            if (typeof versions !== 'object')
-                versions = [versions];
-
-            const known_versions = this.protocol.messages.get(name);
-            versions.forEach(version => {
-                if (version !== 'raw' && (!known_versions || !known_versions.get(version)))
-                    missingDefs.push({ name, version });
-            });
-        });
-
-        return missingDefs;
     }
 
     get isConsole() { return this.platform === 'console'; }
@@ -496,6 +476,40 @@ class Dispatch {
 
         // return value
         return (!silenced ? data : false)
+    }
+
+    // Opcode / Definition management
+    addOpcode(name, code) {
+        this.protocolMap.name.set(name, code);
+        this.protocolMap.code.set(code, name);
+    }
+
+    checkOpcodes(names) {
+        return names.filter(name => !this.protocolMap.name.get(name));
+    }
+
+
+    addDefinition(name, version, definition, overwrite = false) {
+        if (typeof definition === 'string')
+            definition = require('tera-data-parser').parsers.Def(definition);
+        this.protocol.addDefinition(name, version, definition, overwrite);
+    }
+
+    checkDefinitions(defs) {
+        let missingDefs = [];
+
+        Object.entries(defs).forEach(([name, versions]) => {
+            if (typeof versions !== 'object')
+                versions = [versions];
+
+            const known_versions = this.protocol.messages.get(name);
+            versions.forEach(version => {
+                if (version !== 'raw' && (!known_versions || !known_versions.get(version)))
+                    missingDefs.push({ name, version });
+            });
+        });
+
+        return missingDefs;
     }
 }
 
