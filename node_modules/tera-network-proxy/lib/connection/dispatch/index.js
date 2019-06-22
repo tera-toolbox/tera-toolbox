@@ -100,7 +100,7 @@ class Dispatch {
             code: new Map()
         };
 
-        Object.keys(this.connection.metadata.maps.protocol).forEach(name => this.addProtocolMap(name, this.connection.metadata.maps.protocol[name]));
+        Object.keys(this.connection.metadata.maps.protocol).forEach(name => this.addOpcode(name, this.connection.metadata.maps.protocol[name]));
 
         // Initialize sysmsg maps
         this.sysmsgMap = {
