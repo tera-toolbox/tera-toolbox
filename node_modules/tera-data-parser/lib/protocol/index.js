@@ -1,7 +1,6 @@
 // requires
 const fs = require('fs');
 const path = require('path');
-const util = require('util');
 
 const log = require('../logger');
 const Stream = require('./stream');
@@ -10,7 +9,317 @@ const defParser = require('../parsers/def');
 // constants
 const PATH_DEFS = 'protocol';
 const PLATFORMS = ['pc', 'console', 'classic'];
+const POD_TYPES = ['bool', 'byte', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'float', 'double', 'vec3', 'vec3fa', 'angle', 'skillid32', 'skillid', 'customize'];
 
+// def compilation
+function _countName(fullName) {
+    return `count_${fullName.replace(/[\.\[\]]/g, '_')}`;
+}
+
+function _offsetName(fullName) {
+    return `offset_${fullName.replace(/[\.\[\]]/g, '_')}`;
+}
+
+function _elemName(fullName) {
+    return `elem_${fullName.replace(/[\.\[\]]/g, '_')}`;
+}
+
+function _transpileReader(definition, path = '') {
+    let result = '';
+
+    for (const [name, type] of definition) {
+        const fullName = (path !== '') ? `${path}.${name}` : name;
+
+        if (!Array.isArray(type)) {
+            switch (type) {
+                case 'count': {
+                    result += `const ${_countName(fullName)} = stream.uint16();\n`;
+                    break;
+                }
+
+                case 'offset': {
+                    result += `const ${_offsetName(fullName)} = stream.uint16();\n`;
+                    break;
+                }
+
+                case 'string': {
+                    // TODO: check offset
+                    result += `stream.seek(${_offsetName(fullName)});\n`;
+                    result += `${fullName} = stream.string();\n`;
+                    break;
+                }
+
+                case 'bytes': {
+                    // TODO: check offset
+                    result += `stream.seek(${_offsetName(fullName)});\n`;
+                    result += `${fullName} = stream.bytes(${_countName(fullName)});\n`;
+                    break;
+                }
+
+                default: {
+                    if (!POD_TYPES.includes(type))
+                        throw new Error(`Invalid data type "${type}" for field "${fullName}"!`);
+
+                    result += `${fullName} = stream.${type}();\n`;
+                    break;
+                }
+            }
+        } else {
+            switch (type.type) {
+                case 'object': {
+                    result += `${fullName} = {};\n`;
+                    result += _transpileReader(type, fullName);
+                    break;
+                }
+
+                case 'array': {
+                    const offsetName = _offsetName(fullName);
+                    const tmpOffsetName = `tmpoffset_${offsetName}`;
+                    const tmpIndexName = `tmpindex_${offsetName}`;
+                    const curElemName = `${fullName}[${tmpIndexName}]`;
+
+                    result += `${fullName} = new Array(${_countName(fullName)});\n`;
+                    result += `let ${tmpOffsetName} = ${offsetName};\n`;
+                    result += `let ${tmpIndexName} = 0;\n`;
+                    result += `while (${tmpOffsetName} && ${tmpIndexName} < ${_countName(fullName)}) {\n`;
+
+                    // TODO: check offset
+                    result += `stream.seek(${tmpOffsetName} + 2);\n`;
+                    result += `${tmpOffsetName} = stream.uint16();\n`;
+
+                    if (type.subtype) {
+                        if (!POD_TYPES.includes(type.subtype))
+                            throw new Error(`Invalid data type "${type.subtype}" for array "${fullName}"!`);
+
+                        result += `${curElemName} = stream.${type.subtype}();\n`;
+                    } else {
+                        result += `${curElemName} = {};\n`;
+                        result += _transpileReader(type, curElemName);
+                    }
+
+                    result += `++${tmpIndexName};\n`;
+                    result += '}\n';
+                    break;
+                }
+
+                default:
+                    throw new Error(`Invalid aggregate type "${type}" for field "${fullName}"!`);
+            }
+        }
+    }
+
+    return result;
+}
+
+function _transpileWriter(definition, path = '', empty = false) {
+    let result = '';
+
+    // Cache interleaved arrays
+    let interleavedArrays = [];
+    let interleavedArrayDefinitions = {};
+    let interleavedArraysFirstIdx = null;
+    for (let i = 0; i < definition.length; ++i) {
+        const [name, type] = definition[i];
+        if (Array.isArray(type) && type.type === 'array' && type.flags.includes('interleaved')) {
+            if (interleavedArraysFirstIdx !== null && interleavedArraysFirstIdx + 1 !== i)
+                throw new Error('Interleaved arrays must be subsequent fields!');
+
+            interleavedArraysFirstIdx = i;
+            interleavedArrays.push(name);
+            interleavedArrayDefinitions[name] = type;
+        }
+    }
+
+    for (const [name, type] of definition) {
+        if (interleavedArrays.includes(name) && Array.isArray(type)) {
+            // Check if already serialized
+            if (empty || interleavedArrays[0] !== name)
+                continue;
+
+            // Initialize header
+            const nameInfo = {};
+            interleavedArrays.forEach(name_ => {
+                const fullName = (path !== '') ? `${path}.${name_}` : name_;
+                const offsetName = _offsetName(fullName);
+                const tmpLastName = `tmplast_${offsetName}`;
+                const tmpCurrentName = `tmpcurrent_${offsetName}`;
+                nameInfo[name_] = { fullName, offsetName, tmpLastName, tmpCurrentName };
+
+                result += `let ${tmpLastName} = ${offsetName};\n`;
+                result += `let ${tmpCurrentName} = stream.position;\n`;
+                result += `stream.seek(${_countName(fullName)});\n`;
+                result += `stream.uint16(${fullName}.length);\n`;
+                result += `stream.seek(${tmpCurrentName});\n`;
+            });
+
+            const lengthName = _elemName((path !== '') ? `${path}._interleaved_maxlength` : '_interleaved_maxlength');
+            const idxName = _elemName((path !== '') ? `${path}._interleaved_index` : '_interleaved_index');
+            result += `const ${lengthName} = Math.max(${interleavedArrays.map(name_ => `${nameInfo[name_].fullName}.length`).join(',')});\n`;
+            result += `for (let ${idxName} = 0; ${idxName} < ${lengthName}; ++${idxName}) {\n`;
+            interleavedArrays.forEach(name_ => {
+                result += `if (${idxName} < ${nameInfo[name_].fullName}.length) {\n`;
+                result += `${nameInfo[name_].tmpCurrentName} = stream.position;\n`;
+                result += `stream.seek(${nameInfo[name_].tmpLastName});\n`;
+                result += `stream.uint16(${nameInfo[name_].tmpCurrentName});\n`;
+                result += `stream.seek(${nameInfo[name_].tmpCurrentName});\n`;
+                result += `stream.uint16(${nameInfo[name_].tmpCurrentName});\n`;
+                result += `${nameInfo[name_].tmpLastName} = stream.position;\n`;
+                result += `stream.uint16(0);\n`;
+
+                const curElemName = `${nameInfo[name_].fullName}[${idxName}]`;
+                if (interleavedArrayDefinitions[name_].subtype) {
+                    if (!POD_TYPES.includes(interleavedArrayDefinitions[name_].subtype))
+                        throw new Error(`Invalid data type "${interleavedArrayDefinitions[name_].subtype}" for array "${nameInfo[name_].fullName}"!`);
+
+                    result += `stream.${interleavedArrayDefinitions[name_].subtype}(${curElemName});\n`;
+                } else {
+                    result += _transpileWriter(interleavedArrayDefinitions[name_], curElemName);
+                }
+                result += '}\n';
+            });
+            result += '}\n';
+        } else {
+            const fullName = (path !== '') ? `${path}.${name}` : name;
+
+            if (!Array.isArray(type)) {
+                switch (type) {
+                    case 'count': {
+                        result += `const ${_countName(fullName)} = stream.position;\n`;
+                        result += 'stream.uint16(0);\n';
+                        break;
+                    }
+
+                    case 'offset': {
+                        result += `const ${_offsetName(fullName)} = stream.position;\n`;
+                        result += 'stream.uint16(0);\n';
+                        break;
+                    }
+
+                    case 'string': {
+                        const offsetName = _offsetName(fullName);
+                        const tmpName = `tmp_${offsetName}`;
+
+                        result += `const ${tmpName} = stream.position;\n`;
+                        result += `stream.seek(${offsetName});\n`;
+                        result += `stream.uint16(${tmpName});\n`;
+                        result += `stream.seek(${tmpName});\n`;
+
+                        if (empty)
+                            result += `stream.string();\n`;
+                        else
+                            result += `stream.string(${fullName});\n`;
+                        break;
+                    }
+
+                    case 'bytes': {
+                        const offsetName = _offsetName(fullName);
+                        const tmpName = `tmp_${offsetName}`;
+
+                        result += `const ${tmpName} = stream.position;\n`;
+                        result += `stream.seek(${offsetName});\n`;
+                        result += `stream.uint16(${tmpName});\n`;
+                        if (!empty) {
+                            result += `stream.seek(${_countName(fullName)});\n`;
+                            result += `stream.uint16(${fullName}.length);\n`;
+                        }
+                        result += `stream.seek(${tmpName});\n`;
+
+                        if (!empty)
+                            result += `stream.bytes(${fullName});\n`;
+                        break;
+                    }
+
+                    default: {
+                        if (!POD_TYPES.includes(type))
+                            throw new Error(`Invalid data type "${type}" for field "${fullName}"!`);
+
+                        if (empty)
+                            result += `stream.${type}();\n`;
+                        else
+                            result += `stream.${type}(${fullName});\n`;
+                        break;
+                    }
+                }
+            } else {
+                switch (type.type) {
+                    case 'object': {
+                        if (!empty) {
+                            result += `if (${fullName}) {\n`;
+                            result += _transpileWriter(type, fullName, false);
+                            result += '} else {\n';
+                        }
+
+                        result += _transpileWriter(type, fullName, true);
+
+                        if (!empty)
+                            result += '}\n';
+
+                        break;
+                    }
+
+                    case 'array': {
+                        if (empty)
+                            break;
+
+                        const offsetName = _offsetName(fullName);
+                        const tmpLastName = `tmplast_${offsetName}`;
+                        const tmpCurrentName = `tmpcurrent_${offsetName}`;
+                        const curElemName = _elemName(fullName);
+
+                        result += `let ${tmpLastName} = ${offsetName};\n`;
+                        result += `let ${tmpCurrentName} = stream.position;\n`;
+                        result += `stream.seek(${_countName(fullName)});\n`;
+                        result += `stream.uint16(${fullName}.length);\n`;
+                        result += `stream.seek(${tmpCurrentName});\n`;
+
+                        result += `for (const ${curElemName} of ${fullName}) {\n`;
+                        result += `${tmpCurrentName} = stream.position;\n`;
+                        result += `stream.seek(${tmpLastName});\n`;
+                        result += `stream.uint16(${tmpCurrentName});\n`;
+                        result += `stream.seek(${tmpCurrentName});\n`;
+                        result += `stream.uint16(${tmpCurrentName});\n`;
+                        result += `${tmpLastName} = stream.position;\n`;
+                        result += `stream.uint16(0);\n`;
+
+                        if (type.subtype) {
+                            if (!POD_TYPES.includes(type.subtype))
+                                throw new Error(`Invalid data type "${type.subtype}" for array "${fullName}"!`);
+
+                            result += `stream.${type.subtype}(${curElemName});\n`;
+                        } else {
+                            result += _transpileWriter(type, curElemName);
+                        }
+
+                        result += '}\n';
+                        break;
+                    }
+
+                    default:
+                        throw new Error(`Invalid aggregate type "${type}" for field "${fullName}"!`);
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+function transpile(definition) {
+    return {
+        reader: '(function(stream) {\nresult = {};\n' + _transpileReader(definition, 'result') + 'return result;\n})',
+        writer: '(function(stream, data) {\n' + _transpileWriter(definition, 'data') + '})'
+    };
+}
+
+function compile(definition) {
+    const transpiled = transpile(definition);
+    return {
+        reader: eval(transpiled.reader),
+        writer: eval(transpiled.writer)
+    };
+}
+
+// implementation
 class TeraProtocol {
     constructor(protocolMap, platform = 'pc') {
         if (!PLATFORMS.includes(platform))
@@ -19,184 +328,27 @@ class TeraProtocol {
         this.platform = platform;
         this.protocolMap = protocolMap;
         this.messages = new Map();
+        this.writeStream = new Stream.Writeable(0x10000);
 
         this.loaded = false;
     }
 
-    // helper functions
-    /**
-     * Given an identifier, retrieve the name, opcode, and definition object.
-     * @private
-     * @param {String|Number|Object} identifier
-     * @param {Number} [definitionVersion]
-     * @param {String} [defaultName] Default name to return if `identifier` is an
-     * object, since no lookups will be performed.
-     * @returns Object An object with the `definition` property set, plus a `name`
-     * and `code` if either a name or an opcode was passed in as the identifier.
-     * @throws {TypeError} `identifier` must be one of the listed types.
-     * @throws Errors if supplied an opcode that could not be mapped to a `name`.
-     * @throws Errors if a `definition` cannot be found.
-     */
-    resolveIdentifier(identifier, definitionVersion = '*', defaultName = '<Object>') {
-        const { protocolMap, messages, loaded } = this;
-        let name;
-        let code;
-        let version;
-        let definition;
-        let latest_version;
+    addDefinition(name, version, definition, overwrite = false) {
+        if (!this.messages.has(name))
+            this.messages.set(name, new Map());
 
-        // lazy load
-        if (!loaded)
-            this.load();
-
-        if (Array.isArray(identifier)) {
-            name = defaultName;
-            code = null;
-            version = '?';
-            definition = identifier;
-            latest_version = null;
-        } else {
-            switch (typeof identifier) {
-                case 'string': {
-                    name = identifier;
-                    if (protocolMap.name.has(name)) {
-                        code = protocolMap.name.get(name);
-                    } else {
-                        throw new Error(`code not known for message "${name}"`);
-                        code = null;
-                    }
-                    break;
-                }
-
-                case 'number': {
-                    code = identifier;
-                    if (protocolMap.code.has(code)) {
-                        name = protocolMap.code.get(code);
-                    } else {
-                        throw new Error(`mapping not found for opcode ${code}`);
-                    }
-                    break;
-                }
-
-                default: {
-                    throw new TypeError('identifier must be a string or number');
-                }
+        if (overwrite || !this.messages.get(name).get(version)) {
+            try {
+                definition = compile(definition);
+            } catch (e) {
+                log.error(`[protocol] Error while compiling definition "${name}.${version}":`);
+                log.error(e);
             }
 
-            const versions = messages.get(name);
-            if (versions) {
-                latest_version = Math.max(...versions.keys());
-
-                version = (definitionVersion === '*')
-                    ? latest_version
-                    : definitionVersion;
-
-                definition = versions.get(version);
-            }
+            this.messages.get(name).set(version, definition);
         }
-
-        if (!definition) {
-            if (latest_version && version < latest_version)
-                throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is outdated and cannot be used anymore`);
-            else
-                throw new Error(`no definition found for message (name: "${name}", code: ${code}, version: ${version})`);
-        }
-
-        return { name, code, version, definition };
     }
 
-    /**
-     * Given a definition object and a data object, efficiently compute the byte
-     * length for the resulting data buffer.
-     * @private
-     * @param {Object} definition
-     * @param {Object} data
-     * @returns {Number}
-     * @throws Errors if a type specified in the `definition` is not recognized.
-     */
-    getLength(definition, data = {}) {
-        const SIZES = {
-            bool: 1,
-            byte: 1,
-
-            int16: 2,
-            uint16: 2,
-            count: 2,
-            offset: 2,
-
-            int32: 4,
-            uint32: 4,
-            float: 4,
-
-            int64: 8,
-            uint64: 8,
-            double: 8,
-
-            vec3: 12,
-            vec3fa: 12,
-            angle: 2,
-
-            skillid32: 4,
-            skillid: 8,
-            customize: 8,
-        };
-
-        let length = 0;
-
-        for (const [key, type] of definition) {
-            const val = data[key];
-            if (Array.isArray(type)) {
-                switch (type.type) {
-                    case 'array': {
-                        if (Array.isArray(val)) {
-                            for (const elem of val) {
-                                // here + next offsets + recursive length
-                                length += 4 + this.getLength(type, elem);
-                            }
-                        }
-                        break;
-                    }
-
-                    case 'object': {
-                        length += this.getLength(type, val);
-                        break;
-                    }
-
-                    default: {
-                        // TODO warn/throw?
-                        break;
-                    }
-                }
-            } else {
-                switch (type) {
-                    case 'bytes': {
-                        if (val) length += val.length;
-                        break;
-                    }
-
-                    case 'string': {
-                        // utf+16 + null byte
-                        length += ((val || '').length + 1) * 2;
-                        break;
-                    }
-
-                    default: {
-                        const size = SIZES[type];
-                        if (size) {
-                            length += size;
-                        } else {
-                            throw new Error(`unknown type: ${type}`);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        return length;
-    }
-
-    // public methods
     /**
      * Loads (or reloads) the opcode mapping and message definitions.
      * @param {String} [basePath] Path to the base package.json.
@@ -204,9 +356,8 @@ class TeraProtocol {
     load(basePath = require.resolve('tera-data')) {
         const { messages, platform } = this;
 
-        if (path.basename(basePath) === 'package.json') {
+        if (path.basename(basePath) === 'package.json')
             basePath = path.dirname(basePath);
-        }
 
         // reset messages
         messages.clear();
@@ -219,11 +370,10 @@ class TeraProtocol {
 
             const parsedName = path.basename(file).match(/^(\w+)\.(\d+)(\.(\w+))?\.def$/);
             if (!parsedName) {
-                if (file.endsWith('.def')) {
+                if (file.endsWith('.def'))
                     log.warn(`[protocol] load (def) - invalid filename syntax "${fullpath}"`);
-                } else {
+                else
                     log.debug(`[protocol] load (def) - skipping path "${fullpath}"`);
-                }
                 continue;
             }
 
@@ -231,17 +381,10 @@ class TeraProtocol {
             const version = parseInt(parsedName[2], 10);
             const def_platform = parsedName[4];
 
+            // Always prefer platform-specific definition over default one!
             const definition = defParser(fullpath);
-            if (!definition) continue;
-
-            if (!def_platform || def_platform === platform) {
-                if (!messages.has(name))
-                    messages.set(name, new Map());
-
-                // Always prefer platform-specific definition over default one!
-                if (def_platform || !messages.get(name).get(version))
-                    messages.get(name).set(version, definition);
-            }
+            if (definition && (!def_platform || def_platform === platform))
+                this.addDefinition(name, version, definition, !!def_platform);
         }
 
         this.loaded = true;
@@ -249,259 +392,97 @@ class TeraProtocol {
     }
 
     /**
-     * @param {String|Number|Object} identifier
+     * Given an identifier, retrieve the name, opcode, and definition object.
+     * @param {String|Number} identifier
      * @param {Number} [definitionVersion]
-     * @param {Buffer|Stream.Readable} [reader]
-     * @param {String} [customName]
-     * @returns {Object}
+     * @returns Object An object with the `definition` property set, plus a `name` and `code`.
+     * @throws {TypeError} `identifier` must be one of the listed types.
+     * @throws Errors if supplied an opcode that could not be mapped to a `name`.
+     * @throws Errors if a `definition` cannot be found.
      */
-    parse(identifier, definitionVersion, reader, customName) {
-        // parse params
-        if (Buffer.isBuffer(definitionVersion)) {
-            reader = definitionVersion;
-            definitionVersion = '*';
-        }
+    resolveIdentifier(identifier, definitionVersion = '*') {
+        const { protocolMap, messages } = this;
+        let name;
+        let code;
+        let version;
+        let definition;
+        let latest_version;
 
-        const { name, version, definition } =
-            this.resolveIdentifier(identifier, definitionVersion, customName);
-        const displayName = (version !== '?') ? `${name}<${version}>` : name;
+        // Resolve code and name
+        switch (typeof identifier) {
+            case 'string': {
+                name = identifier;
+                if (!protocolMap.name.has(name))
+                    throw new Error(`code not known for message "${name}"`);
 
-        // convert `reader` to a stream
-        if (Buffer.isBuffer(reader)) {
-            reader = new Stream.Readable(reader, 4);
-        }
-
-        // begin parsing
-        const count = new Map();
-        const offset = new Map();
-
-        const parseField = ([key, type], data, keyPathBase = '') => {
-            const keyPath = (keyPathBase !== '') ? `${keyPathBase}.${key}` : key;
-
-            if (Array.isArray(type)) {
-                if (type.type === 'object') {
-                    data[key] = {};
-                    for (const f of type) {
-                        parseField(f, data[key], keyPath);
-                    }
-                    return;
-                }
-
-                // handle array type
-                const length = count.get(keyPath);
-                const array = new Array(length);
-                let index = 0;
-                let next = offset.get(keyPath);
-
-                while (next && index < length) {
-                    let pos = reader.position;
-                    if (pos !== next) {
-                        log.debug(`[protocol] parse - ${displayName}: offset mismatch for array "${keyPath}" at ${reader.position} (expected ${next})`);
-                        reader.seek(next);
-                        pos = next;
-                    }
-
-                    const here = reader.uint16();
-                    if (pos !== here) {
-                        throw new Error(`${displayName}.${keyPath}: cannot find next element of array at ${pos} (found value ${here})`);
-                    }
-
-                    next = reader.uint16();
-                    array[index++] = this.parse(type, null, reader, `${displayName}.${keyPath}`);
-
-                    if (next && index === length) {
-                        throw new Error(`${displayName}.${keyPath}: found out of bounds element ${index} (expected length ${length})`);
-                    }
-                }
-
-                if (index !== length) {
-                    throw new Error(`${displayName}.${keyPath}: array length mismatch, found ${index} (expected ${length})`);
-                }
-
-                data[key] = array;
-            } else {
-                // handle primitive type
-                switch (type) {
-                    case 'count': {
-                        count.set(keyPath, reader.uint16());
-                        break;
-                    }
-
-                    case 'offset': {
-                        offset.set(keyPath, reader.uint16());
-                        break;
-                    }
-
-                    default: {
-                        let cnt = count.get(keyPath);
-                        if (offset.has(keyPath)) {
-                            const ofs = offset.get(keyPath);
-                            if ((type !== 'bytes' || cnt > 0) && ofs < (2 + offset.size + count.size) * 2) { // check if offset lies within header
-                                throw new Error(`${displayName}.${keyPath}: invalid offset for "${keyPath}" at ${reader.position} (inside header)`);
-                            }
-                            if (reader.position !== ofs) {
-                                log.debug(`[protocol] parse - ${displayName}: offset mismatch for "${keyPath}" at ${reader.position} (expected ${ofs})`);
-                                reader.seek(ofs);
-                            }
-                        }
-
-                        data[key] = reader[type](cnt);
-                        break;
-                    }
-                }
+                code = protocolMap.name.get(name);
+                break;
             }
-        };
 
-        const data = {};
-        for (const field of definition) {
-            parseField(field, data, []);
+            case 'number': {
+                code = identifier;
+                if (!protocolMap.code.has(code))
+                    throw new Error(`mapping not found for opcode ${code}`);
+
+                name = protocolMap.code.get(code);
+                break;
+            }
+
+            default:
+                throw new TypeError('identifier must be a string or number');
         }
-        return data;
+
+        // Resolve definition
+        const versions = messages.get(name);
+        if (versions) {
+            latest_version = Math.max(...versions.keys());
+
+            version = (definitionVersion === '*') ? latest_version : definitionVersion;
+            definition = versions.get(version);
+        }
+
+        if (!definition) {
+            if (latest_version && version && version < latest_version)
+                throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is outdated and cannot be used anymore`);
+            else
+                throw new Error(`no definition found for message (name: "${name}", code: ${code}, version: ${version || definitionVersion})`);
+        }
+
+        return { name, code, version, latest_version, definition };
     }
 
     /**
-     * @param {String|Number|Object} identifier
+     * @param {String|Number} identifier
      * @param {Number} [definitionVersion]
+     * @param {Buffer} data
+     * @returns {Object}
+     */
+    parse(identifier, definitionVersion, data) {
+        const { definition } = this.resolveIdentifier(identifier, definitionVersion);
+        return definition.reader(new Stream.Readable(data, 4));
+    }
+
+    /**
+     * @param {String|Number} identifier
+     * @param {Number|'*'} [definitionVersion]
      * @param {Object} data
-     * @param {Stream.Writeable} [writer]
-     * @param {String} [customName]
      * @returns {Buffer}
      */
-    write(identifier, definitionVersion, data, writer, customName, customCode) {
-        // parse args
-        if (typeof definitionVersion === 'object') {
-            data = definitionVersion;
-            definitionVersion = '*';
-        }
+    write(identifier, definitionVersion, data) {
+        const { code, definition } = this.resolveIdentifier(identifier, definitionVersion);
 
-        if (!definitionVersion) definitionVersion = '*';
-        if (!data) data = {};
+        // write data
+        const { writeStream } = this;
+        writeStream.seek(4);
+        definition.writer(writeStream, data || {});
 
-        let { name, code, version, definition } =
-            this.resolveIdentifier(identifier, definitionVersion, customName);
+        // write header
+        const length = this.writeStream.position;
+        writeStream.seek(0);
+        writeStream.uint16(length);
+        writeStream.uint16(code);
 
-        code = code || customCode;
-
-        const displayName = (version !== '?') ? `${name}<${version}>` : name;
-
-        // set up optional arg `writer`
-        if (!writer) {
-            // make sure `code` is valid
-            if (code == null || code < 0) {
-                throw new Error(`[protocol] write ("${name}"): invalid code "${code}"'`);
-            }
-
-            // set up stream
-            const length = 4 + this.getLength(definition, data);
-            writer = new Stream.Writeable(length);
-            writer.uint16(length);
-            writer.uint16(code);
-        }
-
-        // begin writing
-        const count = new Map();
-        const offset = new Map();
-
-        const writeField = ([key, type], dataObj, keyPathBase = '') => {
-            const value = dataObj[key];
-            const keyPath = (keyPathBase !== '') ? `${keyPathBase}.${key}` : key;
-
-            // `type` is array or object
-            if (Array.isArray(type)) {
-                if (type.type === 'object') {
-                    for (const field of type) {
-                        writeField(field, value || {}, keyPath);
-                    }
-                    return;
-                }
-
-                if (!value) return;
-
-                const length = value.length;
-                if (length !== 0) {
-                    // write length in header
-                    const here = writer.position;
-                    writer.seek(count.get(keyPath));
-                    writer.uint16(length);
-                    writer.seek(here);
-
-                    // iterate elements
-                    let last = offset.get(keyPath);
-                    for (const element of value) {
-                        // write position in last element (or header)
-                        const hereElem = writer.position;
-                        writer.seek(last);
-                        writer.uint16(hereElem);
-                        writer.seek(hereElem);
-
-                        // write position in current element
-                        writer.uint16(hereElem);
-
-                        // store position pointing to next element
-                        last = writer.position;
-
-                        // write placeholder position
-                        writer.uint16(0);
-
-                        // recurse
-                        this.write(type, version, element, writer, `${displayName}.${keyPath}`);
-                    }
-                }
-                // `type` is primitive
-            } else {
-                switch (type) {
-                    // save position and write placeholders for count and offset
-                    case 'count': {
-                        count.set(keyPath, writer.position);
-                        writer.uint16(0);
-                        break;
-                    }
-
-                    case 'offset': {
-                        offset.set(keyPath, writer.position);
-                        writer.uint16(0);
-                        break;
-                    }
-
-                    // otherwise,
-                    default: {
-                        // update count
-                        if (count.has(keyPath) && value) {
-                            const here = writer.position;
-                            writer.seek(count.get(keyPath));
-                            writer.uint16(value.length);
-                            writer.seek(here);
-                        }
-
-                        // update offset
-                        if (offset.has(keyPath)) {
-                            const here = writer.position;
-                            writer.seek(offset.get(keyPath));
-                            writer.uint16(here);
-                            writer.seek(here);
-                        }
-
-                        // write it
-                        try {
-                            writer[type](value);
-                        } catch (err) {
-                            err.message = [
-                                `[protocol] write - ${displayName}: error writing "${keyPath}" (type: ${type})`,
-                                `data: ${util.inspect(value)}`,
-                                `reason: ${err.message}`,
-                            ].join('\n');
-                            throw err;
-                        }
-                    }
-                }
-            }
-        };
-
-        for (const field of definition) {
-            writeField(field, data);
-        }
-
-        return writer.buffer;
+        return writeStream.buffer.slice(0, length);
     }
 }
 

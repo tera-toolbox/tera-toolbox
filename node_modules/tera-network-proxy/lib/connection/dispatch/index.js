@@ -219,16 +219,16 @@ class Dispatch {
         return str
     }
 
-    fromRaw(name, version, data, customName = null) {
-        return this.protocol.parse(name, version, data, customName);
+    fromRaw(name, version, data) {
+        return this.protocol.parse(name, version, data);
     }
 
-    toRaw(name, version, data, writer = null, customName = null, customCode = null) {
-        return this.protocol.write(name, version, data, writer, customName, customCode);
+    toRaw(name, version, data) {
+        return this.protocol.write(name, version, data);
     }
 
-    resolve(name) {
-        return this.protocol.resolveIdentifier(name);
+    resolve(name, definitionVersion = '*') {
+        return this.protocol.resolveIdentifier(name, definitionVersion);
     }
 
     createHook(base, name, version, opts, cb) {
@@ -359,7 +359,7 @@ class Dispatch {
             }
 
             try {
-                data = this.protocol.write(name, version, data, null, null, null)
+                data = this.protocol.write(name, version, data)
             } catch (e) {
                 throw new Error(`[dispatch] write: failed to generate ${getMessageName(this.protocolMap, name, version, name)}:\n${e}`);
             }
@@ -445,7 +445,7 @@ class Dispatch {
                 try {
                     const defVersion = hook.definitionVersion
 
-                    let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(code, defVersion, data, null))
+                    let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(code, defVersion, data))
 
                     objectAttachFlags(lastHook ? event : (event = deepClone(event)))
 
@@ -457,7 +457,7 @@ class Dispatch {
                             silenced = false
 
                             try {
-                                data = this.protocol.write(code, defVersion, event, null, null, null)
+                                data = this.protocol.write(code, defVersion, event)
                                 bufferAttachFlags(data)
 
                                 eventCache = []

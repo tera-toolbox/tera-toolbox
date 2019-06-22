@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { CoreModules, listModuleInfos } = require('tera-mod-management');
 
-const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/tera-toolbox/tera-data/master/";
+const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/tera-toolbox/tera-data/beta/";
 
 function forcedirSync(dir) {
     const sep = path.sep;
