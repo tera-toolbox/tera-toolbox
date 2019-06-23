@@ -355,11 +355,12 @@ class Dispatch {
 
     handle(data, incoming, fake = false) {
         const code = data.readUInt16LE(2)
-        const copy = Buffer.from(data)
 
         const globalHooks = this.hooks.get('*')
         const codeHooks = this.hooks.get(code)
         if (!globalHooks && !codeHooks) return data
+
+        const copy = Buffer.from(data)
 
         let modified = false
         let silenced = false
