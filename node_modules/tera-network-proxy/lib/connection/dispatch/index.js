@@ -360,8 +360,6 @@ class Dispatch {
         const codeHooks = this.hooks.get(code)
         if (!globalHooks && !codeHooks) return data
 
-        const copy = Buffer.from(data)
-
         let modified = false
         let silenced = false
 
@@ -401,15 +399,22 @@ class Dispatch {
 
             if (hook.definitionVersion === 'raw')
                 try {
+                    const copy = Buffer.from(data)
                     const result = hook.callback(code, data, incoming, fake)
 
                     if (Buffer.isBuffer(result) && result !== data) {
                         modified = modified || (result.length !== data.length) || !result.equals(data)
                         bufferAttachFlags(result)
                         data = result
+
+                        if (modified)
+                            eventCache = []
                     } else {
                         modified = modified || !data.equals(copy)
                         if (typeof result === 'boolean') silenced = !result
+
+                        if (modified)
+                            eventCache = []
                     }
                 }
                 catch (e) {
