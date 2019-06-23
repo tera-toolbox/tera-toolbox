@@ -122,7 +122,7 @@ function _transpileWriter(definition, path = '', empty = false) {
         const [name, type] = definition[i];
         if (Array.isArray(type) && type.type === 'array' && type.flags.includes('interleaved')) {
             if (interleavedArraysFirstIdx !== null && interleavedArraysFirstIdx + 1 !== i)
-                throw new Error('Interleaved arrays must be subsequent fields!');
+                throw new Error('Interleaved arrays must be consecutive fields!');
 
             interleavedArraysFirstIdx = i;
             interleavedArrays.push(name);
@@ -450,7 +450,7 @@ class TeraProtocol {
             if (latest_version && version && version < latest_version)
                 throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is outdated and cannot be used anymore`);
             else
-                throw new Error(`no definition found for message (name: "${name}", code: ${code}, version: ${version || definitionVersion})`);
+                throw new Error(`no definition found for message (name: "${name}", code: ${code}, version: ${definitionVersion})`);
         }
 
         return { name, code, version, latest_version, definition };
