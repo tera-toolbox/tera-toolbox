@@ -27,7 +27,7 @@
     "bin/update-electron-helper.js": "7e5293a9dc31bfaccbcae73f4888e973e0d29ed7db79be30ddfbca626450e5d8",
     "bin/update-electron.js": "fcdb1fc3b54798aef6b716ab651fba54d7de7305e9ac5d0ec04b2d058a633e58",
     "bin/update-self.js": "8a235ad2bcf8f822be6a5a2d40850f85ad0fa944459edeb2f654d7d443caa4d3",
-    "bin/update.js": "4da0e76637dbdc08c72b71f34cdae280a115556301094542de820b601aacb996",
+    "bin/update.js": "62f1ef4c8f92415b5656638104a2625265b8619f8908133999d2a3a1bed8b11b",
     "bin/utils.js": "98f71e7f69e70ade2346c1dce29d6a46c84af0b618c93965c5e8fea27914ae5d",
     "bin/gui/icon.ico": "eddf1fe34c998df2b607cd36f69334d9890a7f150917b0aa4d1fb6db891aa5f0",
     "bin/gui/main.html": "25d9e30df5b5c3f8dd05232827d27d61ec055ef2838a98abbd48092b25e47935",
