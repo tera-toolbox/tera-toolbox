@@ -105,7 +105,7 @@
     "node_modules/tera-data-parser/lib/parsers/def.js": "2c7b723743ccb8632fd317276aac89729b174202aea5070c07b352f4997ba36d",
     "node_modules/tera-data-parser/lib/parsers/index.js": "1926ad41e230537347a70df4ce6201aba2c8d64ef16fabbc08b8063a35aac0ec",
     "node_modules/tera-data-parser/lib/parsers/map.js": "31f7675cd5f61a8d8a9eedca2ac496157fa352e5715ef4d8f55f7434bf7c4e1c",
-    "node_modules/tera-data-parser/lib/protocol/index.js": "1bde5789e8a35ae7fe0f32f13d75a3429f6f9ce0202be5b626a7056e16428e0e",
+    "node_modules/tera-data-parser/lib/protocol/index.js": "4389ea9f7c08bb7ab34232d2ac40d27af119d0a88a07b17efc29b3b73c397c26",
     "node_modules/tera-data-parser/lib/protocol/stream.js": "05a48b13ad3f72f371c73f3639d48cf420436f09f6ec73bcfaa0d6d1afff6f99",
     "node_modules/tera-data-parser/lib/protocol/types/customize.js": "1e4b3e55e2e6dca1ae2950ec29dc5d90eefe5cba231b84c496cbd1b2b7da087a",
     "node_modules/tera-data-parser/lib/protocol/types/index.js": "63c3b0d190ddf64b12f6cddbc2ddc0769c1c9c14bc7634940930e86c71720e1d",

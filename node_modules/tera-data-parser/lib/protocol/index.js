@@ -487,7 +487,9 @@ class TeraProtocol {
         writeStream.uint16(length);
         writeStream.uint16(code);
 
-        return writeStream.buffer.slice(0, length);
+        let result = Buffer.allocUnsafe(length);
+        writeStream.buffer.copy(result, 0, 0, length);
+        return result;
     }
 }
 
