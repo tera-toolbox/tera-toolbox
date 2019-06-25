@@ -312,16 +312,16 @@ function _transpileWriter(definition, path = '', empty = false) {
 
 function transpile(definition) {
     return {
-        reader: '(function(stream) {\nresult = {};\n' + _transpileReader(definition, 'result') + 'return result;\n})',
-        writer: '(function(stream, data) {\n' + _transpileWriter(definition, 'data') + '})'
+        reader: 'let result = {};\n' + _transpileReader(definition, 'result') + 'return result;',
+        writer: _transpileWriter(definition, 'data')
     };
 }
 
 function compile(definition) {
     const transpiled = transpile(definition);
     return {
-        reader: eval(transpiled.reader),
-        writer: eval(transpiled.writer)
+        reader: Function('stream', '"use strict";\n' + transpiled.reader),
+        writer: Function('stream', 'data', '"use strict";\n' + transpiled.writer)
     };
 }
 
