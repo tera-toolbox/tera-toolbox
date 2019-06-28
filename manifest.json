@@ -110,7 +110,7 @@
     "node_modules/tera-data-parser/lib/protocol/types/customize.js": "1e4b3e55e2e6dca1ae2950ec29dc5d90eefe5cba231b84c496cbd1b2b7da087a",
     "node_modules/tera-data-parser/lib/protocol/types/index.js": "63c3b0d190ddf64b12f6cddbc2ddc0769c1c9c14bc7634940930e86c71720e1d",
     "node_modules/tera-data-parser/lib/protocol/types/skillid.js": "b1de2de5dfb47af11435e8ae7f2d45991e2a08383b4342cb0ed69b3398b33046",
-    "node_modules/tera-mod-management/index.js": "3853d74c0d287795cad7faa25a6e086f9ca8e5a081dec2d1188e498be49ab5ab",
+    "node_modules/tera-mod-management/index.js": "f6a25e1b3ee2f5f1c65bbf64c7cc87a0b7f41a9b3625f900f8242fa69837e9f1",
     "node_modules/tera-mod-management/README.md": "78d0d079a19fd985591e78babbe5d4eb8d7f9dff17a44f6b91da6e135b865dc2",
     "node_modules/tera-mod-ui/global.js": "e72401797df90c82a042fa733ce2e8e7b92f1c88e8640c877daea2a37f7752d0",
     "node_modules/tera-mod-ui/host.js": "e7acf2a9f333332ae48623f1fd3172635f1b975c87ecb32b87b6017cb6bee20e",
