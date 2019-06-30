@@ -29,11 +29,19 @@ class Module {
                     case 'command':
                         if (this._command)
                             return this._command;
-                        return (this._command = this.manager.load(key, false).instance.createInstance(this));
+
+                        const _command = this.manager.load(key, false);
+                        if (!_command)
+                            throw new Error(`Required mod not found: ${key}`);
+                        return this._command = _command.instance.createInstance(this);
                     case 'tera-game-state':
                         if (this._game)
                             return this._game;
-                        return (this._game = this.manager.load(key, false).instance);
+
+                        const _game = this.manager.load(key, false);
+                        if (!_game)
+                            throw new Error(`Required mod not found: ${key}`);
+                        return this._game = _game.instance;
                     default:
                         let mod = this.clientInterface ? this.clientInterface.moduleManager.get(key) : null;
                         if (!mod)
@@ -54,10 +62,11 @@ class Module {
 
         // Use tera-game-state callbacks to clear timers when entering/leaving the game
         if (this.name !== 'tera-game-state') {
-            if (this.game)
+            try {
                 this.game.on('leave_game', () => { this.clearAllTimeouts(); this.clearAllIntervals(); });
-            else
+            } catch (_) {
                 this.warn(mui.get('tera-network-proxy/connection/dispatch/module/tera-game-state-not-loaded'));
+            }
         }
 
         // Load settings
