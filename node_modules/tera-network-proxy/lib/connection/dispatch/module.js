@@ -99,8 +99,7 @@ class Module {
     }
 
     hook(...args) {
-        const hook = this.dispatch.hook(...args);
-        hook.moduleName = this.name;
+        const hook = this.dispatch.hook(this.name, ...args);
         return hook;
     }
 
@@ -118,7 +117,7 @@ class Module {
             throw new Error('last argument not a function');
 
         const dispatch = this.dispatch;
-        let hook = dispatch.hook(...args, function () {
+        let hook = dispatch.hook(this.name, ...args, function () {
             dispatch.unhook(hook);
             return cb.apply(this, arguments);
         });
@@ -134,7 +133,7 @@ class Module {
 
         try {
             const dispatch = this.dispatch;
-            let hook = dispatch.hook(...args, function () {
+            let hook = dispatch.hook(this.name, ...args, function () {
                 dispatch.unhook(hook);
                 return cb.apply(this, arguments);
             });

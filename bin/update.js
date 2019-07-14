@@ -153,10 +153,22 @@ async function autoUpdateTeraData(updatelog, updatelimit) {
         console.log(mui.get('update/tera-data'));
 
     const tera_data_folder = path.join(__dirname, '..', 'node_modules', 'tera-data');
+    const manifest_file = 'manifest.json';
+    const manifest_url = TeraDataAutoUpdateServer + manifest_file;
+    const manifest_path = path.join(tera_data_folder, manifest_file);
+
+    let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url);
+    if (!manifest_result)
+        throw new Error(`Unable to download tera-data update manifest:\n${e}`);
+
+    let manifest;
+    try {
+        manifest = JSON.parse(fs.readFileSync(manifest_path, 'utf8'));
+    } catch (e) {
+        throw new Error(`Invalid tera-data update manifest:\n${e}`);
+    }
 
     let promises = [];
-    const manifest = await request({ url: TeraDataAutoUpdateServer + 'manifest.json', json: true });
-
     // Maps
     for (const map in manifest.maps) {
         const map_custom_filename = path.join(tera_data_folder, 'map', map);

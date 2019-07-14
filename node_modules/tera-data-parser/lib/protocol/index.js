@@ -325,12 +325,33 @@ function compile(definition) {
     };
 }
 
+function parseDefinitionFilename(file) {
+    const parsedName = path.basename(file).match(/^(\w+)\.(\d+)(\.(\w+))?\.(def|js)$/);
+    if (!parsedName) {
+        if (file.endsWith('.def') || file.endsWith('.js'))
+            log.warn(`[protocol] load (def) - invalid filename syntax "${path.basename(file)}"`);
+        else
+            log.debug(`[protocol] load (def) - skipping path "${path.basename(file)}"`);
+        return null;
+    }
+
+    return {
+        name: parsedName[1],
+        version: parseInt(parsedName[2], 10),
+        platform: parsedName[4],
+        type: parsedName[5]
+    };
+}
+
 // implementation
 class TeraProtocol {
-    constructor(protocolMap, platform = 'pc') {
+    constructor(region, majorPatchVersion, minorPatchVersion, protocolMap, platform = 'pc') {
         if (!PLATFORMS.includes(platform))
             throw new Error('Invalid platform!');
 
+        this.region = region;
+        this.majorPatchVersion = majorPatchVersion;
+        this.minorPatchVersion = minorPatchVersion;
         this.platform = platform;
         this.protocolMap = protocolMap;
         this.messages = new Map();
@@ -339,19 +360,44 @@ class TeraProtocol {
         this.loaded = false;
     }
 
-    addDefinition(name, version, definition, overwrite = false) {
-        if (!this.messages.has(name))
-            this.messages.set(name, new Map());
+    _assignDeprecationFlags(name, version, definition) {
+        definition.writeable = definition.readable = true;
+        if (this.deprecationData[name] && this.deprecationData[name][version]) {
+            const data = this.deprecationData[name][version];
+            if ((!data['min'] || data['min'] > this.majorPatchVersion) && (!data['max'] || data['max'] < this.majorPatchVersion)) {
+                definition.writeable = false;
+                definition.readable = !!data['readable'];
+            }
+        }
 
-        if (overwrite || !this.messages.get(name).get(version)) {
+        return definition;
+    }
+
+    addDefinition(name, version, definition, overwrite = false) {
+        // Compile definition if required
+        if (typeof definition.writer !== 'function' || typeof definition.reader !== 'function') {
             try {
                 definition = compile(definition);
-                this.messages.get(name).set(version, definition);
             } catch (e) {
                 log.error(`[protocol] Error while compiling definition "${name}.${version}":`);
                 log.error(e);
+                return;
             }
         }
+
+        // Add to map
+        if (!this.messages.has(name))
+            this.messages.set(name, new Map());
+        if (overwrite || !this.messages.get(name).get(version))
+            this.messages.get(name).set(version, this._assignDeprecationFlags(name, version, definition));
+    }
+
+    isDefaultDefinition(name, version) {
+        return this.defaultDefinitions.has(`${name}.${version}`);
+    }
+
+    isCustomDefinition(name, version) {
+        return !this.isDefaultDefinition(name, version);
     }
 
     /**
@@ -364,32 +410,41 @@ class TeraProtocol {
         if (path.basename(basePath) === 'package.json')
             basePath = path.dirname(basePath);
 
+        // read deprecation data
+        const manifest = JSON.parse(fs.readFileSync(path.join(basePath, 'manifest.json')));
+        const defaultDefData = Object.keys(manifest.protocol).map(file => parseDefinitionFilename(file));
+        const lowestDefaultDefVersions = {};
+        defaultDefData.forEach(def => {
+            if (lowestDefaultDefVersions[def.name])
+                lowestDefaultDefVersions[def.name] = Math.min(lowestDefaultDefVersions[def.name], def.version);
+            else
+                lowestDefaultDefVersions[def.name] = def.version;
+        });
+
+        this.deprecationData = manifest.deprecated || {};
+        this.defaultDefinitions = new Set(defaultDefData.map(def => `${def.name}.${def.version}`));
+
         // reset messages
         messages.clear();
 
-        // read protocol directory (common)
+        // read protocol directory
         const defPath = path.join(basePath, PATH_DEFS);
         const defFiles = fs.readdirSync(defPath);
         for (const file of defFiles) {
             const fullpath = path.join(defPath, file);
+            const parsedName = parseDefinitionFilename(file);
+            if (!parsedName)
+                continue;
 
-            const parsedName = path.basename(file).match(/^(\w+)\.(\d+)(\.(\w+))?\.def$/);
-            if (!parsedName) {
-                if (file.endsWith('.def'))
-                    log.warn(`[protocol] load (def) - invalid filename syntax "${fullpath}"`);
-                else
-                    log.debug(`[protocol] load (def) - skipping path "${fullpath}"`);
+            if (parsedName.version !== 0 && lowestDefaultDefVersions[parsedName.name] && parsedName.version < lowestDefaultDefVersions[parsedName.name]) {
+                log.debug(`Skipped loading outdated def ${parsedName.name}.${parsedName.version}! Consider cleaning your tera-data folder.`);
                 continue;
             }
 
-            const name = parsedName[1];
-            const version = parseInt(parsedName[2], 10);
-            const def_platform = parsedName[4];
-
             // Always prefer platform-specific definition over default one!
-            const definition = defParser(fullpath);
-            if (definition && (!def_platform || def_platform === platform))
-                this.addDefinition(name, version, definition, !!def_platform);
+            const definition = (parsedName.type === 'js') ? require(fullpath) : defParser(fullpath);
+            if (definition && (!parsedName.platform || parsedName.platform === platform))
+                this.addDefinition(parsedName.name, parsedName.version, definition, !!parsedName.platform);
         }
 
         this.loaded = true;
@@ -463,7 +518,9 @@ class TeraProtocol {
      * @returns {Object}
      */
     parse(identifier, definitionVersion, data) {
-        const { definition } = this.resolveIdentifier(identifier, definitionVersion);
+        const { name, version, definition } = this.resolveIdentifier(identifier, definitionVersion);
+        if (!definition.readable)
+            throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is deprecated and cannot be used for reading`);
         return definition.reader(new Stream.Readable(data, 4));
     }
 
@@ -474,7 +531,9 @@ class TeraProtocol {
      * @returns {Buffer}
      */
     write(identifier, definitionVersion, data) {
-        const { code, definition } = this.resolveIdentifier(identifier, definitionVersion);
+        const { code, name, version, definition } = this.resolveIdentifier(identifier, definitionVersion);
+        if (!definition.writeable)
+            throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is deprecated and cannot be used for writing`);
 
         // write data
         const { writeStream } = this;

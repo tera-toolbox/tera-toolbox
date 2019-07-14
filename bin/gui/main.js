@@ -70,6 +70,11 @@ jQuery(($) => {
     let ProxyRunning = false;
     let ProxyStarting = false;
 
+    function setProxyStarting() {
+        ProxyStarting = true;
+        $('#startproxy').text(mui.get('gui/main/start-stop-proxy-starting'));
+    }
+
     function setProxyRunning(running) {
         ProxyRunning = running;
         ProxyStarting = false;
@@ -83,8 +88,7 @@ jQuery(($) => {
         if (ProxyStarting || ProxyRunning)
             return;
 
-        ProxyStarting = true;
-        $('#startproxy').text(mui.get('gui/main/start-stop-proxy-starting'));
+        setProxyStarting();
         ipcRenderer.send('start proxy');
     }
 
@@ -103,6 +107,7 @@ jQuery(($) => {
             startProxy();
     });
 
+    ipcRenderer.on('proxy starting', _ => setProxyStarting());
     ipcRenderer.on('proxy running', (_, running) => setProxyRunning(running));
 
     // --------------------------------------------------------------------
