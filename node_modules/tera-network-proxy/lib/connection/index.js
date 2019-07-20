@@ -12,7 +12,7 @@ class Connection {
         this.dispatch = new Dispatch(this);
 
         this.state = -1;
-        this.session = new Encryption(this.metadata.platform === 'classic');
+        this.session = new Encryption(this.metadata.majorPatchVersion < 45);
 
         const bufferType = this.metadata.platform === 'console' ? require('../packetBufferConsole') : require('../packetBuffer');
         this.buffer = new bufferType();

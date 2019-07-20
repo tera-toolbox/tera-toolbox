@@ -199,6 +199,7 @@ ipcMain.on('init', (event, _) => {
     }
 
     if (config.gui.autostart) {
+        event.sender.send('proxy starting');
         console.log(mui.get('loader-gui/proxy-starting'));
         StartProxy(ModuleFolder, config).then((result) => {
             event.sender.send('proxy running', result);
@@ -210,6 +211,7 @@ ipcMain.on('start proxy', (event, _) => {
     if (proxy || proxyRunning)
         return;
 
+    event.sender.send('proxy starting');
     console.log(mui.get('loader-gui/proxy-starting'));
     StartProxy(ModuleFolder, config).then((result) => {
         event.sender.send('proxy running', result);

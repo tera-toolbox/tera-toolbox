@@ -114,7 +114,7 @@ class Dispatch {
         });
 
         // Initialize protocol
-        this.protocol = new protocol(this.protocolMap, this.platform);
+        this.protocol = new protocol(this.region, this.majorPatchVersion, this.minorPatchVersion, this.protocolMap, this.platform);
         this.protocol.load(require.resolve('tera-data'));
 
         this.latestDefVersion = new Map();
@@ -211,10 +211,10 @@ class Dispatch {
         return this.protocol.resolveIdentifier(name, definitionVersion);
     }
 
-    createHook(base, name, version, opts, cb) {
+    createHook(moduleName, name, version, opts, cb) {
         // parse args
         if (typeof version !== 'number' && version !== '*' && version !== 'raw')
-            throw TypeError(`[dispatch] hook: invalid version specified (${version})`)
+            throw TypeError(`[dispatch] [${moduleName}] hook: invalid version specified (${version})`)
 
         if (opts && typeof opts !== 'object') {
             cb = opts
@@ -222,67 +222,51 @@ class Dispatch {
         }
 
         if (typeof cb !== 'function')
-            throw TypeError(`[dispatch] hook: last argument not a function (given: ${typeof cb})`)
+            throw TypeError(`[dispatch] [${moduleName}] hook: last argument not a function (given: ${typeof cb})`)
 
         // retrieve opcode
         let code
         if (name === '*') {
             code = name
             if (typeof version === 'number')
-                throw TypeError(`[dispatch] hook: * hook must request version '*' or 'raw' (given: ${version})`)
+                throw TypeError(`[dispatch] [${moduleName}] hook: * hook must request version '*' or 'raw' (given: ${version})`)
         } else {
             // Check if opcode is mapped
             code = this.protocolMap.name.get(name)
             if (code === null || typeof code === 'undefined')
-                throw Error(`[dispatch] hook: unmapped packet "${name}"`)
+                throw Error(`[dispatch] [${moduleName}] hook: unmapped packet "${name}"`)
 
-            // Check if definition exists
+            // Check if definition exists / is deprecated
             if (version !== 'raw') {
-                let def = this.protocol.messages.get(name)
-                if (def)
-                    def = def.get(version)
-                if (!def) {
-                    if (this.latestDefVersion.get(name) > version)
-                        throw Error(`[dispatch] hook: obsolete defintion (${name}.${version})`)
-                    else
-                        throw Error(`[dispatch] hook: definition not found (${name}.${version})`)
+                try {
+                    const { definition } = this.resolve(name, version);
+                    if (!definition.readable)
+                        throw Error(`obsolete definition (${name}.${version})`);
+                    else if (!definition.writeable)
+                        log.warn(`[dispatch] [${moduleName}] hook: deprecated definition (${name}.${version}), mod might be broken!`);
+                } catch (e) {
+                    throw Error(`[dispatch] [${moduleName}] hook: ${e}`);
                 }
             }
         }
 
-        // check version
-        if (typeof version !== 'number') {
-            if (version === 'latest') version = '*'
-            if (version !== '*' && version !== 'raw') {
-                // TODO warning
-                version = '*'
-            }
-        }
-
-        // check filters
-        const filter = Object.assign({
-            fake: false,
-            incoming: null,
-            modified: null,
-            silenced: false,
-        }, opts.filter)
-
-        return Object.assign(base, {
+        // create hook
+        return {
+            moduleName,
             code,
-            filter,
+            filter: Object.assign({fake: false, incoming: null, modified: null, silenced: false}, opts.filter),
             order: opts.order || 0,
             definitionVersion: version,
             callback: cb,
-            name: name || "",
-        })
+            name
+        }
     }
 
     addHook(hook) {
         const { code, order } = hook
 
-        if (!this.hooks.has(code)) {
+        if (!this.hooks.has(code))
             this.hooks.set(code, [])
-        }
 
         const ordering = this.hooks.get(code)
         const index = binarySearch(ordering, { order }, (a, b) => a.order - b.order)
@@ -295,7 +279,7 @@ class Dispatch {
     }
 
     hook(...args) {
-        const hook = this.createHook({}, ...args)
+        const hook = this.createHook(...args)
         this.addHook(hook)
         return hook
     }
@@ -419,7 +403,7 @@ class Dispatch {
                 }
                 catch (e) {
                     log.error([
-                        `[dispatch] handle: error running raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)}`,
+                        `[dispatch] [${hook.moduleName}] handle: error running raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)}`,
                         `hook: ${getHookName(hook)}`,
                         `data: ${data.toString('hex')}`,
                         `error: ${e.message}`,
@@ -439,17 +423,17 @@ class Dispatch {
                         const result = hook.callback(event, fake)
 
                         if (result === true) {
-                            modified = true
-                            silenced = false
+                            eventCache = []
 
                             try {
                                 data = this.protocol.write(code, defVersion, event)
                                 bufferAttachFlags(data)
 
-                                eventCache = []
+                                modified = true
+                                silenced = false
                             } catch (e) {
                                 log.error([
-                                    `[dispatch] handle: failed to generate ${getMessageName(this.protocolMap, code, defVersion)}`,
+                                    `[dispatch] [${hook.moduleName}] handle: failed to generate ${getMessageName(this.protocolMap, code, defVersion)}`,
                                     `hook: ${getHookName(hook)}`,
                                     `error: ${e.message}`,
                                     errStack(e, false),
@@ -460,7 +444,7 @@ class Dispatch {
                     }
                     catch (e) {
                         log.error([
-                            `[dispatch] handle: error running hook for ${getMessageName(this.protocolMap, code, defVersion)}`,
+                            `[dispatch] [${hook.moduleName}] handle: error running hook for ${getMessageName(this.protocolMap, code, defVersion)}`,
                             `hook: ${getHookName(hook)}`,
                             `data: ${util.inspect(event)}`,
                             `error: ${e.message}`,
@@ -470,7 +454,7 @@ class Dispatch {
                 }
                 catch (e) {
                     log.error([
-                        `[dispatch] handle: failed to parse ${getMessageName(this.protocolMap, code, hook.definitionVersion)}`,
+                        `[dispatch] [${hook.moduleName}] handle: failed to parse ${getMessageName(this.protocolMap, code, hook.definitionVersion)}`,
                         `hook: ${getHookName(hook)}`,
                         `data: ${data.toString('hex')}`,
                         `error: ${e.message}`,

@@ -172,7 +172,7 @@ class ModuleManager {
 
                 // Clear module files from require cache
                 Object.keys(require.cache).forEach(key => {
-                    if (key.startsWith(moduleInfo.path))
+                    if (key.startsWith(moduleInfo.path) && !key.endsWith('.node'))
                         delete require.cache[key];
                 });
 
@@ -201,26 +201,29 @@ class ModuleManager {
             return false;
         }
 
+        let result;
         try {
             this.dispatch.unhookModule(moduleInfo.name);
             module.destructor();
-            this.loadedModules.delete(moduleInfo.name);
-
-            // Clear module files from require cache
-            Object.keys(require.cache).forEach(key => {
-                if (key.startsWith(moduleInfo.path))
-                    delete require.cache[key];
-            });
-
-            if (logInfo)
-                console.log(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-unloaded', { name: printableName(moduleInfo) }));
-            return true;
+            result = true;
         } catch (e) {
             console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-unload-error-1', { name: printableName(moduleInfo) }));
             console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-unload-error-2', { supportUrl: moduleInfo.supportUrl || global.TeraProxy.SupportUrl }));
             console.error(e);
-            return false;
+            result = false;
         }
+
+        this.loadedModules.delete(moduleInfo.name);
+
+        // Clear module files from require cache
+        Object.keys(require.cache).forEach(key => {
+            if (key.startsWith(moduleInfo.path) && !key.endsWith('.node'))
+                delete require.cache[key];
+        });
+
+        if (result && logInfo)
+            console.log(mui.get('tera-network-proxy/connection/dispatch/modulemanager/mod-unloaded', { name: printableName(moduleInfo) }));
+        return result;
     }
 
     reload(name, logInfo = true) {
