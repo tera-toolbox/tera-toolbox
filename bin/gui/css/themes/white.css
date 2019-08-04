@@ -84,11 +84,11 @@ ul.tabs li {
     }
 
     .log-contents > div.warn {
-        color: darkred;
+        color: rgb(207, 128, 0);
     }
 
     .log-contents > div.error {
-        color: darkred;
+        color: rgb(238, 58, 58);
     }
 
 #clear-logs {
