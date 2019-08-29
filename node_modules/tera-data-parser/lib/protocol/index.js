@@ -532,7 +532,7 @@ class TeraProtocol {
      * @returns {Object}
      */
     parse(identifier, definitionVersion, data) {
-        const { name, version, definition } = this.resolveIdentifier(identifier, definitionVersion);
+        const { code, name, version, definition } = this.resolveIdentifier(identifier, definitionVersion);
         if (!definition.readable)
             throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is deprecated and cannot be used for reading`);
         return definition.reader(new Stream.Readable(data, 4));
