@@ -17,7 +17,7 @@ function NodeVersionCheck() {
         checkRuntimeCompatibility();
     } catch (e) {
         switch (e.message) {
-            case 'BigInt not supported':
+            case 'NodeTooOld':
                 console.error(mui.get('loader-cli/error-node-too-old-1'));
                 console.error(mui.get('loader-cli/error-node-too-old-2'));
                 break;
