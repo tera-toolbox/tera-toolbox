@@ -2,7 +2,6 @@ const path = require('path')
 const util = require('util')
 const binarySearch = require('binary-search')
 const { protocol } = require('tera-data-parser')
-const types = Object.values(require('tera-data-parser').types)
 const log = require('../../logger')
 const ModuleManager = require('./moduleManager')
 
@@ -200,11 +199,11 @@ class Dispatch {
     }
 
     fromRaw(name, version, data) {
-        return this.protocol.parse(name, version, data);
+        return this.protocol.parse(this.protocol.resolveIdentifier(name, version), data);
     }
 
     toRaw(name, version, data) {
-        return this.protocol.write(name, version, data);
+        return this.protocol.write(this.protocol.resolveIdentifier(name, version), data);
     }
 
     resolve(name, definitionVersion = '*') {
@@ -323,7 +322,7 @@ class Dispatch {
             }
 
             try {
-                data = this.protocol.write(name, version, data)
+                data = this.protocol.write(this.protocol.resolveIdentifier(name, version), data)
             } catch (e) {
                 throw new Error(`[dispatch] write: failed to generate ${getMessageName(this.protocolMap, name, version, name)}:\n${e}`);
             }
@@ -368,18 +367,19 @@ class Dispatch {
         bufferAttachFlags(data)
 
         let eventCache = [],
+            resolvedIdentifierCache = [],
             iter = 0,
             hooks = (globalHooks ? globalHooks.size : 0) + (codeHooks ? codeHooks.size : 0)
 
         for (const hook of iterateHooks(globalHooks, codeHooks)) {
+            const lastHook = ++iter === hooks
+
             // check flags
             const { filter } = hook
             if (filter.fake !== null && filter.fake !== fake) continue
             if (filter.incoming !== null && filter.incoming !== incoming) continue
             if (filter.modified !== null && filter.modified !== modified) continue
             if (filter.silenced !== null && filter.silenced !== silenced) continue
-
-            const lastHook = ++iter === hooks
 
             if (hook.definitionVersion === 'raw')
                 try {
@@ -414,10 +414,10 @@ class Dispatch {
             else { // normal hook
                 try {
                     const defVersion = hook.definitionVersion
+                    const resolvedIdentifier = resolvedIdentifierCache[defVersion] || (resolvedIdentifierCache[defVersion] = this.protocol.resolveIdentifier(code, defVersion))
+                    let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(resolvedIdentifier, data))
 
-                    let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(code, defVersion, data))
-
-                    objectAttachFlags(lastHook ? event : (event = deepClone(event)))
+                    objectAttachFlags(lastHook ? event : (event = this.protocol.clone(resolvedIdentifier, event)))
 
                     try {
                         const result = hook.callback(event, fake)
@@ -426,7 +426,7 @@ class Dispatch {
                             eventCache = []
 
                             try {
-                                data = this.protocol.write(code, defVersion, event)
+                                data = this.protocol.write(resolvedIdentifier, event)
                                 bufferAttachFlags(data)
 
                                 modified = true
@@ -504,24 +504,6 @@ class Dispatch {
 
         return missingDefs;
     }
-}
-
-function deepClone(obj) {
-    if (obj instanceof Buffer) return new Buffer.from(obj)
-
-    for (let t of types) // Custom parser types
-        if (obj instanceof t) return Object.assign(Object.create(t.prototype), obj)
-
-    let copy = Array.isArray(obj) ? [] : {}
-
-    for (let key in obj) {
-        let val = obj[key]
-
-        if (typeof val === 'object') copy[key] = deepClone(val)
-        else copy[key] = val
-    }
-
-    return copy
 }
 
 module.exports = Dispatch;

@@ -10,6 +10,7 @@ const defParser = require('../parsers/def');
 const PATH_DEFS = 'protocol';
 const PLATFORMS = ['pc', 'console', 'classic'];
 const POD_TYPES = ['bool', 'byte', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'float', 'double', 'vec3', 'vec3fa', 'angle', 'skillid32', 'skillid', 'customize'];
+const TRIVIALLY_COPYABLE_TYPES = ['bool', 'byte', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'float', 'double', 'string', 'angle'];
 
 // def compilation
 function _countName(fullName) {
@@ -326,10 +327,88 @@ function _transpileWriter(definition, path = '', empty = false) {
     return result;
 }
 
+function _transpileCloner(definition, fromPath = '', toPath = '') {
+    let result = '';
+    for (const [name, type] of definition) {
+        const fullNameFrom = `${fromPath}.${name}`;
+        const fullNameTo = `${toPath}.${name}`;
+
+        if (!Array.isArray(type)) {
+            switch (type) {
+                case 'refArray':
+                case 'refBytes':
+                case 'refString':
+                    break;
+
+                case 'bytes':
+                    result += `${fullNameTo} = Buffer.from(${fullNameFrom});\n`;
+                    break;
+
+                case 'vec3':
+                case 'vec3fa':
+                case 'skillid32':
+                case 'skillid':
+                case 'customize':
+                    result += `${fullNameTo} = Object.assign(Object.create(Object.getPrototypeOf(${fullNameFrom})), ${fullNameFrom})\n`;
+                    break;
+
+                default: {
+                    if (!TRIVIALLY_COPYABLE_TYPES.includes(type))
+                        throw new Error(`Invalid data type "${type}" for field "${fullNameFrom}"!`);
+
+                    result += `${fullNameTo} = ${fullNameFrom};\n`;
+                    break;
+                }
+            }
+        } else {
+            switch (type.type) {
+                case 'object': {
+                    result += `${fullNameTo} = {};\n`;
+                    result += _transpileCloner(type, fullNameFrom, fullNameTo);
+                    break;
+                }
+
+                case 'array': {
+                    if (type.subtype) {
+                        if (TRIVIALLY_COPYABLE_TYPES.includes(type.subtype)) {
+                            result += `${fullNameTo} = ${fullNameFrom}.slice();\n`;
+                        } else {
+                            const tmpIndexName = `tmpindex_${_offsetName(fullNameFrom)}`;
+                            const curElemNameFrom = `${fullNameFrom}[${tmpIndexName}]`;
+                            const curElemNameTo = `${fullNameTo}[${tmpIndexName}]`;
+
+                            result += `${fullNameTo} = new Array(${fullNameFrom}.length);\n`;
+                            result += `for (let ${tmpIndexName} = 0; ${tmpIndexName} < ${fullNameFrom}.length; ++${tmpIndexName}) {\n`;
+                            result += `${curElemNameTo} = Object.assign(Object.create(Object.getPrototypeOf(${curElemNameFrom})), ${curElemNameFrom})\n`;
+                            result += '}\n';
+                        }
+                    } else {
+                        const tmpIndexName = `tmpindex_${_offsetName(fullNameFrom)}`;
+                        const curElemNameFrom = `${fullNameFrom}[${tmpIndexName}]`;
+                        const curElemNameTo = `${fullNameTo}[${tmpIndexName}]`;
+
+                        result += `${fullNameTo} = new Array(${fullNameFrom}.length);\n`;
+                        result += `for (let ${tmpIndexName} = 0; ${tmpIndexName} < ${fullNameFrom}.length; ++${tmpIndexName}) {\n`;
+                        result += `${curElemNameTo} = {};\n`;
+                        result += _transpileCloner(type, curElemNameFrom, curElemNameTo);
+                        result += '}\n';
+                    }
+                    break;
+                }
+
+                default:
+                    throw new Error(`Invalid aggregate type "${type}" for field "${fullName}"!`);
+            }
+        }
+    }
+    return result;
+}
+
 function transpile(definition) {
     return {
         reader: 'let result = {};\n' + _transpileReader(definition, 'result') + 'return result;',
-        writer: _transpileWriter(definition, 'data')
+        writer: _transpileWriter(definition, 'data'),
+        cloner: 'let result = {};\n' + _transpileCloner(definition, 'data', 'result') + 'return result;'
     };
 }
 
@@ -337,7 +416,8 @@ function compile(definition) {
     const transpiled = transpile(definition);
     return {
         reader: Function('stream', '"use strict";\n' + transpiled.reader),
-        writer: Function('stream', 'data', '"use strict";\n' + transpiled.writer)
+        writer: Function('stream', 'data', '"use strict";\n' + transpiled.writer),
+        cloner: Function('data', '"use strict";\n' + transpiled.cloner)
     };
 }
 
@@ -391,7 +471,7 @@ class TeraProtocol {
 
     addDefinition(name, version, definition, overwrite = false) {
         // Compile definition if required
-        if (typeof definition.writer !== 'function' || typeof definition.reader !== 'function') {
+        if (typeof definition.writer !== 'function' || typeof definition.reader !== 'function' || typeof definition.cloner !== 'function') {
             try {
                 definition = compile(definition);
             } catch (e) {
@@ -526,43 +606,50 @@ class TeraProtocol {
     }
 
     /**
-     * @param {String|Number} identifier
+     * @param {Object} resolvedIdentifier
      * @param {Number} [definitionVersion]
      * @param {Buffer} data
      * @returns {Object}
      */
-    parse(identifier, definitionVersion, data) {
-        const { code, name, version, definition } = this.resolveIdentifier(identifier, definitionVersion);
-        if (!definition.readable)
-            throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is deprecated and cannot be used for reading`);
-        return definition.reader(new Stream.Readable(data, 4));
+    parse(resolvedIdentifier, data) {
+        if (!resolvedIdentifier.definition.readable)
+            throw new Error(`version ${resolvedIdentifier.version} of message (name: "${resolvedIdentifier.name}", code: ${resolvedIdentifier.code}) is deprecated and cannot be used for reading`);
+        return resolvedIdentifier.definition.reader(new Stream.Readable(data, 4));
     }
 
     /**
-     * @param {String|Number} identifier
+     * @param {Object} resolvedIdentifier
      * @param {Number|'*'} [definitionVersion]
      * @param {Object} data
      * @returns {Buffer}
      */
-    write(identifier, definitionVersion, data) {
-        const { code, name, version, definition } = this.resolveIdentifier(identifier, definitionVersion);
-        if (!definition.writeable)
-            throw new Error(`version ${version} of message (name: "${name}", code: ${code}) is deprecated and cannot be used for writing`);
+    write(resolvedIdentifier, data) {
+        if (!resolvedIdentifier.definition.writeable)
+            throw new Error(`version ${resolvedIdentifier.version} of message (name: "${resolvedIdentifier.name}", code: ${resolvedIdentifier.code}) is deprecated and cannot be used for writing`);
 
         // write data
         const { writeStream } = this;
         writeStream.seek(4);
-        definition.writer(writeStream, data || {});
+        resolvedIdentifier.definition.writer(writeStream, data || {});
 
         // write header
         const length = this.writeStream.position;
         writeStream.seek(0);
         writeStream.uint16(length);
-        writeStream.uint16(code);
+        writeStream.uint16(resolvedIdentifier.code);
 
         let result = Buffer.allocUnsafe(length);
         writeStream.buffer.copy(result, 0, 0, length);
         return result;
+    }
+
+    /**
+     * @param {Object} resolvedIdentifier
+     * @param {Object} data
+     * @returns {Object}
+     */
+    clone(resolvedIdentifier, data) {
+        return resolvedIdentifier.definition.cloner(data);
     }
 }
 
