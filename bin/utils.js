@@ -32,6 +32,8 @@ function isAdmin() {
  * @see https://stackoverflow.com/a/42505874/3027390
  */
 function rimraf(dir_path) {
+    const fs = require('fs');
+    const path = require('path'); 
     try {
         fs.readdirSync(dir_path).forEach(entry => {
             const entry_path = path.join(dir_path, entry);
