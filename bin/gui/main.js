@@ -59,6 +59,13 @@ jQuery(($) => {
         });
     }
 
+    // Admin indicator
+    let IsAdmin = false;
+    ipcRenderer.on('is admin', (_, isAdmin) => {
+        IsAdmin = isAdmin;
+        $('#title').text(mui.get(IsAdmin ? 'gui/main/title/admin' : 'gui/main/title/noadmin'));
+    });
+
     // Update available indicator
     let UpdateAvailable = false;
     ipcRenderer.on('update available', _ => {

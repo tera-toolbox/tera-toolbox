@@ -40,8 +40,8 @@ function SaveConfiguration(newConfig) {
 // Migration
 function Migration() {
     try {
-        const { ProxyMigration } = require('./migration');
-        ProxyMigration();
+        const { ToolboxMigration } = require('./migration');
+        ToolboxMigration();
     } catch (e) {
         const { dialog } = require('electron');
 
@@ -189,6 +189,7 @@ process.on('SIGTERM', cleanExit);
 ipcMain.on('init', (event, _) => {
     event.sender.send('set config', config);
     event.sender.send('proxy running', false);
+    event.sender.send('is admin', global.TeraProxy.IsAdmin);
 
     if (config.noselfupdate) {
         console.warn(mui.get('loader-gui/warning-noselfupdate-1'));
@@ -403,9 +404,19 @@ class TeraProxyGUI {
     }
 }
 
-// Main
-let config;
+// GUI
 let gui;
+
+// Enforce single instance of GUI
+if (!app.requestSingleInstanceLock()) {
+    app.quit();
+    return;
+} else {
+    app.on('second-instance', () => {
+        if (gui)
+            gui.show();
+    });
+}
 
 function showError(error) {
     console.error(error);
@@ -428,37 +439,26 @@ process.on('warning', (warning) => {
 });
 
 // Main
+let config;
 const { initGlobalSettings } = require('./utils');
-initGlobalSettings(false);
+initGlobalSettings(false).then(() => {
+    // Boot GUI
+    gui = new TeraProxyGUI;
 
-// Enforce single instance of GUI
-if (!app.requestSingleInstanceLock()) {
-    app.quit();
-    return;
-} else {
-    app.on('second-instance', () => {
-        if (gui)
+    if (app.isReady()) {
+        gui.show();
+    } else {
+        app.on('ready', () => {
             gui.show();
+        });
+    }
+
+    app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin')
+            app.quit();
     });
-}
 
-// Boot GUI
-gui = new TeraProxyGUI;
-
-if (app.isReady()) {
-    gui.show();
-} else {
-    app.on('ready', () => {
+    app.on('activate', () => {
         gui.show();
     });
-}
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin')
-        app.quit();
 });
-
-app.on('activate', () => {
-    gui.show();
-});
-

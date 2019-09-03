@@ -1,29 +1,9 @@
 const path = require("path");
 const fs = require("fs");
+const { rimraf } = require('./utils');
 
-/**
- * Remove directory recursively
- * @param {string} dir_path
- * @see https://stackoverflow.com/a/42505874/3027390
- */
-function rimraf(dir_path) {
-    try {
-        fs.readdirSync(dir_path).forEach(entry => {
-            const entry_path = path.join(dir_path, entry);
-            if (fs.lstatSync(entry_path).isDirectory())
-                rimraf(entry_path);
-            else
-                fs.unlinkSync(entry_path);
-        });
-
-        fs.rmdirSync(dir_path);
-    } catch (e) {
-        // Ignore
-    }
-}
-
-// Migrate from old proxy versions
-function ProxyMigration() {
+// Migrate from old versions
+function ToolboxMigration() {
     // Delete legacy servers folder
     rimraf(path.join(__dirname, 'servers'));
 
@@ -49,4 +29,4 @@ function ProxyMigration() {
     }
 }
 
-module.exports = { ProxyMigration };
+module.exports = { ToolboxMigration };
