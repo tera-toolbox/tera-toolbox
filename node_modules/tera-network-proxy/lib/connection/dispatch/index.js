@@ -381,24 +381,38 @@ class Dispatch {
             if (filter.modified !== null && filter.modified !== modified) continue
             if (filter.silenced !== null && filter.silenced !== silenced) continue
 
-            if (hook.definitionVersion === 'raw')
+            if (hook.definitionVersion === 'raw') {
                 try {
                     const copy = Buffer.from(data)
-                    const result = hook.callback(code, data, incoming, fake)
+                    bufferAttachFlags(copy)
 
-                    if (Buffer.isBuffer(result) && result !== data) {
-                        modified = modified || (result.length !== data.length) || !result.equals(data)
-                        bufferAttachFlags(result)
-                        data = result
+                    const result = hook.callback(code, copy, incoming, fake)
 
-                        if (modified)
+                    if (Buffer.isBuffer(result)) {
+                        if (result.length !== data.length || !result.equals(data)) {
+                            modified = true
                             eventCache = []
+
+                            if (result !== copy)
+                                bufferAttachFlags(result)
+                            data = result
+                        }
+                    } else if (typeof result === 'boolean') {
+                        silenced = !result
+
+                        if (copy.length !== data.length || !copy.equals(data)) {
+                            log.debug(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it (returned bool for silencing instead). This behavior is deprecated and will stop working soon!`);
+                            modified = true
+                            eventCache = []
+                            data = copy
+                        }
                     } else {
-                        modified = modified || !data.equals(copy)
-                        if (typeof result === 'boolean') silenced = !result
-
-                        if (modified)
+                        if (copy.length !== data.length || !copy.equals(data)) {
+                            log.debug(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it. This behavior is deprecated and will stop working soon!`);
+                            modified = true
                             eventCache = []
+                            data = copy
+                        }
                     }
                 }
                 catch (e) {
@@ -411,7 +425,7 @@ class Dispatch {
                     ].join('\n'))
                     continue
                 }
-            else { // normal hook
+            } else { // normal hook
                 try {
                     const defVersion = hook.definitionVersion
                     const resolvedIdentifier = resolvedIdentifierCache[defVersion] || (resolvedIdentifierCache[defVersion] = this.protocol.resolveIdentifier(code, defVersion))
