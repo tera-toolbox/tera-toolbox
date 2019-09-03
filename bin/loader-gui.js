@@ -404,19 +404,9 @@ class TeraProxyGUI {
     }
 }
 
-// GUI
+// Main
 let gui;
-
-// Enforce single instance of GUI
-if (!app.requestSingleInstanceLock()) {
-    app.quit();
-    return;
-} else {
-    app.on('second-instance', () => {
-        if (gui)
-            gui.show();
-    });
-}
+let config;
 
 function showError(error) {
     console.error(error);
@@ -438,27 +428,36 @@ process.on('warning', (warning) => {
     console.warn(warning.stack);
 });
 
-// Main
-let config;
-const { initGlobalSettings } = require('./utils');
-initGlobalSettings(false).then(() => {
-    // Boot GUI
-    gui = new TeraProxyGUI;
+module.exports = function StartGUI() {
+    return new Promise((resolve, reject) => {
+        const { initGlobalSettings } = require('./utils');
+        initGlobalSettings(false).then(() => {        
+            // Boot GUI
+            gui = new TeraProxyGUI;
 
-    if (app.isReady()) {
-        gui.show();
-    } else {
-        app.on('ready', () => {
-            gui.show();
+            if (app.isReady()) {
+                gui.show();
+                resolve();
+            } else {
+                app.on('ready', () => {
+                    gui.show();
+                    resolve();
+                });
+            }
+            
+            app.on('second-instance', () => {
+                if (gui)
+                    gui.show();
+            });
+
+            app.on('window-all-closed', () => {
+                if (process.platform !== 'darwin')
+                    app.quit();
+            });
+
+            app.on('activate', () => {
+                gui.show();
+            });
         });
-    }
-
-    app.on('window-all-closed', () => {
-        if (process.platform !== 'darwin')
-            app.quit();
     });
-
-    app.on('activate', () => {
-        gui.show();
-    });
-});
+}
