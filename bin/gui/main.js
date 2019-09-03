@@ -382,7 +382,7 @@ jQuery(($) => {
 
             $(`#${uninstallId}`).on('click', (event) => {
                 event.preventDefault();
-                if (ProxyRunning) {
+                if (ProxyStarting || ProxyRunning) {
                     ShowModal(mui.get('gui/main/modal/error-cannot-uninstall-mod-while-running'));
                 } else if (!WaitingForModAction) {
                     ipcRenderer.send('uninstall mod', modInfo);
@@ -474,7 +474,7 @@ jQuery(($) => {
 
             $(`#${installId}`).on('click', (event) => {
                 event.preventDefault();
-                if (ProxyRunning)
+                if (ProxyStarting || ProxyRunning)
                     ShowModal(mui.get('gui/main/modal/error-cannot-install-mod-while-running'));
                 else if (!WaitingForModInstall)
                     requestInstallMod(modInfo);
