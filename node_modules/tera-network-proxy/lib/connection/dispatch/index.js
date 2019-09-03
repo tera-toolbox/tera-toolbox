@@ -212,7 +212,7 @@ class Dispatch {
 
     createHook(moduleName, name, version, opts, cb) {
         // parse args
-        if (typeof version !== 'number' && version !== '*' && version !== 'raw')
+        if (typeof version !== 'number' && version !== '*' && version !== 'raw' && version !== 'event')
             throw TypeError(`[dispatch] [${moduleName}] hook: invalid version specified (${version})`)
 
         if (opts && typeof opts !== 'object') {
@@ -228,7 +228,7 @@ class Dispatch {
         if (name === '*') {
             code = name
             if (typeof version === 'number')
-                throw TypeError(`[dispatch] [${moduleName}] hook: * hook must request version '*' or 'raw' (given: ${version})`)
+                throw TypeError(`[dispatch] [${moduleName}] hook: * hook must request version '*', 'raw', or 'event' (given: ${version})`)
         } else {
             // Check if opcode is mapped
             code = this.protocolMap.name.get(name)
@@ -236,7 +236,7 @@ class Dispatch {
                 throw Error(`[dispatch] [${moduleName}] hook: unmapped packet "${name}"`)
 
             // Check if definition exists / is deprecated
-            if (version !== 'raw') {
+            if (version !== 'raw' && version !== 'event') {
                 try {
                     const { definition } = this.resolve(name, version);
                     if (!definition.readable)
@@ -423,7 +423,21 @@ class Dispatch {
                         `error: ${e.message}`,
                         errStack(e),
                     ].join('\n'))
-                    continue
+                }
+            } else if (hook.definitionVersion === 'event') {
+                try {
+                    const result = hook.callback()
+
+                    if (result === false)
+                        silenced = true
+                }
+                catch (e) {
+                    log.error([
+                        `[dispatch] [${hook.moduleName}] handle: error running event hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)}`,
+                        `hook: ${getHookName(hook)}`,
+                        `error: ${e.message}`,
+                        errStack(e),
+                    ].join('\n'))
                 }
             } else { // normal hook
                 try {
@@ -454,7 +468,8 @@ class Dispatch {
                                 ].join('\n'))
                             }
                         }
-                        else if (result === false) silenced = true
+                        else if (result === false)
+                            silenced = true
                     }
                     catch (e) {
                         log.error([
@@ -511,7 +526,7 @@ class Dispatch {
 
             const known_versions = this.protocol.messages.get(name);
             versions.forEach(version => {
-                if (version !== 'raw' && (!known_versions || !known_versions.get(version)))
+                if (version !== 'raw' && version !== 'event' && (!known_versions || !known_versions.get(version)))
                     missingDefs.push({ name, version });
             });
         });
