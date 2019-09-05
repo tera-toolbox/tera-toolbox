@@ -84,6 +84,7 @@ function _transpileReader(definition, path = '') {
                     const offsetName = _offsetName(fullName);
                     const tmpOffsetName = `tmpoffset_${offsetName}`;
                     const tmpIndexName = `tmpindex_${offsetName}`;
+                    const tmpVarName = `tmpvar_${offsetName}`;
                     const curElemName = `${fullName}[${tmpIndexName}]`;
 
                     result += `${fullName} = new Array(${_countName(fullName)});\n`;
@@ -107,8 +108,9 @@ function _transpileReader(definition, path = '') {
                             result += `${curElemName} = stream.${type.subtype}();\n`;
                         }
                     } else {
-                        result += `${curElemName} = {};\n`;
-                        result += _transpileReader(type, curElemName);
+                        result += `let ${tmpVarName} = {};\n`;
+                        result += _transpileReader(type, tmpVarName);
+                        result += `${curElemName} = ${tmpVarName};\n`;
                     }
 
                     result += `++${tmpIndexName};\n`;
@@ -284,6 +286,7 @@ function _transpileWriter(definition, path = '', empty = false) {
                         const offsetName = _offsetName(fullName);
                         const tmpLastName = `tmplast_${offsetName}`;
                         const tmpCurrentName = `tmpcurrent_${offsetName}`;
+                        const tmpVarName = `tmpvar_${offsetName}`;
                         const curElemName = _elemName(fullName);
 
                         result += `if (${fullName} && ${fullName}.length > 0) {\n`;
@@ -309,7 +312,8 @@ function _transpileWriter(definition, path = '', empty = false) {
                                 result += `stream.${type.subtype}(${curElemName});\n`;
                             }
                         } else {
-                            result += _transpileWriter(type, curElemName);
+                            result += `let ${tmpVarName} = ${curElemName};\n`;
+                            result += _transpileWriter(type, tmpVarName);
                         }
 
                         result += '}\n';
@@ -384,13 +388,17 @@ function _transpileCloner(definition, fromPath = '', toPath = '') {
                         }
                     } else {
                         const tmpIndexName = `tmpindex_${_offsetName(fullNameFrom)}`;
+                        const tmpVarNameFrom = `tmpvar_${_offsetName(fullNameFrom)}`;
+                        const tmpVarNameTo = `tmpvar_${_offsetName(fullNameTo)}`;
                         const curElemNameFrom = `${fullNameFrom}[${tmpIndexName}]`;
                         const curElemNameTo = `${fullNameTo}[${tmpIndexName}]`;
 
                         result += `${fullNameTo} = new Array(${fullNameFrom}.length);\n`;
                         result += `for (let ${tmpIndexName} = 0; ${tmpIndexName} < ${fullNameFrom}.length; ++${tmpIndexName}) {\n`;
-                        result += `${curElemNameTo} = {};\n`;
-                        result += _transpileCloner(type, curElemNameFrom, curElemNameTo);
+                        result += `let ${tmpVarNameFrom} = ${curElemNameFrom}; \n`;
+                        result += `let ${tmpVarNameTo} = {};\n`;
+                        result += _transpileCloner(type, tmpVarNameFrom, tmpVarNameTo);
+                        result += `${curElemNameTo} = ${tmpVarNameTo};\n`;
                         result += '}\n';
                     }
                     break;
