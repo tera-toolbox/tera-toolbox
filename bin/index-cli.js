@@ -79,6 +79,12 @@ function main() {
 }
 
 // -------------------------------------------------------------------
+// Prevent CLI from immediately closing in case of an error
+process.stdin.resume();
+process.on('uncaughtException', (e) => {
+    console.log(e);
+});
+
 // Safely load configuration
 let branch = 'master';
 let updatelog = false;
