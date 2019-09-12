@@ -1,31 +1,47 @@
-'use strict'
+'use strict';
 
 const fs = require('fs');
 const log = require('../logger');
 
 // helper functions
-const META_TYPES = {
-    array: ['count', 'offset'],
-    bytes: ['offset', 'count'],
-    string: ['offset'],
+const META_TYPE = {
+    array: 'refArray',
+    bytes: 'refBytes',
+    string: 'refString',
 };
 
-function pushMetaTypes(base, key, type) {
-    const metaTypes = META_TYPES[type];
-    if (!metaTypes) return;
-
-    // get key path
+function getKeyPath(base, key) {
     let ref = base;
     const keyPath = [key];
     while (ref.type === 'object') {
         keyPath.unshift(ref.name);
         ref = ref.up;
     }
-    const kp = keyPath.join('.');
+    return [keyPath.join('.'), ref];
+}
 
-    //
-    for (const t of metaTypes) {
-        ref.meta.push([kp, t]);
+function pushMetaType(base, key, type) {
+    const metaType = META_TYPE[type];
+    if (!metaType)
+        return;
+
+    const [kp, ref] = getKeyPath(base, key);
+    ref.meta.push([kp, metaType]);
+}
+
+function linkMetaTypes(def) {
+    for (let [k, t] of def) {
+        const refType = META_TYPE[Array.isArray(t) ? t.type : t];
+        if (refType) {
+            const [kp, ref] = getKeyPath(def, k);
+            const meta = ref.find(([rk, rt]) => rk === kp);
+            if (!meta)
+                throw new Error(`No reference specified for field "${kp}"!`);
+            meta[1] = refType;
+        }
+
+        if (Array.isArray(t))
+            linkMetaTypes(t);
     }
 }
 
@@ -34,6 +50,7 @@ function flatten(def, implicitMeta = true) {
         implicitMeta ? def.meta : [],
         def.map(([k, t]) => [k, Array.isArray(t) ? flatten(t, implicitMeta) : t])
     );
+
     obj.type = def.type;
     if (def.subtype)
         obj.subtype = def.subtype;
@@ -65,12 +82,20 @@ function parseSync(filepath) {
         }
 
         const depth = match[1].replace(/[^-]/g, '').length;
-        const type = match[2];
+        let type = match[2];
         const subtype = match[3] ? match[3].replace(/[\s<>]/g, '') : undefined;
         const flags = match[4] ? match[4].replace(/[\s\[\]]/g, '').split(',') : [];
         const key = match[5];
 
-        if (implicitMeta && (type === 'count' || type === 'offset'))
+        // Upgrade to 'ref' from old 'count'/'offset' format
+        if (type === 'count')
+            continue;
+        if (type === 'offset') {
+            log.debug(`[parsers/def] parse warning: 'count'/'offset' are deprecated, upgrading to 'ref' ("${filepath}" line ${i + 1})`);
+            type = 'ref';
+        }
+
+        if (implicitMeta && type === 'ref')
             implicitMeta = false;
 
         // check if we need to move up or down a level
@@ -79,9 +104,8 @@ function parseSync(filepath) {
             level++;
 
             // sanity check
-            if (depth !== level) {
-                log.warn(`[parsers/def] parse warning: array nesting too deep\n    at "${filepath}", line ${i + 1}`);
-            }
+            if (depth !== level)
+                log.warn(`[parsers/def] parse warning: array nesting too deep ("${filepath}" line ${i + 1})`);
 
             // we are defining the subfields for the last field we saw,
             // so move current level to the `type` value (2nd elem) of the last field
@@ -95,17 +119,20 @@ function parseSync(filepath) {
             }
         }
 
-        // append necessary metadata fields
-        pushMetaTypes(top, key, type);
+        // append necessary metadata field
+        if (implicitMeta)
+            pushMetaType(top, key, type);
 
         // append the field to the current level
         if (type === 'array' || type === 'object') {
             const group = [];
             group.type = type;
-            if (type === 'array' && subtype)
-                group.subtype = subtype;
-            if (type === 'array' && flags)
-                group.flags = flags;
+            if (type === 'array') {
+                if (subtype)
+                    group.subtype = subtype;
+                if (flags)
+                    group.flags = flags;
+            }
             group.name = key;
             group.up = top;
             group.meta = [];
@@ -115,6 +142,8 @@ function parseSync(filepath) {
         }
     }
 
+    if (!implicitMeta)
+        linkMetaTypes(definition);
     return flatten(definition, implicitMeta);
 }
 

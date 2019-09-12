@@ -65,7 +65,8 @@ class ModuleManager {
                 if (this.installedModules.has(moduleInfo.name)) {
                     console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/duplicate-mod-error', { name }));
                 } else {
-                    const missingDefs = this.dispatch.checkDefinitions(moduleInfo.packets);
+                    // TODO: reenable and implement a better format that allows for versioned defs
+                    const missingDefs = []; //this.dispatch.checkDefinitions(moduleInfo.packets);
                     if (missingDefs.length > 0) {
                         console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/unsupported-def-error-1', { name }));
                         missingDefs.forEach(def => console.error(mui.get('tera-network-proxy/connection/dispatch/modulemanager/unsupported-def-error-2', { name: def.name, version: def.version })));

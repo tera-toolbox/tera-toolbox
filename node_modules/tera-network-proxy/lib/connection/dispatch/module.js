@@ -77,6 +77,7 @@ class Module {
     }
 
     destructor() {
+        // Destroy mod instance
         try {
             if (typeof this.instance.destructor === 'function')
                 this.instance.destructor();
@@ -85,6 +86,13 @@ class Module {
                 this.saveSettings();
         } finally {
             this.instance = null;
+        }
+
+        // Destroy core mod instances
+        try {
+            if (this._command && typeof this._command.destructor === 'function')
+                this._command.destructor();
+        } finally {
             this._command = null;
             this._game = null;
         }

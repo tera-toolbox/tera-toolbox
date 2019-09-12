@@ -17,7 +17,7 @@ function NodeVersionCheck() {
         checkRuntimeCompatibility();
     } catch (e) {
         switch (e.message) {
-            case 'BigInt not supported':
+            case 'NodeTooOld':
                 console.error(mui.get('loader-cli/error-node-too-old-1'));
                 console.error(mui.get('loader-cli/error-node-too-old-2'));
                 break;
@@ -43,8 +43,8 @@ function LoadConfiguration() {
 // Migration
 function Migration() {
     try {
-        const { ProxyMigration } = require('./migration');
-        ProxyMigration();
+        const { ToolboxMigration } = require('./migration');
+        ToolboxMigration();
     } catch (e) {
         console.error(mui.get('loader-cli/error-migration-failed-1'));
         console.error(mui.get('loader-cli/error-migration-failed-2'));
@@ -97,36 +97,37 @@ process.on('warning', (warning) => {
 });
 
 const { initGlobalSettings } = require('./utils');
-initGlobalSettings(false);
-NodeVersionCheck();
-Migration();
-const ProxyConfig = LoadConfiguration();
-InitializeMUI(ProxyConfig.uilanguage);
-global.TeraProxy.DevMode = !!ProxyConfig.devmode;
-global.TeraProxy.GUIMode = false;
-global.TeraProxy.UILanguage = mui.uilanguage;
-
-// Auto-update modules & tera-data and run
-if (ProxyConfig.noupdate) {
-    console.warn(mui.get('loader-cli/warning-noupdate-1'));
-    console.warn(mui.get('loader-cli/warning-noupdate-2'));
-    console.warn(mui.get('loader-cli/warning-noupdate-3'));
-    console.warn(mui.get('loader-cli/warning-noupdate-4'));
-    console.warn(mui.get('loader-cli/warning-noupdate-5'));
-    RunProxy(ModuleFolder, ProxyConfig);
-} else {
-    const autoUpdate = require('./update');
-    autoUpdate(ModuleFolder, ProxyConfig.updatelog, true).then(updateResult => {
-        updateResult.legacy.forEach(mod => console.warn(mui.get('loader-cli/warning-update-mod-not-supported', { name: mod.name })));
-        updateResult.failed.forEach(mod => console.error(mui.get('loader-cli/error-update-mod-failed', { name: mod.name })));
-        if (!updateResult['tera-data']) {
-            console.error(mui.get('loader-cli/error-update-tera-data-failed-1'));
-            console.error(mui.get('loader-cli/error-update-tera-data-failed-2'));
-        }
-
+initGlobalSettings(false).then(() => {
+    NodeVersionCheck();
+    Migration();
+    const ProxyConfig = LoadConfiguration();
+    InitializeMUI(ProxyConfig.uilanguage);
+    global.TeraProxy.DevMode = !!ProxyConfig.devmode;
+    global.TeraProxy.GUIMode = false;
+    global.TeraProxy.UILanguage = mui.uilanguage;
+        
+    // Auto-update modules & tera-data and run
+    if (ProxyConfig.noupdate) {
+        console.warn(mui.get('loader-cli/warning-noupdate-1'));
+        console.warn(mui.get('loader-cli/warning-noupdate-2'));
+        console.warn(mui.get('loader-cli/warning-noupdate-3'));
+        console.warn(mui.get('loader-cli/warning-noupdate-4'));
+        console.warn(mui.get('loader-cli/warning-noupdate-5'));
         RunProxy(ModuleFolder, ProxyConfig);
-    }).catch(e => {
-        console.error(mui.get('loader-cli/error-update-failed'));
-        console.error(e);
-    });
-}
+    } else {
+        const autoUpdate = require('./update');
+        autoUpdate(ModuleFolder, ProxyConfig.updatelog, true).then(updateResult => {
+            updateResult.legacy.forEach(mod => console.warn(mui.get('loader-cli/warning-update-mod-not-supported', { name: mod.name })));
+            updateResult.failed.forEach(mod => console.error(mui.get('loader-cli/error-update-mod-failed', { name: mod.name })));
+            if (!updateResult['tera-data']) {
+                console.error(mui.get('loader-cli/error-update-tera-data-failed-1'));
+                console.error(mui.get('loader-cli/error-update-tera-data-failed-2'));
+            }
+
+            RunProxy(ModuleFolder, ProxyConfig);
+        }).catch(e => {
+            console.error(mui.get('loader-cli/error-update-failed'));
+            console.error(e);
+        });
+    }
+});

@@ -59,6 +59,13 @@ jQuery(($) => {
         });
     }
 
+    // Admin indicator
+    let IsAdmin = false;
+    ipcRenderer.on('is admin', (_, isAdmin) => {
+        IsAdmin = isAdmin;
+        $('#title').text(mui.get(IsAdmin ? 'gui/main/title/admin' : 'gui/main/title/noadmin'));
+    });
+
     // Update available indicator
     let UpdateAvailable = false;
     ipcRenderer.on('update available', _ => {
@@ -375,7 +382,7 @@ jQuery(($) => {
 
             $(`#${uninstallId}`).on('click', (event) => {
                 event.preventDefault();
-                if (ProxyRunning) {
+                if (ProxyStarting || ProxyRunning) {
                     ShowModal(mui.get('gui/main/modal/error-cannot-uninstall-mod-while-running'));
                 } else if (!WaitingForModAction) {
                     ipcRenderer.send('uninstall mod', modInfo);
@@ -467,7 +474,7 @@ jQuery(($) => {
 
             $(`#${installId}`).on('click', (event) => {
                 event.preventDefault();
-                if (ProxyRunning)
+                if (ProxyStarting || ProxyRunning)
                     ShowModal(mui.get('gui/main/modal/error-cannot-install-mod-while-running'));
                 else if (!WaitingForModInstall)
                     requestInstallMod(modInfo);

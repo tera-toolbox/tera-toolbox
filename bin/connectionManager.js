@@ -8,11 +8,12 @@ function onConnectionError(err) {
             console.error(mui.get('connectionmanager/error-ETIMEDOUT-2'));
             console.error(mui.get('connectionmanager/error-ETIMEDOUT-3'));
             break;
+        case 'ECONNABORTED':
         case 'ECONNRESET':
         case 'EPIPE':
-            console.error(mui.get('connectionmanager/error-ECONNRESET-EPIPE-1', { code: err.code }));
-            console.error(mui.get('connectionmanager/error-ECONNRESET-EPIPE-2'));
-            console.error(mui.get('connectionmanager/error-ECONNRESET-EPIPE-3'));
+            console.error(mui.get('connectionmanager/error-ECONNABORTED-ECONNRESET-EPIPE-1', { code: err.code }));
+            console.error(mui.get('connectionmanager/error-ECONNABORTED-ECONNRESET-EPIPE-2'));
+            console.error(mui.get('connectionmanager/error-ECONNABORTED-ECONNRESET-EPIPE-3'));
             break;
         default:
             console.error(err);

@@ -114,7 +114,7 @@ class Connection {
     }
 
     sendServer(data) {
-        if (this.serverConnection) {
+        if (this.serverConnection && !this.serverConnection.destroyed) {
             if (this.state === 2) {
                 data = this.builder(data);
                 this.session.decrypt(data);

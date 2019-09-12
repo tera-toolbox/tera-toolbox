@@ -40,8 +40,8 @@ function SaveConfiguration(newConfig) {
 // Migration
 function Migration() {
     try {
-        const { ProxyMigration } = require('./migration');
-        ProxyMigration();
+        const { ToolboxMigration } = require('./migration');
+        ToolboxMigration();
     } catch (e) {
         const { dialog } = require('electron');
 
@@ -189,6 +189,7 @@ process.on('SIGTERM', cleanExit);
 ipcMain.on('init', (event, _) => {
     event.sender.send('set config', config);
     event.sender.send('proxy running', false);
+    event.sender.send('is admin', global.TeraProxy.IsAdmin);
 
     if (config.noselfupdate) {
         console.warn(mui.get('loader-gui/warning-noselfupdate-1'));
@@ -404,8 +405,8 @@ class TeraProxyGUI {
 }
 
 // Main
-let config;
 let gui;
+let config;
 
 function showError(error) {
     console.error(error);
@@ -427,38 +428,36 @@ process.on('warning', (warning) => {
     console.warn(warning.stack);
 });
 
-// Main
-const { initGlobalSettings } = require('./utils');
-initGlobalSettings(false);
+module.exports = function StartGUI() {
+    return new Promise((resolve, reject) => {
+        const { initGlobalSettings } = require('./utils');
+        initGlobalSettings(false).then(() => {        
+            // Boot GUI
+            gui = new TeraProxyGUI;
 
-// Enforce single instance of GUI
-if (!app.requestSingleInstanceLock()) {
-    app.quit();
-    return;
-} else {
-    app.on('second-instance', () => {
-        if (gui)
-            gui.show();
+            if (app.isReady()) {
+                gui.show();
+                resolve();
+            } else {
+                app.on('ready', () => {
+                    gui.show();
+                    resolve();
+                });
+            }
+            
+            app.on('second-instance', () => {
+                if (gui)
+                    gui.show();
+            });
+
+            app.on('window-all-closed', () => {
+                if (process.platform !== 'darwin')
+                    app.quit();
+            });
+
+            app.on('activate', () => {
+                gui.show();
+            });
+        });
     });
 }
-
-// Boot GUI
-gui = new TeraProxyGUI;
-
-if (app.isReady()) {
-    gui.show();
-} else {
-    app.on('ready', () => {
-        gui.show();
-    });
-}
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin')
-        app.quit();
-});
-
-app.on('activate', () => {
-    gui.show();
-});
-

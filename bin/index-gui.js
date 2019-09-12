@@ -45,12 +45,12 @@ function showSplashScreen() {
 
 function hideSplashScreen(onDone) {
     setTimeout(() => {
-        onDone();
-
-        if (SplashScreen) {
-            SplashScreen.close();
-            SplashScreen = null;
-        }
+        onDone().then(() => {
+            if (SplashScreen) {
+                SplashScreen.close();
+                SplashScreen = null;
+            }
+        });
     }, SplashScreen ? Math.max(0, 1500 - (Date.now() - SplashScreenShowTime)) : 0);
 }
 
@@ -194,8 +194,9 @@ async function updateSelf() {
 }
 
 // Main function
-function run() {
-    require('./loader-gui');
+async function run() {
+    const start = require('./loader-gui');
+    await start();
 }
 
 function main() {
@@ -229,9 +230,7 @@ function main() {
                         });
                     });
                 } else {
-                    hideSplashScreen(() => {
-                        run();
-                    });
+                    hideSplashScreen(run);
                 }
             }
         }).catch(e => {

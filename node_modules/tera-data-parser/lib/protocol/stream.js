@@ -38,7 +38,9 @@ class Readable {
     }
 
     uint64() {
-        return BigInt(this.uint32()) | (BigInt(this.uint32()) << 32n)
+        const ret = this.buffer.readBigUInt64LE(this.position)
+        this.position += 8
+        return ret
     }
 
     int16() {
@@ -54,7 +56,9 @@ class Readable {
     }
 
     int64() {
-        return BigInt(this.uint32()) | (BigInt(this.int32()) << 32n)
+        const ret = this.buffer.readBigInt64LE(this.position)
+        this.position += 8
+        return ret
     }
 
     vec3() {
@@ -143,12 +147,8 @@ class Writeable {
     }
     uint16(n = 0) { this.position = this.buffer.writeUInt16LE(n & 0xffff, this.position) }
     uint32(n = 0) { this.position = this.buffer.writeUInt32LE(n >>> 0, this.position) }
-    uint64(n = 0n) {
-        if(typeof n === 'number')
-            n = BigInt(n)
-        this.uint32(Number(n & 0xffffffffn))
-        this.uint32(Number((n >> 32n) & 0xffffffffn))
-    }
+    uint64(n = 0n) { this.position = this.buffer.writeBigUInt64LE(BigInt(n), this.position) }
+
     vec3(v = {}) {
         this.float(v.x)
         this.float(v.y)

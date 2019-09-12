@@ -1,23 +1,52 @@
 function checkRuntimeCompatibility() {
-    let BigIntSupported = false;
-    try { BigIntSupported = eval('1234n === 1234n'); } catch (_) { }
-
-    if (['11.0.0', '11.1.0', '11.2.0', '11.3.0'].includes(process.versions.node))
-        throw new Error('Node.JS 11.0 to 11.3 contain critical bugs preventing timers from working properly. Please install version 11.4 or later!');
-    else if (process.versions.modules < 64 || !BigIntSupported)
-        throw new Error('BigInt not supported');
+    if (process.versions.modules < 72)
+        throw new Error('NodeTooOld');
 
     return true;
 }
 
-function initGlobalSettings(DevMode = false, UILanguage = 'en') {
+async function initGlobalSettings(DevMode = false, UILanguage = 'en') {
     global.TeraProxy = {
         DevMode: !!DevMode,
         DiscordUrl: 'https://discord.gg/dUNDDtw',
         SupportUrl: 'https://discord.gg/659YbNY',
         GUIMode: !!process.versions.electron,
         UILanguage: UILanguage,
+        IsAdmin: await isAdmin(),
     };
 }
 
-module.exports = { checkRuntimeCompatibility, initGlobalSettings };
+// See https://stackoverflow.com/questions/37322862/check-if-electron-app-is-launched-with-admin-privileges-on-windows
+function isAdmin() {
+    const { exec } = require('child_process');
+    return new Promise((resolve, reject) => {
+        exec('NET SESSION', (err, so, se) => {
+            resolve(se.length === 0);
+        });
+    });
+}
+
+/**
+ * Remove directory recursively
+ * @param {string} dir_path
+ * @see https://stackoverflow.com/a/42505874/3027390
+ */
+function rimraf(dir_path) {
+    const fs = require('fs');
+    const path = require('path'); 
+    try {
+        fs.readdirSync(dir_path).forEach(entry => {
+            const entry_path = path.join(dir_path, entry);
+            if (fs.lstatSync(entry_path).isDirectory())
+                rimraf(entry_path);
+            else
+                fs.unlinkSync(entry_path);
+        });
+
+        fs.rmdirSync(dir_path);
+    } catch (e) {
+        // Ignore
+    }
+}
+
+module.exports = { checkRuntimeCompatibility, initGlobalSettings, isAdmin, rimraf };
