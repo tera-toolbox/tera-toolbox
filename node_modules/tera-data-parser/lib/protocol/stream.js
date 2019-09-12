@@ -149,6 +149,10 @@ class Writeable {
     uint32(n = 0) { this.position = this.buffer.writeUInt32LE(n >>> 0, this.position) }
     uint64(n = 0n) { this.position = this.buffer.writeBigUInt64LE(BigInt(n), this.position) }
 
+    int16(n = 0) { this.position = this.buffer.writeInt16LE(n & 0xffff, this.position) }
+    int32(n = 0) { this.position = this.buffer.writeInt32LE(n >>> 0, this.position) }
+    int64(n = 0n) { this.position = this.buffer.writeBigInt64LE(BigInt(n), this.position) }
+
     vec3(v = {}) {
         this.float(v.x)
         this.float(v.y)
@@ -214,12 +218,6 @@ class Writeable {
     double(n = 0) { this.position = this.buffer.writeDoubleLE(n, this.position) }
     string(str = '') { this.buffer.fill(str + '\0', this.position, this.position += (str.length + 1) * 2, 'ucs2') }
 }
-
-Object.assign(Writeable.prototype, {
-    int16: Writeable.prototype.uint16,
-    int32: Writeable.prototype.uint32,
-    int64: Writeable.prototype.uint64
-})
 
 module.exports = {
     Readable,
