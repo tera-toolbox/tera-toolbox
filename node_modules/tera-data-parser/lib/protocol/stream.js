@@ -149,9 +149,9 @@ class Writeable {
     uint32(n = 0) { this.position = this.buffer.writeUInt32LE(n >>> 0, this.position) }
     uint64(n = 0n) { this.position = this.buffer.writeBigUInt64LE(BigInt(n), this.position) }
 
-    int16(n = 0) { this.position = this.buffer.writeInt16LE(n & 0xffff, this.position) }
-    int32(n = 0) { this.position = this.buffer.writeInt32LE(n >>> 0, this.position) }
-    int64(n = 0n) { this.position = this.buffer.writeBigInt64LE(BigInt(n), this.position) }
+    int16(n = 0) { this.position = this.buffer.writeUInt16LE(n & 0xffff, this.position) }
+    int32(n = 0) { this.position = this.buffer.writeUInt32LE(n >>> 0, this.position) }
+    int64(n = 0n) { this.position = this.buffer.writeBigUInt64LE(BigInt(n) & 0xFFFFFFFFFFFFFFFFn, this.position) }
 
     vec3(v = {}) {
         this.float(v.x)
