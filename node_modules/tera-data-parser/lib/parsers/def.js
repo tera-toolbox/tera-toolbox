@@ -70,6 +70,9 @@ function parseSync(filepath) {
     top.meta = [];
     top.type = 'root';
 
+    let numReferences = 0;
+    let numReferenced = 0;
+
     for (let i = 0; i < data.length; i++) {
         // clean line
         const line = data[i].replace(/#.*$/, '').trim();
@@ -77,7 +80,7 @@ function parseSync(filepath) {
 
         const match = line.match(/^((?:-\s*)*)(\S+?)(<\s*\S+\s*>)?(\[\s*\S+\s*\])?\s+(\S+)$/);
         if (!match) {
-            log.warn(`[parsers/def] parse error: malformed line\n    at "${filepath}", line ${i + 1}`);
+            log.debug(`[parsers/def] parse error: malformed line\n    at "${filepath}", line ${i + 1}`);
             continue;
         }
 
@@ -95,8 +98,10 @@ function parseSync(filepath) {
             type = 'ref';
         }
 
-        if (implicitMeta && type === 'ref')
+        if (type === 'ref') {
+            ++numReferences;
             implicitMeta = false;
+        }
 
         // check if we need to move up or down a level
         // move deeper
@@ -105,7 +110,7 @@ function parseSync(filepath) {
 
             // sanity check
             if (depth !== level)
-                log.warn(`[parsers/def] parse warning: array nesting too deep ("${filepath}" line ${i + 1})`);
+                log.debug(`[parsers/def] parse warning: array nesting too deep ("${filepath}" line ${i + 1})`);
 
             // we are defining the subfields for the last field we saw,
             // so move current level to the `type` value (2nd elem) of the last field
@@ -122,6 +127,8 @@ function parseSync(filepath) {
         // append necessary metadata field
         if (implicitMeta)
             pushMetaType(top, key, type);
+        if (type === 'array' || type === 'bytes' || type === 'string')
+            ++numReferenced;
 
         // append the field to the current level
         if (type === 'array' || type === 'object') {
@@ -142,8 +149,12 @@ function parseSync(filepath) {
         }
     }
 
-    if (!implicitMeta)
+    if (!implicitMeta) {
         linkMetaTypes(definition);
+        if (numReferences !== numReferenced)
+            log.debug(`[parsers/def] parse warning: mismatching explicit reference count: expecting ${numReferenced}, found ${numReferences} ("${filepath}")`);
+    }
+
     return flatten(definition, implicitMeta);
 }
 
