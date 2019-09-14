@@ -367,7 +367,10 @@ class TeraProxyGUI {
             }
         ]));
 
-        this.tray.on('click', () => { this.window.isVisible() ? this.window.hide() : this.window.show(); });
+        this.tray.on('click', () => {
+            if (this.window)
+                this.window.isVisible() ? this.window.hide() : this.window.show();
+        });
 
         // Start periodic update check
         if (!config.noselfupdate) {

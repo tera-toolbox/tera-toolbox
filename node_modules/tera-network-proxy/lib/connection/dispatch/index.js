@@ -306,7 +306,7 @@ class Dispatch {
             return false
 
         if (Buffer.isBuffer(name)) {
-            data = Buffer.from(name)
+            data = name
         } else {
             if (typeof version !== 'number' && typeof version !== 'string')
                 throw new Error(`[dispatch] write: version is required`)
@@ -346,26 +346,6 @@ class Dispatch {
         let modified = false
         let silenced = false
 
-        function bufferAttachFlags(buf) {
-            Object.defineProperties(buf, {
-                $fake: { get: () => fake },
-                $incoming: { get: () => incoming },
-                $modified: { get: () => modified },
-                $silenced: { get: () => silenced },
-            })
-        }
-
-        function objectAttachFlags(obj) {
-            Object.defineProperties(obj, {
-                $fake: { value: fake },
-                $incoming: { value: incoming },
-                $modified: { value: modified },
-                $silenced: { value: silenced },
-            })
-        }
-
-        bufferAttachFlags(data)
-
         let eventCache = [],
             resolvedIdentifierCache = [],
             iter = 0,
@@ -384,7 +364,12 @@ class Dispatch {
             if (hook.definitionVersion === 'raw') {
                 try {
                     const copy = Buffer.from(data)
-                    bufferAttachFlags(copy)
+                    Object.defineProperties(copy, {
+                        $fake: { value: fake },
+                        $incoming: { value: incoming },
+                        $modified: { value: modified },
+                        $silenced: { value: silenced },
+                    })
 
                     const result = hook.callback(code, copy, incoming, fake)
 
@@ -392,23 +377,20 @@ class Dispatch {
                         if (result.length !== data.length || !result.equals(data)) {
                             modified = true
                             eventCache = []
-
-                            if (result !== copy)
-                                bufferAttachFlags(result)
                             data = result
                         }
                     } else if (typeof result === 'boolean') {
                         silenced = !result
 
                         if (copy.length !== data.length || !copy.equals(data)) {
-                            log.debug(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it (returned bool for silencing instead). This behavior is deprecated and will stop working soon!`);
+                            log.warn(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it (returned bool for silencing instead). This behavior is deprecated and will stop working soon!`);
                             modified = true
                             eventCache = []
                             data = copy
                         }
                     } else {
                         if (copy.length !== data.length || !copy.equals(data)) {
-                            log.debug(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it. This behavior is deprecated and will stop working soon!`);
+                            log.warn(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it. This behavior is deprecated and will stop working soon!`);
                             modified = true
                             eventCache = []
                             data = copy
@@ -444,8 +426,15 @@ class Dispatch {
                     const defVersion = hook.definitionVersion
                     const resolvedIdentifier = resolvedIdentifierCache[defVersion] || (resolvedIdentifierCache[defVersion] = this.protocol.resolveIdentifier(code, defVersion))
                     let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(resolvedIdentifier, data))
+                    if (!lastHook)
+                        event = this.protocol.clone(resolvedIdentifier, event)
 
-                    objectAttachFlags(lastHook ? event : (event = this.protocol.clone(resolvedIdentifier, event)))
+                    Object.defineProperties(event, {
+                        $fake: { value: fake },
+                        $incoming: { value: incoming },
+                        $modified: { value: modified },
+                        $silenced: { value: silenced },
+                    })
 
                     try {
                         const result = hook.callback(event, fake)
@@ -455,7 +444,6 @@ class Dispatch {
 
                             try {
                                 data = this.protocol.write(resolvedIdentifier, event)
-                                bufferAttachFlags(data)
 
                                 modified = true
                                 silenced = false
