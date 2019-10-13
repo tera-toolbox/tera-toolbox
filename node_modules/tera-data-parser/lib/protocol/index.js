@@ -27,7 +27,7 @@ function _elemName(fullName) {
 
 function _transpileReader(definition, path = '') {
     let result = '';
-
+    let seenObjects = new Set;
     for (const [name, type] of definition) {
         const fullName = (path !== '') ? `${path}.${name}` : name;
 
@@ -75,7 +75,10 @@ function _transpileReader(definition, path = '') {
         } else {
             switch (type.type) {
                 case 'object': {
-                    result += `${fullName} = {};\n`;
+                    if (!seenObjects.has(fullName)) {
+                        seenObjects.add(fullName);
+                        result += `${fullName} = {};\n`;
+                    }
                     result += _transpileReader(type, fullName);
                     break;
                 }
@@ -333,6 +336,7 @@ function _transpileWriter(definition, path = '', empty = false) {
 
 function _transpileCloner(definition, fromPath = '', toPath = '') {
     let result = '';
+    let seenObjects = new Set;
     for (const [name, type] of definition) {
         const fullNameFrom = `${fromPath}.${name}`;
         const fullNameTo = `${toPath}.${name}`;
@@ -367,8 +371,11 @@ function _transpileCloner(definition, fromPath = '', toPath = '') {
         } else {
             switch (type.type) {
                 case 'object': {
-                    result += `${fullNameTo} = {};\n`;
-                    result += _transpileCloner(type, fullNameFrom, fullNameTo);
+                    if (!seenObjects.has(fullNameTo)) {
+                        seenObjects.add(fullNameTo);
+                        result += `${fullNameTo} = {};\n`;
+                        result += _transpileCloner(type, fullNameFrom, fullNameTo);
+                    }
                     break;
                 }
 
