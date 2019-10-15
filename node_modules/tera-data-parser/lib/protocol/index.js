@@ -374,8 +374,9 @@ function _transpileCloner(definition, fromPath = '', toPath = '') {
                     if (!seenObjects.has(fullNameTo)) {
                         seenObjects.add(fullNameTo);
                         result += `${fullNameTo} = {};\n`;
-                        result += _transpileCloner(type, fullNameFrom, fullNameTo);
                     }
+
+                    result += _transpileCloner(type, fullNameFrom, fullNameTo);
                     break;
                 }
 
