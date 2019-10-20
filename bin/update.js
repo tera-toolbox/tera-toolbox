@@ -100,8 +100,8 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
             console.log(mui.get('update/module-download-manifest', { serverIndex }));
 
         let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url, updateData["drmKey"], null);
-        if (!manifest_result)
-            throw new Error(`Unable to download update manifest for module "${name}":\n${e}`);
+        if (!manifest_result[1])
+            throw new Error(`Unable to download update manifest for module "${name}":\n${manifest_result[2]}`);
 
         let manifest;
         try {
@@ -158,8 +158,8 @@ async function autoUpdateTeraData(updatelog, updatelimit) {
     const manifest_path = path.join(tera_data_folder, manifest_file);
 
     let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url);
-    if (!manifest_result)
-        throw new Error(`Unable to download tera-data update manifest:\n${e}`);
+    if (!manifest_result[1])
+        throw new Error(`Unable to download tera-data update manifest:\n${manifest_result[2]}`);
 
     let manifest;
     try {
