@@ -128,7 +128,7 @@ class Dispatch {
         // { <code>:
         //	 [ { <order>
         //		 , hooks:
-        //			 [ { <code>, <filter>, <order>, <definitionVersion>, <moduleName>, <callback> }
+        //			 [ { <name>, <code>, <definitionVersion>, <filter>, <order>, <moduleName>, <callback>, <resolvedIdentifier> }
         //			 ]
         //		 }
         //	 ]
@@ -213,35 +213,36 @@ class Dispatch {
     createHook(moduleName, name, version, opts, cb) {
         // parse args
         if (typeof version !== 'number' && version !== '*' && version !== 'raw' && version !== 'event')
-            throw TypeError(`[dispatch] [${moduleName}] hook: invalid version specified (${version})`)
+            throw TypeError(`[dispatch] [${moduleName}] hook: invalid version specified (${version})`);
 
         if (opts && typeof opts !== 'object') {
-            cb = opts
-            opts = {}
+            cb = opts;
+            opts = {};
         }
 
         if (typeof cb !== 'function')
-            throw TypeError(`[dispatch] [${moduleName}] hook: last argument not a function (given: ${typeof cb})`)
+            throw TypeError(`[dispatch] [${moduleName}] hook: last argument not a function (given: ${typeof cb})`);
 
         // retrieve opcode
-        let code
+        let code;
+        let resolvedIdentifier;
         if (name === '*') {
-            code = name
+            code = name;
             if (typeof version === 'number')
-                throw TypeError(`[dispatch] [${moduleName}] hook: * hook must request version '*', 'raw', or 'event' (given: ${version})`)
+                throw TypeError(`[dispatch] [${moduleName}] hook: * hook must request version '*', 'raw', or 'event' (given: ${version})`);
         } else {
             // Check if opcode is mapped
-            code = this.protocolMap.name.get(name)
+            code = this.protocolMap.name.get(name);
             if (code === null || typeof code === 'undefined')
-                throw Error(`[dispatch] [${moduleName}] hook: unmapped packet "${name}"`)
+                throw Error(`[dispatch] [${moduleName}] hook: unmapped packet "${name}"`);
 
             // Check if definition exists / is deprecated
             if (version !== 'raw' && version !== 'event') {
                 try {
-                    const { definition } = this.resolve(name, version);
-                    if (!definition.readable)
+                    resolvedIdentifier = this.resolve(name, version);
+                    if (!resolvedIdentifier.definition.readable)
                         throw Error(`obsolete definition (${name}.${version})`);
-                    else if (!definition.writeable)
+                    else if (!resolvedIdentifier.definition.writeable)
                         log.warn(`[dispatch] [${moduleName}] hook: deprecated definition (${name}.${version}), mod might be broken!`);
                 } catch (e) {
                     throw Error(`[dispatch] [${moduleName}] hook: ${e}`);
@@ -253,51 +254,54 @@ class Dispatch {
         return {
             moduleName,
             code,
-            filter: Object.assign({fake: false, incoming: null, modified: null, silenced: false}, opts.filter),
+            filter: Object.assign({ fake: false, incoming: null, modified: null, silenced: false }, opts.filter),
             order: opts.order || 0,
             definitionVersion: version,
             callback: cb,
-            name
-        }
+            name,
+            resolvedIdentifier
+        };
     }
 
     addHook(hook) {
-        const { code, order } = hook
+        const { code, order } = hook;
 
         if (!this.hooks.has(code))
-            this.hooks.set(code, [])
+            this.hooks.set(code, []);
 
-        const ordering = this.hooks.get(code)
-        const index = binarySearch(ordering, { order }, (a, b) => a.order - b.order)
+        const ordering = this.hooks.get(code);
+        const index = binarySearch(ordering, { order }, (a, b) => a.order - b.order);
         if (index < 0) {
             // eslint-disable-next-line no-bitwise
-            ordering.splice(~index, 0, { order, hooks: [hook] })
+            ordering.splice(~index, 0, { order, hooks: [hook] });
         } else {
-            ordering[index].hooks.push(hook)
+            ordering[index].hooks.push(hook);
         }
     }
 
     hook(...args) {
-        const hook = this.createHook(...args)
-        this.addHook(hook)
-        return hook
+        const hook = this.createHook(...args);
+        this.addHook(hook);
+        return hook;
     }
 
     unhook(hook) {
         if (!hook)
             return;
 
-        if (!this.hooks.has(hook.code)) return
+        if (!this.hooks.has(hook.code))
+            return;
 
-        const ordering = this.hooks.get(hook.code)
-        const group = ordering.find(o => o.order === hook.order)
-        if (group) group.hooks = group.hooks.filter(h => h !== hook)
+        const ordering = this.hooks.get(hook.code);
+        const group = ordering.find(o => o.order === hook.order);
+        if (group)
+            group.hooks = group.hooks.filter(h => h !== hook);
     }
 
     unhookModule(name) {
         for (const orderings of this.hooks.values()) {
             for (const ordering of orderings)
-                ordering.hooks = ordering.hooks.filter(hook => hook.moduleName !== name)
+                ordering.hooks = ordering.hooks.filter(hook => hook.moduleName !== name);
         }
     }
 
@@ -350,9 +354,8 @@ class Dispatch {
         let silenced = false
 
         let eventCache = [],
-            resolvedIdentifierCache = [],
             iter = 0,
-            hooks = (globalHooks ? globalHooks.size : 0) + (codeHooks ? codeHooks.size : 0)
+            hooks = (globalHooks ? globalHooks.length : 0) + (codeHooks ? codeHooks.length : 0) // TODO bug
 
         for (const hook of iterateHooks(globalHooks, codeHooks)) {
             const lastHook = ++iter === hooks
@@ -384,20 +387,6 @@ class Dispatch {
                         }
                     } else if (typeof result === 'boolean') {
                         silenced = !result
-
-                        if (copy.length !== data.length || !copy.equals(data)) {
-                            log.warn(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it (returned bool for silencing instead). This behavior is deprecated and will stop working soon!`);
-                            modified = true
-                            eventCache = []
-                            data = copy
-                        }
-                    } else {
-                        if (copy.length !== data.length || !copy.equals(data)) {
-                            log.warn(`[dispatch] [${hook.moduleName}] DEPRECATION WARNING: raw hook for ${getMessageName(this.protocolMap, code, hook.definitionVersion)} modified the data buffer without returning it. This behavior is deprecated and will stop working soon!`);
-                            modified = true
-                            eventCache = []
-                            data = copy
-                        }
                     }
                 }
                 catch (e) {
@@ -427,7 +416,7 @@ class Dispatch {
             } else { // normal hook
                 try {
                     const defVersion = hook.definitionVersion
-                    const resolvedIdentifier = resolvedIdentifierCache[defVersion] || (resolvedIdentifierCache[defVersion] = this.protocol.resolveIdentifier(code, defVersion))
+                    const resolvedIdentifier = hook.resolvedIdentifier
                     let event = eventCache[defVersion] || (eventCache[defVersion] = this.protocol.parse(resolvedIdentifier, data))
                     if (!lastHook)
                         event = this.protocol.clone(resolvedIdentifier, event)
@@ -501,7 +490,7 @@ class Dispatch {
 
     addDefinition(name, version, definition, overwrite = false) {
         if (typeof definition === 'string')
-            definition = require('tera-data-parser').parsers.Def(definition);
+            definition = this.protocol.parseDefinition(definition);
         this.protocol.addDefinition(name, version, definition, overwrite);
 
         if (!this.latestDefVersion.get(name) || this.latestDefVersion.get(name) < version)

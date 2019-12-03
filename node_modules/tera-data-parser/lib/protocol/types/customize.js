@@ -26,16 +26,16 @@ class Customize {
 			});
 	}
 
-	write(s) {
-		s.byte(Number(this.unk));
-		s.byte(Number(this.skinColor));
-		s.byte(Number(this.faceStyle));
-		s.byte(Number(this.faceDecal));
-		s.byte(Number(this.hairStyle));
-		s.byte(Number(this.hairColor));
-		s.byte(Number(this.voice));
-		s.byte(Number(this.tattoos));
-	}
+    toUint64() {
+        return BigInt(this.unk & 0xff)
+            | (BigInt(this.skinColor & 0xff) << 8n)
+            | (BigInt(this.faceStyle & 0xff) << 16n)
+            | (BigInt(this.faceDecal & 0xff) << 24n)
+            | (BigInt(this.hairStyle & 0xff) << 32n)
+            | (BigInt(this.hairColor & 0xff) << 40n)
+            | (BigInt(this.voice & 0xff) << 48n)
+            | (BigInt(this.tattoos & 0xff) << 56n);
+    }
 }
 
 module.exports = Customize;
