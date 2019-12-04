@@ -65,7 +65,6 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                 }
 
                 case 'string': {
-                    const curIdxName = _escapedName('i', fullName);
                     const curTmpName = _escapedName('c', fullName);
 
                     offset_dynamic = true;
@@ -73,15 +72,9 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
 
                     // TODO: check offset
                     result += `buffer_pos = ${_offsetName(fullName)};\n`;
-                    result += `${fullName} = [];\n`;
-                    result += `let ${curIdxName} = 0, ${curTmpName};\n`;
-                    result += 'while(true) {\n';
-                    result += `${curTmpName} = buffer.getUint16(${offset()}, true);\n`;
-                    result += `if (${curTmpName} === 0) break;\n`;
-                    result += `${fullName}[${curIdxName}++] = ${curTmpName};\n`;
-                    result += `buffer_pos += 2;\n`;
-                    result += '}\n';
-                    result += `${fullName} = String.fromCharCode.apply(null, ${fullName});\n`;
+                    result += `${fullName} = '';\n`;
+                    result += `for(let ${curTmpName}; ${curTmpName} = buffer.getUint16(${offset()}, true); buffer_pos += 2)\n`;
+                    result += `${fullName} += String.fromCharCode.apply(null, ${curTmpName});\n`;
                     break;
                 }
 
@@ -111,24 +104,30 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
         } else {
             switch (type.type) {
                 case 'object': {
-                    result += `${fullName} = {};\n`;
-                    const sub_result = _transpileReader(type, fullName, offset_static, offset_dynamic, imports);
+                    const tmpElemName = `tmpelem_${_offsetName(fullName)}`;
+
+                    result += `${tmpElemName} = {};\n`;
+                    const sub_result = _transpileReader(type, tmpElemName, offset_static, offset_dynamic, imports);
                     result += sub_result.result;
                     offset_static = sub_result.offset_static;
                     offset_dynamic = sub_result.offset_dynamic;
+                    result += `${fullName} = ${tmpElemName};\n`;
                     break;
                 }
 
                 case 'array': {
                     const offsetName = _offsetName(fullName);
+                    const countName = _countName(fullName);
                     const tmpOffsetName = `tmpoffset_${offsetName}`;
                     const tmpIndexName = `tmpindex_${offsetName}`;
+                    const tmpElemName = `tmpelem_${offsetName}`;
                     const curElemName = `${fullName}[${tmpIndexName}]`;
 
-                    result += `${fullName} = new Array(${_countName(fullName)});\n`;
+                    result += `${fullName} = new Array(${countName});\n`;
                     result += `let ${tmpOffsetName} = ${offsetName};\n`;
-                    result += `let ${tmpIndexName} = 0;\n`;
-                    result += `while (${tmpOffsetName} && ${tmpIndexName} < ${_countName(fullName)}) {\n`;
+                    if (!type.subtype)
+                        result += `let ${tmpElemName};\n`;
+                    result += `for (let ${tmpIndexName} = -1; ++${tmpIndexName} < ${countName};) {\n`;
 
                     // TODO: check offset
                     offset_dynamic = true;
@@ -138,22 +137,16 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
 
                     if (type.subtype) {
                         if (type.subtype === 'string') {
-                            const curIdxName = _escapedName('i', curElemName);
-                            const curTmpName = _escapedName('c', curElemName);
+                            const curTmpName = _escapedName('c', fullName);
 
-                            // TODO: check offset
                             offset_static = 0;
                             result += `buffer_pos += 6;\n`;
 
-                            result += `${curElemName} = [];\n`;
-                            result += `let ${curIdxName} = 0, ${curTmpName};\n`;
-                            result += 'while(true) {\n';
-                            result += `${curTmpName} = buffer.getUint16(${offset()}, true);\n`;
-                            result += `if (${curTmpName} === 0) break;\n`;
-                            result += `${curElemName}[${curIdxName}++] = ${curTmpName};\n`;
-                            result += `buffer_pos += 2;\n`;
-                            result += '}\n';
-                            result += `${curElemName} = String.fromCharCode.apply(null, ${curElemName});\n`;
+                            // TODO: check offset
+                            result += `buffer_pos = ${offsetName};\n`;
+                            result += `${curElemName} = '';\n`;
+                            result += `for(let ${curTmpName}; ${curTmpName} = buffer.getUint16(${offset()}, true); buffer_pos += 2)\n`;
+                            result += `${curElemName} += String.fromCharCode.apply(null, ${curTmpName});\n`;
                         } else {
                             if (!POD_TYPES.includes(type.subtype))
                                 throw new Error(`Invalid data type "${type.subtype}" for array "${fullName}"!`);
@@ -161,14 +154,14 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                             result += `${serializers[type.subtype](curElemName)};\n`;
                         }
                     } else {
-                        result += `${curElemName} = {};\n`;
-                        const sub_result = _transpileReader(type, curElemName, offset_static, offset_dynamic, imports);
+                        result += `${tmpElemName} = {};\n`;
+                        const sub_result = _transpileReader(type, tmpElemName, offset_static, offset_dynamic, imports);
                         result += sub_result.result;
                         offset_static = sub_result.offset_static;
                         offset_dynamic = sub_result.offset_dynamic;
+                        result += `${curElemName} = ${tmpElemName};\n`;
                     }
 
-                    result += `++${tmpIndexName};\n`;
                     result += '}\n';
                     break;
                 }
@@ -207,18 +200,18 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
     const overwriteUint16 = (where, varName) => `buffer.setUint16(${where}, ${varName}, true)`;
 
     const serializers = {
-        byte: (varName) => `buffer.setUint8(${offset(1)}, ${varName ? `${varName} || 0` : '0'}, true)`,
+        byte: (varName) => `buffer.setUint8(${offset(1)}, ${varName ? `${varName}` : '0'}, true)`,
         bool: (varName) => `buffer.setUint8(${offset(1)}, ${varName ? `${varName} ? 1 : 0` : '0'}, true)`,
-        uint16: (varName, checks = true) => checks ? `buffer.setUint16(${offset(2)}, ${varName ? `${varName} ? (${varName} & 0xFFFF) : 0` : '0'}, true)` : `buffer.setUint16(${offset(2)}, ${varName}, true)`,
-        uint32: (varName) => `buffer.setUint32(${offset(4)}, ${varName ? `${varName} ? (${varName} >>> 0) : 0` : '0'}, true)`,
+        uint16: (varName, checks = true) => checks ? `buffer.setUint16(${offset(2)}, ${varName ? `${varName}` : '0'}, true)` : `buffer.setUint16(${offset(2)}, ${varName}, true)`,
+        uint32: (varName) => `buffer.setUint32(${offset(4)}, ${varName ? `${varName}` : '0'}, true)`,
         uint64: (varName) => `buffer.setBigUint64(${offset(8)}, ${varName ? `${varName} ? BigInt(${varName}) : 0n` : '0n'}, true)`,
-        int16: (varName) => `buffer.setInt16(${offset(2)}, ${varName ? `${varName} ? (${varName} & 0xFFFF) : 0` : '0'}, true)`,
-        int32: (varName) => `buffer.setInt32(${offset(4)}, ${varName ? `${varName} ? (${varName} >>> 0) : 0` : '0'}, true)`,
+        int16: (varName) => `buffer.setInt16(${offset(2)}, ${varName ? `${varName}` : '0'}, true)`,
+        int32: (varName) => `buffer.setInt32(${offset(4)}, ${varName ? `${varName}` : '0'}, true)`,
         int64: (varName) => `buffer.setBigInt64(${offset(8)}, ${varName ? `${varName} ? BigInt(${varName}) : 0n` : '0n'}, true)`,
-        float: (varName) => `buffer.setFloat32(${offset(4)}, ${varName ? `${varName} || 0` : '0'}, true)`,
-        double: (varName) => `buffer.setFloat64(${offset(8)}, ${varName ? `${varName} || 0` : '0'}, true)`,
+        float: (varName) => `buffer.setFloat32(${offset(4)}, ${varName ? `${varName}` : '0'}, true)`,
+        double: (varName) => `buffer.setFloat64(${offset(8)}, ${varName ? `${varName}` : '0'}, true)`,
 
-        angle: (varName) => `buffer.setInt16(${offset(2)}, ${varName ? `${varName} ? ((${varName} * ${MULT_RAD_TO_INT16}) & 0xFFFF) : 0` : '0'}, true)`,
+        angle: (varName) => `buffer.setInt16(${offset(2)}, ${varName ? `${varName} ? (${varName} * ${MULT_RAD_TO_INT16}) : 0` : '0'}, true)`,
         vec3: (varName) => `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x, true); buffer.setFloat32(${offset(4)}, ${varName}.y, true); buffer.setFloat32(${offset(4)}, ${varName}.z, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }`,
         vec3fa: (varName) => `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.y * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.z * ${MULT_RAD_TO_INT16}, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }`,
         skillid32: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { if (!${varName} instanceof SkillID) { ${varName} = new SkillID(${varName}); } buffer.setUint32(${offset(4)}, ${varName}.toUint32(), true); break; } case 'number': { buffer.setUint32(${offset(4, -4)}, ${varName}, true); break; } default: { buffer.setUint32(${offset(4, -4)}, 0, true); break; } }` : `buffer.setUint32(${offset(4, -4)}, 0, true)`,
