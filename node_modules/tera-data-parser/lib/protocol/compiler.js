@@ -74,7 +74,7 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                     result += `buffer_pos = ${_offsetName(fullName)};\n`;
                     result += `${fullName} = '';\n`;
                     result += `for(let ${curTmpName}; ${curTmpName} = buffer.getUint16(${offset()}, true); buffer_pos += 2)\n`;
-                    result += `${fullName} += String.fromCharCode.apply(null, ${curTmpName});\n`;
+                    result += `${fullName} += String.fromCharCode(${curTmpName});\n`;
                     break;
                 }
 
@@ -146,7 +146,7 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                             result += `buffer_pos = ${offsetName};\n`;
                             result += `${curElemName} = '';\n`;
                             result += `for(let ${curTmpName}; ${curTmpName} = buffer.getUint16(${offset()}, true); buffer_pos += 2)\n`;
-                            result += `${curElemName} += String.fromCharCode.apply(null, ${curTmpName});\n`;
+                            result += `${curElemName} += String.fromCharCode(${curTmpName});\n`;
                         } else {
                             if (!POD_TYPES.includes(type.subtype))
                                 throw new Error(`Invalid data type "${type.subtype}" for array "${fullName}"!`);
