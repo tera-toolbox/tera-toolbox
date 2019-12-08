@@ -78,7 +78,7 @@
     "node_modules/pify/license": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0",
     "node_modules/process-list/index.js": "cbb380b63c7b389eaad73b4721b8ff37ad5f7e0007cd8948b823fc9c0effd8ef",
     "node_modules/process-list/LICENSE": "01d044f87801e366283c499bd75bf58bdd6abfbc48693244b396e1f153e4d089",
-    "node_modules/process-list/processlist-wrapper.js": "c53e8e6b2d185b43a1650d5ff26048186c16bea499229b2c14671e90b64853fe",
+    "node_modules/process-list/processlist-wrapper.js": "a7dfdb23f334bdc6584ba773bbc338125999ce4064a339000eb1715975fda337",
     "node_modules/process-list/processlist_electron_ia32_73.node": "2edd3a0d6112d8d807db4531284405f1b12be592cc2c603eabc93f2182b93b9a",
     "node_modules/process-list/processlist_electron_x64_73.node": "9f1565e13841d8c88bb447b299adeb231735805eb65723fb09702e0a370d5a9e",
     "node_modules/process-list/processlist_node_ia32_72.node": "78fa68c751e4037699fa5d57ee1cbe5e75caa622c22d30c8a5159043c2e5e2df",
