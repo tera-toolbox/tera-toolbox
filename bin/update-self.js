@@ -103,40 +103,45 @@ class Updater extends EventEmitter {
 
             // Prepare and validate operations
             for (let operation of checkResult.operations) {
-                switch (operation.type) {
-                    case 'update': {
-                        this.emit('download_start', checkResult.serverIndex, operation.relpath);
-                        operation.data = await this.downloadRaw(checkResult.serverIndex, operation.relpath);
+                if (operation.type === 'update') {
+                    this.emit('download_start', checkResult.serverIndex, operation.relpath);
+                    operation.data = await this.downloadRaw(checkResult.serverIndex, operation.relpath);
+                    console.log(operation.hash, hash(operation.data));
+                    if (operation.hash === hash(operation.data)) {
                         this.emit('download_finish', checkResult.serverIndex, operation.relpath);
-                        if (operation.hash !== hash(operation.data))
-                            throw Error(`Hash mismatch for file "${operation.relpath}" (expected: ${operation.hash}, found: ${hash(operation.data)})`);
+                    } else {
+                        this.emit('download_error', operation.relpath, operation.hash, hash(operation.data));
+                        success = false;
                         break;
                     }
                 }
             }
 
             this.emit('prepare_finish');
-            this.emit('execute_start');
 
-            // All operations have been prepared and validated, so execute them now
-            checkResult.operations.forEach(operation => {
-                switch (operation.type) {
-                    case 'update': {
-                        this.emit('install_start', operation.relpath);
-                        try {
-                            forcedirSync(path.dirname(operation.abspath));
-                            fs.writeFileSync(operation.abspath, operation.data);
-                            this.emit('install_finish', operation.relpath);
-                        } catch (e) {
-                            success = false;
-                            this.emit('install_error', operation.relpath, e);
+            if (success) {
+                this.emit('execute_start');
+
+                // All operations have been prepared and validated, so execute them now
+                for (let operation of checkResult.operations) {
+                    switch (operation.type) {
+                        case 'update': {
+                            this.emit('install_start', operation.relpath);
+                            try {
+                                forcedirSync(path.dirname(operation.abspath));
+                                fs.writeFileSync(operation.abspath, operation.data);
+                                this.emit('install_finish', operation.relpath);
+                            } catch (e) {
+                                success = false;
+                                this.emit('install_error', operation.relpath, e);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
-            });
 
-            this.emit('execute_finish');
+                this.emit('execute_finish');
+            }
         }
 
         this.emit('run_finish', success);

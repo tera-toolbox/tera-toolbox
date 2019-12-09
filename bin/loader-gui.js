@@ -17,7 +17,7 @@ function LoadConfiguration() {
     } catch (_) {
         const { dialog } = require('electron');
 
-        dialog.showMessageBox({
+        dialog.showMessageBoxSync({
             type: 'error',
             title: mui.get('loader-gui/error-config-file-corrupt/title'),
             message: mui.get('loader-gui/error-config-file-corrupt/message', { supportUrl: global.TeraProxy.SupportUrl })
@@ -45,7 +45,7 @@ function Migration() {
     } catch (e) {
         const { dialog } = require('electron');
 
-        dialog.showMessageBox({
+        dialog.showMessageBoxSync({
             type: 'error',
             title: mui.get('loader-gui/error-migration-failed/title'),
             message: mui.get('loader-gui/error-migration-failed/message', { supportUrl: global.TeraProxy.SupportUrl })

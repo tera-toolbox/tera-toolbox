@@ -15,6 +15,10 @@ async function updateSelf() {
     updater.on('check_fail_all', () => { error = true; console.log(`[update] Update check failed`); });
     updater.on('prepare_start', () => { if (updatelog) console.log(`[update] Update download and preparation started`); });
     updater.on('download_start', (serverIndex, relpath) => { if (updatelog) console.log(`[update] - Download: ${relpath} (Server: ${serverIndex})`); });
+    updater.on('download_error', (relpath, expected_hash, downloaded_hash) => {
+        error = true;
+        console.log(`[update] - Error downloading ${relpath}: file hash mismatch (expected: ${expected_hash}, found: ${downloaded_hash})!`);
+    });
     //updater.on('download_finish', (serverIndex, relpath) => { if (updatelog) console.log(`[update] - Download done: ${relpath} (Server: ${serverIndex})`); });
     updater.on('prepare_finish', () => { if (updatelog) console.log(`[update] Update download and preparation finished`); });
     updater.on('execute_start', () => { if (updatelog) console.log(`[update] Update installation started`); });
