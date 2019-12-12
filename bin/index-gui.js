@@ -216,7 +216,7 @@ function main() {
 
         // Perform self-update
         updateSelf().then(errors => {
-            if (errors.length > 0) {
+            if (errors && errors.length > 0) {
                 let errmsg = `TERA Toolbox was unable to update itself. Please consult the #toolbox-faq and #help channels in ${DiscordURL} for further information.\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\n\n------------------------------\n`;
                 errmsg += errors.join('\n------------------------------\n');
                 errmsg += '\n------------------------------\n\nThe program will now be terminated.';

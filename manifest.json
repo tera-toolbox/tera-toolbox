@@ -17,7 +17,7 @@
     "bin/config.js": "6642552b2929a4748fe33385c14d65f5d2c832c6938bc0ba75627875b3ee5457",
     "bin/connectionManager.js": "b9d274044da441a9c80aa2dc14173d4cc8b6d42b9aca0dba4fa4329965f15878",
     "bin/index-cli.js": "63281245c95526b06de4f1b185589a4cba267a0c0f8917f594753610c5537a17",
-    "bin/index-gui.js": "f60e4d18a262025adb848f5df1983ff1683c35615284100de5baf6ab2059d7b6",
+    "bin/index-gui.js": "3352bca9b3b01918c57acb02dd2077a966db1f7ef13354d520ee596757b2140b",
     "bin/install-electron.js": "17b03f96f54dccb40eaba88b9ab21c14609eac91cb378ff0883b65b0078f105b",
     "bin/loader-cli.js": "edff58ac862021f8396b91518e7ac20758b61fbfccf6d190e8a5683c3285f3d0",
     "bin/loader-gui.js": "89577d23cb5273da3db345e94b1b3c6fcc999dfe53b9d4fa694f3e669b9f6ad4",
