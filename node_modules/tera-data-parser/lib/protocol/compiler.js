@@ -13,7 +13,7 @@ function _countName(fullName) { return _escapedName('count', fullName); }
 function _offsetName(fullName) { return _escapedName('offset', fullName); }
 function _elemName(fullName) { return _escapedName('elem', fullName); }
 
-function _transpileReader(definition, path = '', offset_static = 0, offset_dynamic = false, imports = { vec3: false, skillid: false, customize: false }) {
+function _transpileReader(definition, path = '', real_path = '', offset_static = 0, offset_dynamic = false, imports = { vec3: false, skillid: false, customize: false }) {
     let result = '';
     let seenObjects = new Set;
     
@@ -47,23 +47,24 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
     // Implementation
     for (const [name, type] of definition) {
         const fullName = (path !== '') ? `${path}.${name}` : name;
+        const fullNameReal = (real_path !== '') ? `${real_path}.${name}` : name;
 
         if (!Array.isArray(type)) {
             switch (type) {
                 case 'refArray': {
-                    result += `let ${_countName(fullName)} = ${serializers.uint16()};\n`;
-                    result += `let ${_offsetName(fullName)} = ${serializers.uint16()};\n`;
+                    result += `let ${_countName(fullNameReal)} = ${serializers.uint16()};\n`;
+                    result += `let ${_offsetName(fullNameReal)} = ${serializers.uint16()};\n`;
                     break;
                 }
 
                 case 'refBytes': {
-                    result += `let ${_offsetName(fullName)} = ${serializers.uint16()};\n`;
-                    result += `let ${_countName(fullName)} = ${serializers.uint16()};\n`;
+                    result += `let ${_offsetName(fullNameReal)} = ${serializers.uint16()};\n`;
+                    result += `let ${_countName(fullNameReal)} = ${serializers.uint16()};\n`;
                     break;
                 }
 
                 case 'refString': {
-                    result += `let ${_offsetName(fullName)} = ${serializers.uint16()};\n`;
+                    result += `let ${_offsetName(fullNameReal)} = ${serializers.uint16()};\n`;
                     break;
                 }
 
@@ -74,7 +75,7 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                     offset_static = 0;
 
                     // TODO: check offset
-                    result += `buffer_pos = ${_offsetName(fullName)};\n`;
+                    result += `buffer_pos = ${_offsetName(fullNameReal)};\n`;
                     result += `${fullName} = '';\n`;
                     result += `for(let ${curTmpName}; ${curTmpName} = buffer.getUint16(${offset()}, true); buffer_pos += 2)\n`;
                     result += `${fullName} += String.fromCharCode(${curTmpName});\n`;
@@ -83,13 +84,13 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
 
                 case 'bytes': {
                     const curIdxName = _escapedName('i', fullName);
-                    const countName = _countName(fullName);
+                    const countName = _countName(fullNameReal);
 
                     offset_dynamic = true;
                     offset_static = 0;
 
                     // TODO: check offset
-                    result += `buffer_pos = ${_offsetName(fullName)};\n`;
+                    result += `buffer_pos = ${_offsetName(fullNameReal)};\n`;
                     result += `${fullName} = Buffer.allocUnsafe(${countName});\n`;
                     result += `let ${curIdxName} = 0;\n`;
                     result += `for(; ${curIdxName} < ${countName}; ++${curIdxName}) ${fullName}[${curIdxName}] = buffer.getUint8(buffer_pos + ${curIdxName}, true);\n`;
@@ -107,7 +108,7 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
         } else {
             switch (type.type) {
                 case 'object': {
-                    const tmpElemName = `tmpelem_${_offsetName(fullName)}`;
+                    const tmpElemName = `tmpelem_${_offsetName(fullNameReal)}`;
 
                     let isFirst = !seenObjects.has(fullName);
                     if (isFirst) {
@@ -115,7 +116,7 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                         result += `let ${tmpElemName} = {};\n`;
                     }
 
-                    const sub_result = _transpileReader(type, tmpElemName, offset_static, offset_dynamic, imports);
+                    const sub_result = _transpileReader(type, tmpElemName, fullNameReal, offset_static, offset_dynamic, imports);
                     result += sub_result.result;
                     offset_static = sub_result.offset_static;
                     offset_dynamic = sub_result.offset_dynamic;
@@ -125,8 +126,8 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                 }
 
                 case 'array': {
-                    const offsetName = _offsetName(fullName);
-                    const countName = _countName(fullName);
+                    const offsetName = _offsetName(fullNameReal);
+                    const countName = _countName(fullNameReal);
                     const tmpOffsetName = `tmpoffset_${offsetName}`;
                     const tmpIndexName = `tmpindex_${offsetName}`;
                     const tmpElemName = `tmpelem_${offsetName}`;
@@ -164,7 +165,7 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                         }
                     } else {
                         result += `${tmpElemName} = {};\n`;
-                        const sub_result = _transpileReader(type, tmpElemName, offset_static, offset_dynamic, imports);
+                        const sub_result = _transpileReader(type, tmpElemName, fullNameReal, offset_static, offset_dynamic, imports);
                         result += sub_result.result;
                         offset_static = sub_result.offset_static;
                         offset_dynamic = sub_result.offset_dynamic;
@@ -562,7 +563,7 @@ function _transpileCloner(definition, fromPath = '', toPath = '') {
 }
 
 function transpile(definition) {
-    const reader = _transpileReader(definition, 'result', 4, false);
+    const reader = _transpileReader(definition, 'result', 'result', 4, false);
     const writer = _transpileWriter(definition, 'data', false, 4, false);
 
     // Combine
