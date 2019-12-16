@@ -1,3 +1,5 @@
+const { Vec3, SkillID, Customize } = require('./types');
+
 // constants
 const POD_TYPES = ['bool', 'byte', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'float', 'double', 'vec3', 'vec3fa', 'angle', 'skillid32', 'skillid', 'customize'];
 const TRIVIALLY_COPYABLE_TYPES = ['bool', 'byte', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'float', 'double', 'string', 'angle'];
@@ -13,6 +15,7 @@ function _elemName(fullName) { return _escapedName('elem', fullName); }
 
 function _transpileReader(definition, path = '', offset_static = 0, offset_dynamic = false, imports = { vec3: false, skillid: false, customize: false }) {
     let result = '';
+    let seenObjects = new Set;
     
     function offset(len) {
         const res = offset_dynamic ? (offset_static > 0 ? `buffer_pos + ${offset_static}` : 'buffer_pos') : `${offset_static}`;
@@ -34,11 +37,11 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
         double: (varName) => (varName ? `${varName} = ` : '') + `buffer.getFloat64(${offset(8)}, true)`,
 
         angle: (varName) => (varName ? `${varName} = ` : '') + `buffer.getInt16(${offset(2)}, true) * ${MULT_INT16_TO_RAD}`,
-        vec3(varName) { imports.vec3 = true; return (varName ? `${varName} = ` : '') + `new Vec3(${serializers.float()}, ${serializers.float()}, ${serializers.float()})`; },
-        vec3fa(varName) { imports.vec3 = true; return (varName ? `${varName} = ` : '') + `new Vec3(${serializers.float()} * ${MULT_INT16_TO_RAD}, ${serializers.float()} * ${MULT_INT16_TO_RAD}, ${serializers.float()} * ${MULT_INT16_TO_RAD})`; },
-        skillid32(varName) { imports.skillid = true; return (varName ? `${varName} = ` : '') + `SkillID.fromUint32(buffer.getUint32(${offset(4)}, true))`; },
-        skillid(varName) { imports.skillid = true; return (varName ? `${varName} = ` : '') + `SkillID.fromUint64(buffer.getBigUint64(${offset(8)}, true))`; },
-        customize(varName) { imports.customize = true; return (varName ? `${varName} = ` : '') + `new Customize(buffer.getBigUint64(${offset(8)}, true))`; },
+        vec3(varName) { imports.vec3 = true; return (varName ? `${varName} = ` : '') + `new this.Vec3(${serializers.float()}, ${serializers.float()}, ${serializers.float()})`; },
+        vec3fa(varName) { imports.vec3 = true; return (varName ? `${varName} = ` : '') + `new this.Vec3(${serializers.float()} * ${MULT_INT16_TO_RAD}, ${serializers.float()} * ${MULT_INT16_TO_RAD}, ${serializers.float()} * ${MULT_INT16_TO_RAD})`; },
+        skillid32(varName) { imports.skillid = true; return (varName ? `${varName} = ` : '') + `this.SkillID.fromUint32(buffer.getUint32(${offset(4)}, true))`; },
+        skillid(varName) { imports.skillid = true; return (varName ? `${varName} = ` : '') + `this.SkillID.fromUint64(buffer.getBigUint64(${offset(8)}, true))`; },
+        customize(varName) { imports.customize = true; return (varName ? `${varName} = ` : '') + `new this.Customize(buffer.getBigUint64(${offset(8)}, true))`; },
     };
 
     // Implementation
@@ -106,12 +109,18 @@ function _transpileReader(definition, path = '', offset_static = 0, offset_dynam
                 case 'object': {
                     const tmpElemName = `tmpelem_${_offsetName(fullName)}`;
 
-                    result += `${tmpElemName} = {};\n`;
+                    let isFirst = !seenObjects.has(fullName);
+                    if (isFirst) {
+                        seenObjects.add(fullName);
+                        result += `let ${tmpElemName} = {};\n`;
+                    }
+
                     const sub_result = _transpileReader(type, tmpElemName, offset_static, offset_dynamic, imports);
                     result += sub_result.result;
                     offset_static = sub_result.offset_static;
                     offset_dynamic = sub_result.offset_dynamic;
-                    result += `${fullName} = ${tmpElemName};\n`;
+                    if (isFirst)
+                        result += `${fullName} = ${tmpElemName};\n`;
                     break;
                 }
 
@@ -180,7 +189,7 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
 
     function staticToDynamic() {
         offset_dynamic = true;
-        if (offset_static == 0)
+        if (offset_static === 0)
             return '';
 
         let res = `buffer_pos += ${offset_static};\n`;
@@ -214,9 +223,9 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
         angle: (varName) => `buffer.setInt16(${offset(2)}, ${varName ? `${varName} ? (${varName} * ${MULT_RAD_TO_INT16}) : 0` : '0'}, true)`,
         vec3: (varName) => `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x, true); buffer.setFloat32(${offset(4)}, ${varName}.y, true); buffer.setFloat32(${offset(4)}, ${varName}.z, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }`,
         vec3fa: (varName) => `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.y * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.z * ${MULT_RAD_TO_INT16}, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }`,
-        skillid32: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { if (!${varName} instanceof SkillID) { ${varName} = new SkillID(${varName}); } buffer.setUint32(${offset(4)}, ${varName}.toUint32(), true); break; } case 'number': { buffer.setUint32(${offset(4, -4)}, ${varName}, true); break; } default: { buffer.setUint32(${offset(4, -4)}, 0, true); break; } }` : `buffer.setUint32(${offset(4, -4)}, 0, true)`,
-        skillid: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { if (!${varName} instanceof SkillID) { ${varName} = new SkillID(${varName}); } buffer.setBigUint64(${offset(8)}, ${varName}.toUint64(), true); break; } case 'bigint': { buffer.setBigUint64(${offset(8, -8)}, ${varName}, true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8, -8)}, 0n, true)`,
-        customize: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { if (!${varName} instanceof Customize) { ${varName} = new Customize(${varName}); } buffer.setBigUint64(${offset(8)}, ${varName}.toUint64(), true); break; } case 'bigint': { buffer.setBigUint64(${offset(8, -8)}, ${varName}, true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8, -8)}, 0n, true)`,
+        skillid32: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { if (!${varName} instanceof this.SkillID) { ${varName} = new this.SkillID(${varName}); } buffer.setUint32(${offset(4)}, ${varName}.toUint32(), true); break; } case 'number': { buffer.setUint32(${offset(4, -4)}, ${varName}, true); break; } default: { buffer.setUint32(${offset(4, -4)}, 0, true); break; } }` : `buffer.setUint32(${offset(4, -4)}, 0, true)`,
+        skillid: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { if (!${varName} instanceof this.SkillID) { ${varName} = new this.SkillID(${varName}); } buffer.setBigUint64(${offset(8)}, ${varName}.toUint64(), true); break; } case 'bigint': { buffer.setBigUint64(${offset(8, -8)}, ${varName}, true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8, -8)}, 0n, true)`,
+        customize: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { if (!${varName} instanceof this.Customize) { ${varName} = new this.Customize(${varName}); } buffer.setBigUint64(${offset(8)}, ${varName}.toUint64(), true); break; } case 'bigint': { buffer.setBigUint64(${offset(8, -8)}, ${varName}, true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8, -8)}, 0n, true)`,
     };
 
     // Cache interleaved arrays
@@ -471,6 +480,8 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
 
 function _transpileCloner(definition, fromPath = '', toPath = '') {
     let result = '';
+    let seenObjects = new Set;
+
     for (const [name, type] of definition) {
         const fullNameFrom = `${fromPath}.${name}`;
         const fullNameTo = `${toPath}.${name}`;
@@ -505,7 +516,11 @@ function _transpileCloner(definition, fromPath = '', toPath = '') {
         } else {
             switch (type.type) {
                 case 'object': {
-                    result += `${fullNameTo} = {};\n`;
+                    if (!seenObjects.has(fullNameTo)) {
+                        seenObjects.add(fullNameTo);
+                        result += `${fullNameTo} = {};\n`;
+                    }
+
                     result += _transpileCloner(type, fullNameFrom, fullNameTo);
                     break;
                 }
@@ -550,35 +565,31 @@ function transpile(definition) {
     const reader = _transpileReader(definition, 'result', 4, false);
     const writer = _transpileWriter(definition, 'data', false, 4, false);
 
-    // Build imports
-    let imports = [];
-    if (reader.imports.vec3)
-        imports.push('Vec3');
-    if (reader.imports.skillid)
-        imports.push('SkillID');
-    if (reader.imports.customize)
-        imports.push('Customize');
-
-    if (imports.length > 0)
-        imports = 'let {' + imports.join(',') + '} = require("tera-data-parser").types;\n';
-    else
-        imports = '';
-
     // Combine
     return {
-        reader: imports + (reader.offset_dynamic ? 'let buffer_pos = 0;\n' : '') + 'let result = {}; \n' + reader.result + 'return result;\n',
-        writer: imports + (writer.offset_dynamic ? 'let buffer_pos = 0;\n' : '') + writer.result + (writer.offset_dynamic ? (writer.offset_static > 0 ? `return ${writer.offset_static} + buffer_pos;\n` : 'return buffer_pos;\n') : `return ${writer.offset_static};\n`),
+        reader: (reader.offset_dynamic ? 'let buffer_pos = 0;\n' : '') + 'let result = {}; \n' + reader.result + 'return result;\n',
+        writer: (writer.offset_dynamic ? 'let buffer_pos = 0;\n' : '') + writer.result + (writer.offset_dynamic ? (writer.offset_static > 0 ? `return ${writer.offset_static} + buffer_pos;\n` : 'return buffer_pos;\n') : `return ${writer.offset_static};\n`),
         cloner: 'let result = {};\n' + _transpileCloner(definition, 'data', 'result') + 'return result;\n',
         isDynamicLength: reader.offset_dynamic,
         minLength: reader.offset_static,
+        imports: reader.imports
     };
 }
 
 function compile(definition) {
     const transpiled = transpile(definition);
+
+    let importCtx = {};
+    if (transpiled.imports.vec3)
+        importCtx.Vec3 = Vec3;
+    if (transpiled.imports.skillid)
+        importCtx.SkillID = SkillID;
+    if (transpiled.imports.customize)
+        importCtx.Customize = Customize;
+
     return {
-        reader: Function('buffer', '"use strict";\n' + transpiled.reader),
-        writer: Function('buffer', 'data', '"use strict";\n' + transpiled.writer),
+        reader: Function('buffer', '"use strict";\n' + transpiled.reader).bind(importCtx),
+        writer: Function('buffer', 'data', '"use strict";\n' + transpiled.writer).bind(importCtx),
         cloner: Function('data', '"use strict";\n' + transpiled.cloner),
         isDynamicLength: transpiled.isDynamicLength,
         minLength: transpiled.minLength,

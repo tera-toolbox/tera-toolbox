@@ -94,12 +94,13 @@ async function updateSelf() {
         setSplashScreenInfo(`Server ${serverIndex}`);
     });
     updater.on('check_fail', (serverIndex, e) => {
+        // TODO: show more helpful error messages based on error code
         console.log(`[update] Update check failed (Server: ${serverIndex}): ${e}`);
 
-        setSplashScreenCaption(`Update check finished (server ${serverIndex})!`);
+        setSplashScreenCaption(`Update check failed (server ${serverIndex})!`);
     });
     updater.on('check_fail_all', () => {
-        errors.push(`TERA Toolbox was unable to check for updates.`);
+        errors.push(`TERA Toolbox was unable to check for updates using any server!\nThis is most likely an issue caused by your internet connection or your system configuration.`);
         console.log('[update] Update check failed');
 
         setSplashScreenCaption('Update check failed!');
