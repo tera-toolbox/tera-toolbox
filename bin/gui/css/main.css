@@ -102,14 +102,13 @@ body {
 }
 
 ul.tabs {
-    margin-left: 16px;
+    margin-left: 6px;
     margin-right: 16px
 }
 
     ul.tabs li {
         display: inline-block;
         padding: 8px 16px;
-        border-radius: 8px 8px 0 0;
         cursor: pointer;
         user-select: none
     }
@@ -117,7 +116,6 @@ ul.tabs {
 .tab-content {
     display: none;
     padding: 8px;
-    border-radius: 8px;
     /* todo? edit width&height */
     width: 1200px;
     height: 600px;
@@ -154,7 +152,6 @@ ul.tabs {
 #startproxy {
     cursor: pointer;
     user-select: none;
-    border-radius: 8px 8px 0 0;
     padding: 8px 16px;
     float: right;
     text-align: center;
@@ -173,8 +170,8 @@ ul.tabs {
     z-index: 999999;
     font-size: 20px;
     position: fixed;
-    top: 72px;
-    right: 30px;
+    top: 75px;
+    right: 20px;
     /* todo: add 24px with scrollbar*/
     height: 32px;
     width: 32px;
@@ -221,7 +218,6 @@ ul.tabs {
     display: block;
     cursor: pointer;
     overflow: hidden;
-    border-radius: 7px;
     margin-top: 2px;
 }
 
@@ -348,7 +344,6 @@ ul.tabs {
 
     .installableModulesFilters > label > input[type=text] {
         border: 1px solid;
-        border-radius: 3px;
         padding: 2px;
     }
 
@@ -361,7 +356,6 @@ ul.tabs {
     width: 100%;
     display: block;
     overflow: hidden;
-    border-radius: 7px;
     margin-top: 2px;
 }
 
@@ -426,14 +420,6 @@ ul.tabs {
     width: 8px
 }
 
-::-webkit-scrollbar-track {
-    border-radius: 4px
-}
-
-::-webkit-scrollbar-thumb {
-    border-radius: 4px
-}
-
 /**********
  * CONFIG *
  **********/
@@ -445,7 +431,6 @@ ul.tabs {
 #settings > div {
     padding: 4px 8px;
     margin: 4px 260px 4px 260px;
-    border-radius: 4px;
 }
 
     #settings > div > a {
@@ -463,13 +448,12 @@ ul.tabs {
     display: inline-block;
     width: 20px;
     height: 20px;
-    border-radius: 50%;
     margin-right: 4px;
     margin-bottom: -6px;
 }
 
     .theme.black {
-        background-color: #292F33
+        background-color: rgb(0, 0, 0)
     }
 
     .theme.white {
@@ -536,7 +520,6 @@ ul.tabs {
     margin-top: 40px;
     cursor: pointer;
     border: 3px solid;
-    border-radius: 7px;
     height: 35px;
     width: 60px;
 }
