@@ -21,7 +21,7 @@
   "dependencies": {
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "process-list": "^1.2.3",
+    "ps-list": "^6.3.0",
     "tera-data": "github:tera-toolbox/tera-data",
     "tera-network-proxy": "github:tera-toolbox/tera-network-proxy"
   }
