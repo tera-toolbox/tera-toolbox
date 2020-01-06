@@ -1,5 +1,5 @@
 // Imports
-const request = require('request-promise-native');
+const fetch = require('node-fetch');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -38,8 +38,8 @@ class Updater extends EventEmitter {
 
     buildPath(relpath) { return path.join(__dirname, '..', relpath); }
     buildURL(serverIndex, relpath) { return `${AutoUpdateServers[serverIndex]}${this.branch}/${relpath}`; }
-    async downloadRaw(serverIndex, relpath) { return await request({ url: this.buildURL(serverIndex, relpath), encoding: null }); }
-    async downloadJSON(serverIndex, relpath) { return await request({ url: this.buildURL(serverIndex, relpath), json: true }); }
+    async downloadRaw(serverIndex, relpath) { return await (await fetch(this.buildURL(serverIndex, relpath))).buffer(); }
+    async downloadJSON(serverIndex, relpath) { return await (await fetch(this.buildURL(serverIndex, relpath))).json(); }
 
     async check(serverIndex = 0) {
         this.emit('check_start', serverIndex);

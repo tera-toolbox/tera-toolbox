@@ -1,7 +1,7 @@
 const path = require('path');
 const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require('electron');
 const ModuleFolder = path.join(__dirname, '..', 'mods');
-
+const fetch = require('node-fetch');
 // MUI
 const mui = require('tera-toolbox-mui').DefaultInstance;
 
@@ -63,8 +63,8 @@ let CachedAvailableModuleList = null;
 async function getInstallableMods(forceRefresh = false) {
     // (Re)download list of all available modules if required
     if (!CachedAvailableModuleList || forceRefresh) {
-        const request = require('request-promise-native');
-        CachedAvailableModuleList = await request({ url: AvailableModuleListUrl, json: true });
+      
+        CachedAvailableModuleList = await (await fetch(AvailableModuleListUrl)).json();
     }
 
     // Filter out already installed mods

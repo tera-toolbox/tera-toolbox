@@ -19,10 +19,14 @@
   },
   "homepage": "https://github.com/tera-toolbox/tera-toolbox#readme",
   "dependencies": {
-    "request": "^2.83.0",
-    "request-promise-native": "^1.0.5",
-    "ps-list": "^6.3.0",
+    "node-fetch": "^2.6.0",
+    "process-list": "^2.0.0",
+    "binary-search": "^1.3.6",
+    "node-stream-zip": "^1.8.2",
     "tera-data": "github:tera-toolbox/tera-data",
-    "tera-network-proxy": "github:tera-toolbox/tera-network-proxy"
+    "tera-mod-ui": "github:tera-toolbox/tera-mod-ui",
+    "tera-mod-management": "github:tera-toolbox/tera-mod-management",
+    "tera-network-proxy": "github:tera-toolbox/tera-network-proxy",
+    "tera-vec3": "github:tera-toolbox/tera-vec3"
   }
 }
