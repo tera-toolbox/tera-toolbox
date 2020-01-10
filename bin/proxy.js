@@ -8,6 +8,7 @@ function RegionFromLanguage(language) {
         case 'EUR':
         case 'FRA':
         case 'GER':
+        case 'SE':
             return 'EU';
         case 'KOR':
             return 'KR';
@@ -15,9 +16,6 @@ function RegionFromLanguage(language) {
             return 'JP';
         case 'TW':
             return 'TW';
-        case 'THA':
-        case 'SE':
-            return 'TH';
         case 'RUS':
             return 'RU';
         default:
@@ -32,6 +30,7 @@ function ProxyTagFromLanguage(language) {
         case 'EUR':
         case 'FRA':
         case 'GER':
+        case 'SE':
             return ' (Proxy)';
         case 'KOR':
             return ' (대리)';
@@ -39,9 +38,6 @@ function ProxyTagFromLanguage(language) {
             return '（プロキシ）';
         case 'TW':
             return '（代理）';
-        case 'THA':
-        case 'SE':
-            return ' (Proxy)';
         case 'RUS':
             return ' (Прокси)';
         default:
