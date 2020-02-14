@@ -8,7 +8,6 @@ function RegionFromLanguage(language) {
         case 'EUR':
         case 'FRA':
         case 'GER':
-        case 'SE':
             return 'EU';
         case 'KOR':
             return 'KR';
@@ -30,7 +29,6 @@ function ProxyTagFromLanguage(language) {
         case 'EUR':
         case 'FRA':
         case 'GER':
-        case 'SE':
             return ' (Proxy)';
         case 'KOR':
             return ' (대리)';
