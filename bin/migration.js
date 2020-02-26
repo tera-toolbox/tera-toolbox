@@ -22,6 +22,7 @@ function ToolboxMigration() {
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-proxy-sls'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'sysmsg'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'long'));
+    rimraf(path.join(__dirname, '..', 'node_modules', 'node-stream-zip'));
 
     // Delete no longer used files
     tryUnlink(path.join(__dirname, "index.js"));
@@ -30,6 +31,7 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, "hosts.js"));
     tryUnlink(path.join(__dirname, "netstat.js"));
     tryUnlink(path.join(__dirname, "regions.js"));
+    tryUnlink(path.join(__dirname, "update-electron-helper.js"));
     tryUnlink(path.join(__dirname, "gui", "index.html"));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'protocol', 'stream.js'));
 }
