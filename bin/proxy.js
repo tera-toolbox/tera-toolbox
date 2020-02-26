@@ -15,9 +15,6 @@ function RegionFromLanguage(language) {
             return 'JP';
         case 'TW':
             return 'TW';
-        case 'THA':
-        case 'SE':
-            return 'TH';
         case 'RUS':
             return 'RU';
         default:
@@ -39,9 +36,6 @@ function ProxyTagFromLanguage(language) {
             return '（プロキシ）';
         case 'TW':
             return '（代理）';
-        case 'THA':
-        case 'SE':
-            return ' (Proxy)';
         case 'RUS':
             return ' (Прокси)';
         default:
