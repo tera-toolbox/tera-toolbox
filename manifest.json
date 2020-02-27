@@ -21,7 +21,7 @@
     "bin/install-electron.js": "17b03f96f54dccb40eaba88b9ab21c14609eac91cb378ff0883b65b0078f105b",
     "bin/loader-cli.js": "edff58ac862021f8396b91518e7ac20758b61fbfccf6d190e8a5683c3285f3d0",
     "bin/loader-gui.js": "5e6eb92fe33208050827ac4b9a9fc079bf2026909b04d86ab08ef9b78f56305b",
-    "bin/migration.js": "0c3785539faac6c8d68e3caf7d3f52246664c691de024b7f6b1a51b207bf1aae",
+    "bin/migration.js": "a59fc09c7b229ba2efe2b29b96eabe01025e0cd860299bae82d47f93888cdc6e",
     "bin/proxy.js": "e5c52bffa95b140ba43c7a3026e5fb2a6799abe74e3b71d639ddf78d05e71bb4",
     "bin/standalone-injector.js": "484a3cc93e14669de0eefa140e4b6ca18c9f8790e14d3ff73e5ba4ed76651f5c",
     "bin/update-electron.js": "297553c558e14cf6c38a89d6277b5b5e849bf571fb7c42534cc649d07a66133e",
