@@ -63,8 +63,13 @@ let CachedAvailableModuleList = null;
 async function getInstallableMods(forceRefresh = false) {
     // (Re)download list of all available modules if required
     if (!CachedAvailableModuleList || forceRefresh) {
-        const request = require('request-promise-native');
-        CachedAvailableModuleList = await request({ url: AvailableModuleListUrl, json: true });
+        const fetch = require('node-fetch');
+        try {
+            CachedAvailableModuleList = await (await fetch(AvailableModuleListUrl)).json();
+        } catch (e) {
+            showError(e.toString());
+            return [];
+        }
     }
 
     // Filter out already installed mods

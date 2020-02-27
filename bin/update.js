@@ -1,5 +1,5 @@
 const mui = require('tera-toolbox-mui').DefaultInstance;
-const request = require('request-promise-native');
+const fetch = require('node-fetch');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -46,7 +46,7 @@ function walkdir(dir, listFiles = true, listDirs = false, listRootDir = "") {
 
 async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) {
     try {
-        const updatedFile = await request({ url: url, qs: { "drmkey": drmKey }, encoding: null });
+        const updatedFile = await (await fetch(drmKey ? `${url}?drmkey=${drmKey}` : url)).buffer();
 
         if (expectedHash && expectedHash !== hash(updatedFile))
             throw "ERROR: " + url + "\nDownloaded file doesn't match hash specified in patch manifest! Possible causes:\n   + Incorrect manifest specified by developer\n   + NoPing (if you're using it) has a bug that can fuck up the download";
