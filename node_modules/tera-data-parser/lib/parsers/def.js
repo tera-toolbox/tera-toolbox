@@ -60,8 +60,8 @@ function flatten(def, implicitMeta = true) {
 }
 
 // main
-function parseSync(filepath) {
-    const data = fs.readFileSync(filepath, { encoding: 'utf8' }).split(/\r?\n/);
+function parseSync(filepath, filecontent = null) {
+    const data = ((filecontent !== null) ? filecontent : fs.readFileSync(filepath, { encoding: 'utf8' })).split(/\r?\n/);
 
     const definition = [];
     let implicitMeta = true;

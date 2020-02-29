@@ -114,7 +114,7 @@ class Dispatch {
 
         // Initialize protocol
         this.protocol = new protocol(this.region, this.majorPatchVersion, this.minorPatchVersion, this.protocolMap, this.platform);
-        this.protocol.load(require.resolve('tera-data'));
+        this.protocol.load(this.connection.metadata.dataFolder);
 
         this.latestDefVersion = new Map();
         if (this.protocol.messages) {

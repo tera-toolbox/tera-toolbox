@@ -7,7 +7,6 @@ const defParser = require('../parsers/def');
 const { compile } = require('./compiler');
 
 // constants
-const PATH_DEFS = 'protocol';
 const PLATFORMS = ['pc', 'console', 'classic'];
 
 function parseDefinitionFilename(file) {
@@ -27,6 +26,27 @@ function parseDefinitionFilename(file) {
         type: parsedName[5]
     };
 }
+
+function requireStr(data, filename) {
+    // see https://stackoverflow.com/questions/17581830/load-node-js-module-from-string-in-memory
+    const Module = require('module');
+
+    if (typeof data !== 'string')
+        throw Error('data must be string!');
+
+    filename = filename || '';
+
+    let m = new Module(filename, module.parent);
+    m.filename = filename;
+    m.paths = Module._nodeModulePaths(path.dirname(filename));
+    m._compile(data, filename);
+
+    const exports = m.exports;
+    if (module.parent && module.parent.children)
+        module.parent.children.splice(module.parent.children.indexOf(m), 1);
+
+    return exports;
+};
 
 // implementation
 class TeraProtocol {
@@ -95,33 +115,43 @@ class TeraProtocol {
         return !this.isDefaultDefinition(name, version);
     }
 
-    /**
-     * Loads (or reloads) the opcode mapping and message definitions.
-     * @param {String} [basePath] Path to the base package.json.
-     */
-    load(basePath = require.resolve('tera-data')) {
-        if (path.basename(basePath) === 'package.json')
-            basePath = path.dirname(basePath);
+    load(dataPath) {
+        this.loadDefaultBundle(JSON.parse(fs.readFileSync(path.join(dataPath, 'data.json'))));
+        this.loadCustomDefinitions(path.join(dataPath, 'definitions'));
+    }
 
+    loadDefaultBundle(data) {
         // read deprecation data
-        const manifest = JSON.parse(fs.readFileSync(path.join(basePath, 'manifest.json')));
-        const defaultDefData = Object.keys(manifest.protocol).map(file => parseDefinitionFilename(file));
-        const lowestDefaultDefVersions = {};
+        const defaultDefData = Object.keys(data.protocol).map(file => parseDefinitionFilename(file));
+        this.lowestDefaultDefVersions = {};
         defaultDefData.forEach(def => {
-            if (lowestDefaultDefVersions[def.name])
-                lowestDefaultDefVersions[def.name] = Math.min(lowestDefaultDefVersions[def.name], def.version);
+            if (this.lowestDefaultDefVersions[def.name])
+                this.lowestDefaultDefVersions[def.name] = Math.min(this.lowestDefaultDefVersions[def.name], def.version);
             else
-                lowestDefaultDefVersions[def.name] = def.version;
+                this.lowestDefaultDefVersions[def.name] = def.version;
         });
 
-        this.deprecationData = manifest.deprecated || {};
+        this.deprecationData = data.deprecated || {};
         this.defaultDefinitions = new Set(defaultDefData.map(def => `${def.name}.${def.version}`));
 
         // reset messages
         this.messages.clear();
 
         // read protocol directory
-        const defPath = path.join(basePath, PATH_DEFS);
+        for (const file in data.protocol) {
+            const parsedName = parseDefinitionFilename(file);
+            const defData = Buffer.from(data.protocol[file], 'base64').toString('utf-8');
+
+            // Always prefer platform-specific definition over default one!
+            const definition = (parsedName.type === 'js') ? requireStr(defData, file) : defParser(file, defData);
+            if (definition && (!parsedName.platform || parsedName.platform === this.platform))
+                this.addDefinition(parsedName.name, parsedName.version, definition, !!parsedName.platform);
+        }
+
+        this.loaded = true;
+    }
+
+    loadCustomDefinitions(defPath) {
         const defFiles = fs.readdirSync(defPath);
         for (const file of defFiles) {
             const fullpath = path.join(defPath, file);
@@ -129,7 +159,7 @@ class TeraProtocol {
             if (!parsedName)
                 continue;
 
-            if (parsedName.version !== 0 && lowestDefaultDefVersions[parsedName.name] && parsedName.version < lowestDefaultDefVersions[parsedName.name]) {
+            if (parsedName.version !== 0 && this.lowestDefaultDefVersions[parsedName.name] && parsedName.version < this.lowestDefaultDefVersions[parsedName.name]) {
                 log.debug(`Skipped loading outdated def ${parsedName.name}.${parsedName.version}! Consider cleaning your tera-data folder.`);
                 continue;
             }
@@ -139,9 +169,6 @@ class TeraProtocol {
             if (definition && (!parsedName.platform || parsedName.platform === this.platform))
                 this.addDefinition(parsedName.name, parsedName.version, definition, !!parsedName.platform);
         }
-
-        this.loaded = true;
-        return true;
     }
 
     /**

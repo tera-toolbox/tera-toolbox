@@ -1,5 +1,6 @@
 ﻿const mui = require('tera-toolbox-mui').DefaultInstance;
 const path = require('path');
+const fs = require('fs');
 
 function RegionFromLanguage(language) {
     switch (language.toUpperCase()) {
@@ -43,24 +44,18 @@ function ProxyTagFromLanguage(language) {
     }
 }
 
-function LoadProtocolMap(version) {
+function LoadProtocolMap(dataFolder, version) {
     const parseMap = require('tera-data-parser').parsers.Map;
-    const teradata = path.join(__dirname, '..', 'node_modules', 'tera-data');
     const filename = `protocol.${version}.map`;
 
     // Load base
-    let baseMap = {};
-    try {
-        baseMap = parseMap(path.join(teradata, 'map_base', filename));
-    } catch (e) {
-        if (e.code !== 'ENOENT')
-            throw e;
-    }
+    const data = JSON.parse(fs.readFileSync(path.join(dataFolder, 'data.json')));
+    let baseMap = data.maps[version] || {};
 
     // Load custom
     let customMap = {};
     try {
-        customMap = parseMap(path.join(teradata, 'map', filename));
+        customMap = parseMap(path.join(dataFolder, 'opcodes', filename));
     } catch (e) {
         if (e.code !== 'ENOENT')
             throw e;
@@ -70,8 +65,9 @@ function LoadProtocolMap(version) {
 }
 
 class TeraProxy {
-    constructor(moduleFolder, config) {
+    constructor(moduleFolder, dataFolder, config) {
         this.moduleFolder = moduleFolder;
+        this.dataFolder = dataFolder;
         this.config = config;
         this.running = false;
 
@@ -186,7 +182,7 @@ class TeraProxy {
                     // Load protocol map
                     client.info.protocol = data.protocol || {};
                     try {
-                        client.info.protocol = Object.assign(LoadProtocolMap(client.info.protocolVersion), client.info.protocol);
+                        client.info.protocol = Object.assign(LoadProtocolMap(this.dataFolder, client.info.protocolVersion), client.info.protocol);
 
                         if (Object.keys(client.info.protocol).length === 0) {
                             console.warn(mui.get('proxy/warning-unmapped-protocol-1', { protocolVersion: client.info.protocolVersion, region: client.info.region, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
@@ -230,6 +226,7 @@ class TeraProxy {
                             }
 
                             const redirected_server_metadata = {
+                                dataFolder: this.dataFolder,
                                 serverId: server.id,
                                 serverList: serverlist,
                                 platform: 'pc',

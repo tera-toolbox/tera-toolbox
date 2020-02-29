@@ -1,5 +1,6 @@
 const path = require('path');
 const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require('electron');
+const DataFolder = path.join(__dirname, '..', 'data');
 const ModuleFolder = path.join(__dirname, '..', 'mods');
 
 // MUI
@@ -85,7 +86,7 @@ function _StartProxy(ModuleFolder, ProxyConfig) {
         return false;
 
     const TeraProxy = require('./proxy');
-    proxy = new TeraProxy(ModuleFolder, ProxyConfig);
+    proxy = new TeraProxy(ModuleFolder, DataFolder, ProxyConfig);
     try {
         proxy.run();
         proxyRunning = true;
@@ -116,10 +117,6 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
             const updateResult = await autoUpdate(ModuleFolder, ProxyConfig.updatelog, true);
             updateResult.legacy.forEach(mod => console.warn(mui.get('loader-gui/warning-update-mod-not-supported', { name: mod.name })));
             updateResult.failed.forEach(mod => console.error(mui.get('loader-gui/error-update-mod-failed', { name: mod.name })));
-            if (!updateResult['tera-data']) {
-                console.error(mui.get('loader-gui/error-update-tera-data-failed-1'));
-                console.error(mui.get('loader-gui/error-update-tera-data-failed-2'));
-            }
 
             return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
