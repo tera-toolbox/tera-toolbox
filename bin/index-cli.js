@@ -1,3 +1,7 @@
+// Hotfix for https://github.com/nodejs/node/issues/30039
+'use strict';
+require('module').wrapper[0] += `'use strict';`;
+
 const DiscordURL = 'https://discord.gg/659YbNY';
 
 // Update
