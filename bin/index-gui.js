@@ -28,6 +28,7 @@ function showSplashScreen() {
             frame: false,
             backgroundColor: '#292F33',
             resizable: false,
+            show: false,
             webPreferences: {
                 nodeIntegration: true,
                 devTools: false
@@ -35,7 +36,7 @@ function showSplashScreen() {
         });
 
         SplashScreen.loadFile(path.join(guiRoot, 'splash.html'));
-        SplashScreen.show();
+        SplashScreen.once('ready-to-show', () => SplashScreen.show());
         SplashScreenShowTime = Date.now();
     } catch (e) {
         // Ignore any error resulting from splash screen

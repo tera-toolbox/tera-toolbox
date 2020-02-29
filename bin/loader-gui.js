@@ -336,6 +336,7 @@ class TeraProxyGUI {
             frame: false,
             backgroundColor: '#292F33',
             resizable: false,
+            show: false,
             webPreferences: {
                 nodeIntegration: true,
                 devTools: false
@@ -344,6 +345,7 @@ class TeraProxyGUI {
         this.window.loadFile(path.join(guiRoot, 'main.html'));
         //this.window.webContents.openDevTools();
 
+        this.window.once('ready-to-show', () => this.window.show());
         //this.window.on('minimize', () => { this.window.hide(); });
         this.window.on('closed', () => { StopProxy(); this.window = null; });
 
