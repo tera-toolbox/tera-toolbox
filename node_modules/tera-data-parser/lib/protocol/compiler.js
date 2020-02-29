@@ -370,8 +370,8 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
                             result += `for (let i = 0; i < ${fullName}.length; ++i) {\n`;
                             result += `buffer.setUint8(buffer_pos + i, ${fullName}[i], true);\n`;
                             result += '}\n';
-                            result += '}\n';
                             result += `buffer_pos += ${fullName}.length;\n`;
+                            result += '}\n';
                         }
                         break;
                     }
