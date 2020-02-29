@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const { URL } = require('url');
 const { CoreModules, listModuleInfos } = require('tera-mod-management');
 
 function forcedirSync(dir) {
@@ -44,7 +45,10 @@ function walkdir(dir, listFiles = true, listDirs = false, listRootDir = "") {
 
 async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) {
     try {
-        const updatedFile = await (await fetch(drmKey ? `${url}?drmkey=${drmKey}` : url)).buffer();
+        let fileUrl = new URL(url);
+        if (drmKey)
+            fileUrl.searchParams.append('drmkey', drmKey);
+        const updatedFile = await (await fetch(fileUrl)).buffer();
 
         if (expectedHash && expectedHash !== hash(updatedFile))
             throw "ERROR: " + url + "\nDownloaded file doesn't match hash specified in patch manifest! Possible causes:\n   + Incorrect manifest specified by developer\n   + NoPing (if you're using it) has a bug that can fuck up the download";
@@ -58,10 +62,7 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) 
 }
 
 function migrateModuleUpdateUrlRoot(update_url_root) {
-    if (update_url_root === "https://raw.githubusercontent.com/caali-hackerman/tera-proxy/master/bin/node_modules/command/")
-        return "https://raw.githubusercontent.com/caali-hackerman/command/master/";
-    else
-        return update_url_root.replace('https://simplesalt.feedia.co/update/', 'https://saltymonkey.online/update/');
+    return update_url_root;
 }
 
 let blacklist = [];
