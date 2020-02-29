@@ -106,7 +106,6 @@ class Updater extends EventEmitter {
                 if (operation.type === 'update') {
                     this.emit('download_start', checkResult.serverIndex, operation.relpath);
                     operation.data = await this.downloadRaw(checkResult.serverIndex, operation.relpath);
-                    console.log(operation.hash, hash(operation.data));
                     if (operation.hash === hash(operation.data)) {
                         this.emit('download_finish', checkResult.serverIndex, operation.relpath);
                     } else {
