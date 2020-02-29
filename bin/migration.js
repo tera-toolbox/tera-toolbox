@@ -80,6 +80,8 @@ function ToolboxMigration() {
         'once',
         'path-is-absolute',
         'performance-now',
+        'pify',
+        'process-list',
         'punycode',
         'qs',
         'request',
@@ -109,6 +111,8 @@ function ToolboxMigration() {
     for (const NodeModule of DeprecatedNodeModules)
         rimraf(path.join(__dirname, '..', 'node_modules', NodeModule));
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'sysmsg'));
+    rimraf(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'ia32'));
+    rimraf(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'x64'));
 
     // Delete no longer used files
     tryUnlink(path.join(__dirname, "index.js"));
@@ -120,6 +124,9 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, "update-electron-helper.js"));
     tryUnlink(path.join(__dirname, "gui", "index.html"));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'protocol', 'stream.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'injector.exe'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener-dll-injector.js'));
 }
 
 module.exports = { ToolboxMigration };
