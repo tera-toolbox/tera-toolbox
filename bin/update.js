@@ -45,7 +45,7 @@ function walkdir(dir, listFiles = true, listDirs = false, listRootDir = "") {
     return results;
 }
 
-let HTTPAgent = new https.Agent({
+let HTTPAgent = new http.Agent({
     keepAlive: true
 });
 let HTTPSAgent = new https.Agent({
