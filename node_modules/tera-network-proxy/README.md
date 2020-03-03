@@ -75,7 +75,7 @@ The `event` for a normal hook and the `data` for a raw hook also have four prope
 
 Returns an object representing the hook. Its properties are not set in stone and are not meant to be changed, so do not depend on them. If you have a use case where you absolutely need to do something with the properties, please submit a GitHub issue describing it.
 
- [`tera-data`]: <https://github.com/caali-hackerman/tera-data>
+ [`tera-data`]: <https://github.com/tera-toolbox/tera-data>
 
 #### `unhook(hook)`
 
@@ -90,7 +90,7 @@ Constructs and sends a packet to either the TERA client or server.
 
 If `buffer` is used, it will simply be sent as-is (before encryption).
 
-If `data` is used, it must be an object (to be serialized by [`tera-data-parser`](https://github.com/caali-hackerman/tera-data-parser-js)). `name` must be the packet name and `version` should be the version number as given by the `tera-data` definition file, or `"*"` for the latest version.
+If `data` is used, it must be an object (to be serialized by [`tera-data-parser`](https://github.com/tera-toolbox/tera-data-parser-js)). `name` must be the packet name and `version` should be the version number as given by the `tera-data` definition file, or `"*"` for the latest version.
 
 
 ## `Dispatch`

@@ -110,7 +110,7 @@ initGlobalSettings(false).then(() => {
                 global.TeraProxy.GUIMode = false;
                 global.TeraProxy.UILanguage = mui.uilanguage;
                     
-                // Auto-update modules & tera-data and run
+                // Auto-update mods and run
                 if (ProxyConfig.noupdate) {
                     console.warn(mui.get('loader-cli/warning-noupdate-1'));
                     console.warn(mui.get('loader-cli/warning-noupdate-2'));
