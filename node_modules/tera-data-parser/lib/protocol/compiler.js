@@ -119,7 +119,7 @@ function _transpileReader(definition, path = '', real_path = '', offset_static =
                     const sub_result = _transpileReader(type, tmpElemName, fullNameReal, offset_static, offset_dynamic, imports);
                     result += sub_result.result;
                     offset_static = sub_result.offset_static;
-                    offset_dynamic = sub_result.offset_dynamic;
+                    offset_dynamic = offset_dynamic || sub_result.offset_dynamic;
                     if (isFirst)
                         result += `${fullName} = ${tmpElemName};\n`;
                     break;
@@ -168,7 +168,7 @@ function _transpileReader(definition, path = '', real_path = '', offset_static =
                         const sub_result = _transpileReader(type, tmpElemName, fullNameReal, offset_static, offset_dynamic, imports);
                         result += sub_result.result;
                         offset_static = sub_result.offset_static;
-                        offset_dynamic = sub_result.offset_dynamic;
+                        offset_dynamic = offset_dynamic || sub_result.offset_dynamic;
                         result += `${curElemName} = ${tmpElemName};\n`;
                     }
 
@@ -222,11 +222,11 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
         double: (varName) => `buffer.setFloat64(${offset(8)}, ${varName ? `${varName}` : '0'}, true)`,
 
         angle: (varName) => `buffer.setInt16(${offset(2)}, ${varName ? `${varName} ? (${varName} * ${MULT_RAD_TO_INT16}) : 0` : '0'}, true)`,
-        vec3: (varName) => `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x, true); buffer.setFloat32(${offset(4)}, ${varName}.y, true); buffer.setFloat32(${offset(4)}, ${varName}.z, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }`,
-        vec3fa: (varName) => `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.y * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.z * ${MULT_RAD_TO_INT16}, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }`,
-        skillid32: (varName) => varName ? `switch (typeof ${varName}) { case 'object': case 'number': { buffer.setUint32(${offset(4)}, ((${varName} instanceof this.SkillID) ? ${varName} : (new this.SkillID(${varName}))).toUint32(), true); break; } default: { buffer.setUint32(${offset(4, -4)}, 0, true); break; } }` : `buffer.setUint32(${offset(4, -4)}, 0, true)`,
-        skillid: (varName) => varName ? `switch (typeof ${varName}) { case 'object': case 'number': { buffer.setBigUint64(${offset(8)}, ((${varName} instanceof this.SkillID) ? ${varName} : (new this.SkillID(${varName}))).toUint64(), true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8, -8)}, 0n, true)`,
-        customize: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { buffer.setBigUint64(${offset(8)}, ((${varName} instanceof this.Customize) ? ${varName} : (new this.Customize(${varName}))).toUint64(), true); break; } case 'bigint': { buffer.setBigUint64(${offset(8, -8)}, ${varName}, true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8, -8)}, 0n, true)`,
+        vec3: (varName) => varName ? `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x, true); buffer.setFloat32(${offset(4)}, ${varName}.y, true); buffer.setFloat32(${offset(4)}, ${varName}.z, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }` : `buffer.setBigInt64(${offset(8)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true)`,
+        vec3fa: (varName) => varName ? `if (${varName}) { buffer.setFloat32(${offset(4)}, ${varName}.x * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.y * ${MULT_RAD_TO_INT16}, true); buffer.setFloat32(${offset(4)}, ${varName}.z * ${MULT_RAD_TO_INT16}, true); } else { buffer.setBigInt64(${offset(8, -12)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true); }` : `buffer.setBigInt64(${offset(8)}, 0n, true); buffer.setInt32(${offset(4)}, 0, true)`,
+        skillid32: (varName) => varName ? `switch (typeof ${varName}) { case 'object': case 'number': { buffer.setUint32(${offset(4)}, ((${varName} instanceof this.SkillID) ? ${varName} : (new this.SkillID(${varName}))).toUint32(), true); break; } default: { buffer.setUint32(${offset(4, -4)}, 0, true); break; } }` : `buffer.setUint32(${offset(4)}, 0, true)`,
+        skillid: (varName) => varName ? `switch (typeof ${varName}) { case 'object': case 'number': { buffer.setBigUint64(${offset(8)}, ((${varName} instanceof this.SkillID) ? ${varName} : (new this.SkillID(${varName}))).toUint64(), true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8)}, 0n, true)`,
+        customize: (varName) => varName ? `switch (typeof ${varName}) { case 'object': { buffer.setBigUint64(${offset(8)}, ((${varName} instanceof this.Customize) ? ${varName} : (new this.Customize(${varName}))).toUint64(), true); break; } case 'bigint': { buffer.setBigUint64(${offset(8, -8)}, ${varName}, true); break; } default: { buffer.setBigUint64(${offset(8, -8)}, 0n, true); break; } }` : `buffer.setBigUint64(${offset(8)}, 0n, true)`,
     };
 
     // Cache interleaved arrays
@@ -392,8 +392,8 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
 
                             const sub_result = _transpileWriter(type, fullName, false, offset_static, offset_dynamic);
                             result += sub_result.result;
-                            offset_static = sub_result.offset_static;
-                            offset_dynamic = sub_result.offset_dynamic;
+                            // We intentionally don't update the static offset here
+                            offset_dynamic = offset_dynamic || sub_result.offset_dynamic;
 
                             result += '} else {\n';
                         }
@@ -401,7 +401,7 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
                         const sub_result = _transpileWriter(type, fullName, true, offset_static, offset_dynamic);
                         result += sub_result.result;
                         offset_static = sub_result.offset_static;
-                        offset_dynamic = sub_result.offset_dynamic;
+                        offset_dynamic = offset_dynamic || sub_result.offset_dynamic;
 
                         if (!empty)
                             result += '}\n';
@@ -458,7 +458,7 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
                             const sub_result = _transpileWriter(type, curElemName, false, offset_static, offset_dynamic);
                             result += sub_result.result;
                             offset_static = sub_result.offset_static;
-                            offset_dynamic = sub_result.offset_dynamic;
+                            offset_dynamic = offset_dynamic || sub_result.offset_dynamic;
 
                             result += staticToDynamic();
                         }
@@ -475,6 +475,9 @@ function _transpileWriter(definition, path = '', empty = false, offset_static = 
             }
         }
     }
+
+    if (offset_dynamic)
+        result += staticToDynamic();
 
     return { result, offset_static, offset_dynamic };
 }
