@@ -153,7 +153,6 @@ function _transpileReader(definition, path = '', real_path = '', offset_static =
                             result += `buffer_pos += 6;\n`;
 
                             // TODO: check offset
-                            result += `buffer_pos = ${offsetName};\n`;
                             result += `${curElemName} = '';\n`;
                             result += `for(let ${curTmpName}; ${curTmpName} = buffer.getUint16(${offset()}, true); buffer_pos += 2)\n`;
                             result += `${curElemName} += String.fromCharCode(${curTmpName});\n`;
