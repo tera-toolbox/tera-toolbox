@@ -157,32 +157,24 @@ async function updateSelf() {
     });
     updater.on('install_error', (relpath, e) => {
         console.log(`[update] - Error installing ${relpath}: ${e}`);
-        switch (relpath) {
-            case 'node_modules/tera-client-interface/injector.exe':
-                console.log('[update] - Your anti-virus software most likely falsely detected it to be a virus.');
-                console.log('[update] - Please whitelist TERA Toolbox in your anti-virus!');
-                console.log(`[update] - For further information, check the #toolbox-faq channel in ${DiscordURL}!`);
-                break;
-            case 'node_modules/tera-client-interface/tera-client-interface.dll':
-                console.log('[update] - This is most likely caused by an instance of the game that is still running.');
-                console.log('[update] - Close all game clients or restart your computer, then try again!');
-                break;
+        if (relpath.startsWith('node_modules/tera-client-interface/scanner/')) {
+            console.log('[update] - Your anti-virus software most likely falsely detected it to be a virus.');
+            console.log('[update] - Please whitelist TERA Toolbox in your anti-virus!');
+            console.log(`[update] - For further information, check the #toolbox-faq channel in ${DiscordURL}!`);
+        } else if (relpath === 'node_modules/tera-client-interface/tera-client-interface.dll') {
+            console.log('[update] - This is most likely caused by an instance of the game that is still running.');
+            console.log('[update] - Close all game clients or restart your computer, then try again!');
         }
 
         setSplashScreenCaption('Error installing update!');
         setSplashScreenInfo(relpath);
 
-        switch (relpath) {
-            case 'node_modules/tera-client-interface/injector.exe':
-                errors.push(`Unable to install "${relpath}"!\n${e}\n\nYour anti-virus software most likely falsely detected TERA Toolbox to be a virus.\nPlease whitelist it!`);
-                break;
-            case 'node_modules/tera-client-interface/tera-client-interface.dll':
-                errors.push(`Unable to install "${relpath}"!\n${e}\n\nThis is most likely caused by an instance of the game client that is still running.\nClose all game clients or restart your computer, then try again!`);
-                break;
-            default:
-                errors.push(`Unable to install "${relpath}"!\n${e}`);
-                break;
-        }
+        if (relpath.startsWith('node_modules/tera-client-interface/scanner/'))
+            errors.push(`Unable to install "${relpath}"!\n${e}\n\nYour anti-virus software most likely falsely detected TERA Toolbox to be a virus.\nPlease whitelist it!`);
+        else if (relpath === 'node_modules/tera-client-interface/tera-client-interface.dll')
+            errors.push(`Unable to install "${relpath}"!\n${e}\n\nThis is most likely caused by an instance of the game client that is still running.\nClose all game clients or restart your computer, then try again!`);
+        else
+            errors.push(`Unable to install "${relpath}"!\n${e}`);
     });
     updater.on('execute_finish', () => {
         if (updatelog)
