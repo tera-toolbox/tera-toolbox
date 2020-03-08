@@ -1,5 +1,4 @@
 {
-    "disableAutoUpdate": false,
     "name": "skill-prediction",
     "author": "Pinkie Pie",
     "description": "Simulates skills client-side, eliminating ping-based delays and animation lock.",
