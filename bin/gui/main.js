@@ -83,6 +83,9 @@ jQuery(($) => {
     }
 
     function setProxyRunning(running) {
+        if (!ProxyRunning && !running && ProxyStarting)
+            return;
+
         ProxyRunning = running;
         ProxyStarting = false;
 

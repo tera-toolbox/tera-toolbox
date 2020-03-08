@@ -1,6 +1,17 @@
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 html {
     box-sizing: border-box;
     height: 100%;
+    animation: fadein 0.5s;
 }
 
 * {

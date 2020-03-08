@@ -1,8 +1,14 @@
 {
     "branch": "master",
+    "uilanguage": "en",
     "updatelog": false,
     "devmode": false,
     "noselfupdate": false,
     "noupdate": false,
-    "noslstags": false
+    "noslstags": false,
+    "gui": {
+        "theme": "black",
+        "autostart": false,
+        "logtimes": true
+    }
 }

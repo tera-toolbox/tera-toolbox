@@ -1,11 +1,12 @@
 const mui = require('tera-toolbox-mui').DefaultInstance;
-const request = require('request-promise-native');
+const fetch = require('node-fetch');
+const http = require('http');
+const https = require('https');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const { URL } = require('url');
 const { CoreModules, listModuleInfos } = require('tera-mod-management');
-
-const TeraDataAutoUpdateServer = "https://raw.githubusercontent.com/tera-toolbox/tera-data/master/";
 
 function forcedirSync(dir) {
     const sep = path.sep;
@@ -44,9 +45,19 @@ function walkdir(dir, listFiles = true, listDirs = false, listRootDir = "") {
     return results;
 }
 
+let HTTPAgent = new http.Agent({
+    keepAlive: true
+});
+let HTTPSAgent = new https.Agent({
+    keepAlive: true
+});
+
 async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) {
     try {
-        const updatedFile = await request({ url: url, qs: { "drmkey": drmKey }, encoding: null });
+        let fileUrl = new URL(url);
+        if (drmKey)
+            fileUrl.searchParams.append('drmkey', drmKey);
+        const updatedFile = await (await fetch(fileUrl, { agent: (fileUrl.protocol === 'https:') ? HTTPSAgent : HTTPAgent })).buffer();
 
         if (expectedHash && expectedHash !== hash(updatedFile))
             throw "ERROR: " + url + "\nDownloaded file doesn't match hash specified in patch manifest! Possible causes:\n   + Incorrect manifest specified by developer\n   + NoPing (if you're using it) has a bug that can fuck up the download";
@@ -60,10 +71,7 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) 
 }
 
 function migrateModuleUpdateUrlRoot(update_url_root) {
-    if (update_url_root === "https://raw.githubusercontent.com/caali-hackerman/tera-proxy/master/bin/node_modules/command/")
-        return "https://raw.githubusercontent.com/caali-hackerman/command/master/";
-    else
-        return update_url_root.replace('https://simplesalt.feedia.co/update/', 'https://saltymonkey.online/update/');
+    return update_url_root;
 }
 
 let blacklist = [];
@@ -146,64 +154,6 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
         else
             return Promise.reject(e);
     }
-}
-
-async function autoUpdateTeraData(updatelog, updatelimit) {
-    if (updatelog)
-        console.log(mui.get('update/tera-data'));
-
-    const tera_data_folder = path.join(__dirname, '..', 'node_modules', 'tera-data');
-    const manifest_file = 'manifest.json';
-    const manifest_url = TeraDataAutoUpdateServer + manifest_file;
-    const manifest_path = path.join(tera_data_folder, manifest_file);
-
-    let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url);
-    if (!manifest_result[1])
-        throw new Error(`Unable to download tera-data update manifest:\n${manifest_result[2]}`);
-
-    let manifest;
-    try {
-        manifest = JSON.parse(fs.readFileSync(manifest_path, 'utf8'));
-    } catch (e) {
-        throw new Error(`Invalid tera-data update manifest:\n${e}`);
-    }
-
-    let promises = [];
-    // Maps
-    for (const map in manifest.maps) {
-        const map_custom_filename = path.join(tera_data_folder, 'map', map);
-        if (!fs.existsSync(map_custom_filename)) {
-            forcedirSync(path.dirname(map_custom_filename));
-            fs.closeSync(fs.openSync(map_custom_filename, 'w'));
-        }
-
-        const map_filename = path.join(tera_data_folder, 'map_base', map);
-        const expectedHash = manifest.maps[map].toUpperCase();
-        if (!fs.existsSync(map_filename) || hash(fs.readFileSync(map_filename)) !== expectedHash) {
-            if (updatelog)
-                console.log(`[update] - ${map}`);
-
-            let promise = autoUpdateFile(map, map_filename, TeraDataAutoUpdateServer + "map_base/" + map, undefined, expectedHash);
-            promises.push(updatelimit ? (await promise) : promise);
-        }
-    }
-
-    // Defs
-    for (const def in manifest.protocol) {
-        const filepath = path.join(tera_data_folder, 'protocol', def);
-        const expectedHash = manifest.protocol[def].toUpperCase();
-        if (!fs.existsSync(filepath) || hash(fs.readFileSync(filepath)) !== expectedHash) {
-            if (updatelog)
-                console.log(`[update] - ${def}`);
-
-            let promise = autoUpdateFile(def, filepath, TeraDataAutoUpdateServer + "protocol/" + def, undefined, expectedHash);
-            promises.push(updatelimit ? (await promise) : promise);
-        }
-    }
-
-    // TODO: delete outdated defs, ...
-
-    return promises;
 }
 
 async function autoUpdate(moduleBase, updatelog, updatelimit) {
@@ -314,21 +264,8 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
         }
     } while (installedModulesChanged);
 
-    let updatePromises = await autoUpdateTeraData(updatelog, updatelimit);
-    let results = updatelimit ? updatePromises : (await Promise.all(updatePromises));
-    let failedFiles = [];
-    for (let result of results) {
-        if (!result[1])
-            failedFiles.push(result[0]);
-    }
-
-    if (failedFiles.length > 0) {
-        console.error(mui.get('update/tera-data-update-failed', { supportUrl: global.TeraProxy.SupportUrl }));
-        failedFiles.forEach(file => console.error(` - ${file}`));
-    }
-
     console.log(mui.get('update/finished'));
-    return { "tera-data": (failedFiles.length === 0), "updated": successModules, "legacy": legacyModules, "failed": failedModules };
+    return { "updated": successModules, "legacy": legacyModules, "failed": failedModules };
 }
 
 module.exports = autoUpdate;

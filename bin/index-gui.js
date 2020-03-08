@@ -1,3 +1,7 @@
+// Hotfix for https://github.com/nodejs/node/issues/30039
+'use strict';
+require('module').wrapper[0] += `'use strict';`;
+
 const DiscordURL = 'https://discord.gg/659YbNY';
 
 const { app } = require('electron');
@@ -6,7 +10,7 @@ const path = require('path');
 // Utility
 function dialogAndQuit(data) {
     const { dialog } = require('electron');
-    dialog.showMessageBox(data);
+    dialog.showMessageBoxSync(data);
     app.exit();
 }
 
@@ -28,6 +32,7 @@ function showSplashScreen() {
             frame: false,
             backgroundColor: '#292F33',
             resizable: false,
+            show: false,
             webPreferences: {
                 nodeIntegration: true,
                 devTools: false
@@ -35,7 +40,7 @@ function showSplashScreen() {
         });
 
         SplashScreen.loadFile(path.join(guiRoot, 'splash.html'));
-        SplashScreen.show();
+        SplashScreen.once('ready-to-show', () => SplashScreen.show());
         SplashScreenShowTime = Date.now();
     } catch (e) {
         // Ignore any error resulting from splash screen
@@ -69,7 +74,7 @@ async function updateSelf() {
     delete require.cache[require.resolve('./update-self')];
     const Updater = require('./update-self');
 
-    let error = null;
+    let errors = [];
 
     const updater = new Updater(branch);
     updater.on('run_start', () => {
@@ -94,12 +99,13 @@ async function updateSelf() {
         setSplashScreenInfo(`Server ${serverIndex}`);
     });
     updater.on('check_fail', (serverIndex, e) => {
+        // TODO: show more helpful error messages based on error code
         console.log(`[update] Update check failed (Server: ${serverIndex}): ${e}`);
 
-        setSplashScreenCaption(`Update check finished (server ${serverIndex})!`);
+        setSplashScreenCaption(`Update check failed (server ${serverIndex})!`);
     });
     updater.on('check_fail_all', () => {
-        error = `TERA Toolbox was unable to check for updates. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe program will now be terminated.`;
+        errors.push(`TERA Toolbox was unable to check for updates using any server!\nThis is most likely an issue caused by your internet connection or your system configuration.`);
         console.log('[update] Update check failed');
 
         setSplashScreenCaption('Update check failed!');
@@ -118,6 +124,14 @@ async function updateSelf() {
 
         setSplashScreenCaption(`Downloading update (server ${serverIndex})...`);
         setSplashScreenInfo(relpath);
+    });
+    updater.on('download_error', (relpath, expected_hash, downloaded_hash) => {
+        console.log(`[update] - Error downloading ${relpath}: file hash mismatch (expected: ${expected_hash}, found: ${downloaded_hash})!`);
+
+        setSplashScreenCaption('Error downloading update!');
+        setSplashScreenInfo(relpath);
+
+        errors.push(`File hash mismatch in downloaded file "${relpath}"!\nExpected: ${expected_hash}\nFound: ${downloaded_hash}`);
     });
     updater.on('prepare_finish', () => {
         if (updatelog)
@@ -160,13 +174,13 @@ async function updateSelf() {
 
         switch (relpath) {
             case 'node_modules/tera-client-interface/injector.exe':
-                error = `TERA Toolbox was unable to update itself.\nYour anti-virus software most likely falsely detected it to be a virus.\nPlease whitelist TERA Toolbox in your anti-virus!\nCheck the #toolbox-faq channel in ${DiscordURL} for further information.\n\nThe full error message is:\nUnable to install "${relpath}"!\n${e}\n\nThe program will now be terminated.`;
+                errors.push(`Unable to install "${relpath}"!\n${e}\n\nYour anti-virus software most likely falsely detected TERA Toolbox to be a virus.\nPlease whitelist it!`);
                 break;
             case 'node_modules/tera-client-interface/tera-client-interface.dll':
-                error = `TERA Toolbox was unable to update itself.\nThis is most likely caused by an instance of the game that is still running.\nClose all game clients or restart your computer, then try again!\n\nThe full error message is:\nUnable to install "${relpath}"!\n${e}\n\nThe program will now be terminated.`;
+                errors.push(`Unable to install "${relpath}"!\n${e}\n\nThis is most likely caused by an instance of the game client that is still running.\nClose all game clients or restart your computer, then try again!`);
                 break;
             default:
-                error = `TERA Toolbox was unable to update itself. Please ask in ${DiscordURL} for help!\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\nUnable to install "${relpath}"!\n${e}\n\nThe program will now be terminated.`;
+                errors.push(`Unable to install "${relpath}"!\n${e}`);
                 break;
         }
     });
@@ -186,8 +200,8 @@ async function updateSelf() {
     });
 
     const filesChanged = await updater.run();
-    if (error)
-        return error;
+    if (errors.length > 0)
+        return errors;
     if (filesChanged)
         return await updateSelf();
     return null;
@@ -207,12 +221,16 @@ function main() {
         showSplashScreen();
 
         // Perform self-update
-        updateSelf().then(e => {
-            if (e) {
+        updateSelf().then(errors => {
+            if (errors && errors.length > 0) {
+                let errmsg = `TERA Toolbox was unable to update itself. Please consult the #toolbox-faq and #help channels in ${DiscordURL} for further information.\n>> MAKE SURE TO READ THE CHANNEL DESCRIPTION FIRST <<\n\nThe full error message is:\n\n------------------------------\n`;
+                errmsg += errors.join('\n------------------------------\n');
+                errmsg += '\n------------------------------\n\nThe program will now be terminated.';
+
                 dialogAndQuit({
                     type: 'error',
                     title: 'Self-update error!',
-                    message: e
+                    message: errmsg
                 });
             } else {
                 const { updateRequired, update } = require('./update-electron.js');

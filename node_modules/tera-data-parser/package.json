@@ -18,9 +18,6 @@
   "license": "ISC",
   "main": "lib/index.js",
   "name": "tera-data-parser",
-  "peerDependencies": {
-    "tera-data": "1.x"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tera-toolbox/tera-data-parser-js.git"

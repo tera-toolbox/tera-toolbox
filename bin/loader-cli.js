@@ -1,4 +1,5 @@
 const path = require('path');
+const DataFolder = path.join(__dirname, '..', 'data');
 const ModuleFolder = path.join(__dirname, '..', 'mods');
 
 // MUI
@@ -58,7 +59,7 @@ function Migration() {
 // Proxy main function
 function RunProxy(ModuleFolder, ProxyConfig) {
     const TeraProxy = require('./proxy');
-    let proxy = new TeraProxy(ModuleFolder, ProxyConfig);
+    let proxy = new TeraProxy(ModuleFolder, DataFolder, ProxyConfig);
     try {
         proxy.run();
     } catch (e) {
@@ -109,7 +110,7 @@ initGlobalSettings(false).then(() => {
                 global.TeraProxy.GUIMode = false;
                 global.TeraProxy.UILanguage = mui.uilanguage;
                     
-                // Auto-update modules & tera-data and run
+                // Auto-update mods and run
                 if (ProxyConfig.noupdate) {
                     console.warn(mui.get('loader-cli/warning-noupdate-1'));
                     console.warn(mui.get('loader-cli/warning-noupdate-2'));
@@ -122,10 +123,6 @@ initGlobalSettings(false).then(() => {
                     autoUpdate(ModuleFolder, ProxyConfig.updatelog, true).then(updateResult => {
                         updateResult.legacy.forEach(mod => console.warn(mui.get('loader-cli/warning-update-mod-not-supported', { name: mod.name })));
                         updateResult.failed.forEach(mod => console.error(mui.get('loader-cli/error-update-mod-failed', { name: mod.name })));
-                        if (!updateResult['tera-data']) {
-                            console.error(mui.get('loader-cli/error-update-tera-data-failed-1'));
-                            console.error(mui.get('loader-cli/error-update-tera-data-failed-2'));
-                        }
 
                         RunProxy(ModuleFolder, ProxyConfig);
                     }).catch(e => {

@@ -1,0 +1,16 @@
+{
+    "disableAutoUpdate": false,
+    "name": "fps-manager",
+    "options": {
+        "niceName": "FPM",
+        "guiName": "FPS Manager",
+        "settingsVersion": 1,
+        "settingsFile": "./settings/settings.json",
+        "settingsMigrator": "./data/migrationData.js"
+    },
+    "author": "SaltyMonkey",
+    "description": "FPS Manager is modern and extremely customizable module for Tera Toolbox which can help to solve annoyance by some ingame messages and fps drops.",
+    "servers": ["https://raw.githubusercontent.com/SaltyMonkey/fps-manager/master/"],
+    "supportUrl": ["https://github.com/SaltyMonkey/fps-manager/issues"],
+    "conflicts": ["fps-utils"]
+}

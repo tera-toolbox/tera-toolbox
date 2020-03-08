@@ -1,5 +1,6 @@
 const path = require('path');
 const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require('electron');
+const DataFolder = path.join(__dirname, '..', 'data');
 const ModuleFolder = path.join(__dirname, '..', 'mods');
 
 // MUI
@@ -17,7 +18,7 @@ function LoadConfiguration() {
     } catch (_) {
         const { dialog } = require('electron');
 
-        dialog.showMessageBox({
+        dialog.showMessageBoxSync({
             type: 'error',
             title: mui.get('loader-gui/error-config-file-corrupt/title'),
             message: mui.get('loader-gui/error-config-file-corrupt/message', { supportUrl: global.TeraProxy.SupportUrl })
@@ -45,7 +46,7 @@ function Migration() {
     } catch (e) {
         const { dialog } = require('electron');
 
-        dialog.showMessageBox({
+        dialog.showMessageBoxSync({
             type: 'error',
             title: mui.get('loader-gui/error-migration-failed/title'),
             message: mui.get('loader-gui/error-migration-failed/message', { supportUrl: global.TeraProxy.SupportUrl })
@@ -63,8 +64,13 @@ let CachedAvailableModuleList = null;
 async function getInstallableMods(forceRefresh = false) {
     // (Re)download list of all available modules if required
     if (!CachedAvailableModuleList || forceRefresh) {
-        const request = require('request-promise-native');
-        CachedAvailableModuleList = await request({ url: AvailableModuleListUrl, json: true });
+        const fetch = require('node-fetch');
+        try {
+            CachedAvailableModuleList = await (await fetch(AvailableModuleListUrl)).json();
+        } catch (e) {
+            showError(e.toString());
+            return [];
+        }
     }
 
     // Filter out already installed mods
@@ -80,7 +86,7 @@ function _StartProxy(ModuleFolder, ProxyConfig) {
         return false;
 
     const TeraProxy = require('./proxy');
-    proxy = new TeraProxy(ModuleFolder, ProxyConfig);
+    proxy = new TeraProxy(ModuleFolder, DataFolder, ProxyConfig);
     try {
         proxy.run();
         proxyRunning = true;
@@ -111,10 +117,6 @@ async function StartProxy(ModuleFolder, ProxyConfig) {
             const updateResult = await autoUpdate(ModuleFolder, ProxyConfig.updatelog, true);
             updateResult.legacy.forEach(mod => console.warn(mui.get('loader-gui/warning-update-mod-not-supported', { name: mod.name })));
             updateResult.failed.forEach(mod => console.error(mui.get('loader-gui/error-update-mod-failed', { name: mod.name })));
-            if (!updateResult['tera-data']) {
-                console.error(mui.get('loader-gui/error-update-tera-data-failed-1'));
-                console.error(mui.get('loader-gui/error-update-tera-data-failed-2'));
-            }
 
             return _StartProxy(ModuleFolder, ProxyConfig);
         } catch (e) {
@@ -331,6 +333,7 @@ class TeraProxyGUI {
             frame: false,
             backgroundColor: '#292F33',
             resizable: false,
+            show: false,
             webPreferences: {
                 nodeIntegration: true,
                 devTools: false
@@ -339,6 +342,7 @@ class TeraProxyGUI {
         this.window.loadFile(path.join(guiRoot, 'main.html'));
         //this.window.webContents.openDevTools();
 
+        this.window.once('ready-to-show', () => this.window.show());
         //this.window.on('minimize', () => { this.window.hide(); });
         this.window.on('closed', () => { StopProxy(); this.window = null; });
 
