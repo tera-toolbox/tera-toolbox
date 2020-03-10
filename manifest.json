@@ -11,7 +11,7 @@
     "bin/index-cli.js": "0b8e569a879486afbe67e149887e75d5cdec78b13efcb38d50b8529ae4261966",
     "bin/index-gui.js": "42c5073f572effbbec3f2e9535d7ed16a0e98c20c41ee9bced0ef42fe54b0f66",
     "bin/install-electron.js": "17b03f96f54dccb40eaba88b9ab21c14609eac91cb378ff0883b65b0078f105b",
-    "bin/loader-cli.js": "4a5d2468689b3cdc414475346a2bc9d5a87270da4815d492de7c5d251d7435e4",
+    "bin/loader-cli.js": "d25b53f5e8a6d84df1a60b42a8c838aef76aecbeb137a82f6e2b259488916b01",
     "bin/loader-gui.js": "0fbaa8a00819c0b364a6758635cbe1f7e33f2c7ae42b1026698c4a8453e45bd8",
     "bin/migration.js": "ea72936b0f7a7ff75af6af78f7cd45c210d71b7de1fc418a61a194e0376e1c42",
     "bin/proxy.js": "b14c211e8275698b71e6668ce60b4b745b927cdacd0a43433bc10218cc53ec17",
