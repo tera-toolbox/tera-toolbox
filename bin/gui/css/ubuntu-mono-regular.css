@@ -1,0 +1,8 @@
+/* ubuntu-mono-regular - latin_latin-ext_cyrillic_greek_greek-ext_cyrillic-ext */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Ubuntu Mono'), local('UbuntuMono-Regular'),
+       url('../fonts/ubuntu-mono-v9-regular-full.woff2') format('woff2')
+}

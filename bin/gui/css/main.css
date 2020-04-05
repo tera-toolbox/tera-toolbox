@@ -1,552 +1,369 @@
-/***********
- * GENERAL *
- ***********/
-@keyframes fadein {
-    from {
-        opacity: 0;
-    }
+@import url("./ubuntu-regular.css");
+@import url("./ubuntu-mono-regular.css");
+@import url("./materialdesignicons.min.css");
 
-    to {
-        opacity: 1;
-    }
-}
-
-html {
-    box-sizing: border-box;
-    height: 100%;
-    animation: fadein 0.5s;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: inherit;
-}
-
+/* ************* */
+/* BASIC         */
+/* ************* */
 body {
-    -webkit-app-region: drag;
-    user-select: none;
-    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-    font-size: 14px;
-    line-height: 1.42857143;
-    min-height: 100%;
-    overflow: hidden;
-    display: flex;
+	font-family: Ubuntu, sans serif;
+	overflow: hidden;
+	background: var(--main-background);
+	color: var(--main-font-color);
+	margin: 0px;
+	border-style: solid;
+	border-color: var(--border-color);
+	border-width: 1px;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
 }
 
-.nodrag {
-    -webkit-app-region: no-drag;
+label {
+	font-size: 14px;
 }
 
-/*************
- * TITLE BAR *
- *************/
-
-#title-bar {
-    position: fixed;
-    height: 32px;
-    top: 0px;
-    left: 0px;
-    right: 0px
+p {
+	margin: 1px;
+	margin-right: 5px;
+	font-size: 14px;
 }
 
-#title {
-    position: fixed;
-    left: 32px;
-    line-height: 32px
+/* ************* */
+/* SELECTION     */
+/* ************* */
+
+.noselect {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
 }
 
-#title-status {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    line-height: 32px;
-    font-size: 12px;
-    text-align: center;
+::selection {
+	background: var(--selection-color);
 }
 
-#title-icon {
-    position: fixed;
-    margin: 4px;
-    width: 24px;
-    height: 24px
-}
-
-#minimize-btn {
-    font-size: 20px;
-    position: fixed;
-    top: 0px;
-    right: 20px;
-    height: 32px;
-    width: 32px;
-    border: none;
-    background-color: transparent;
-}
-
-    #minimize-btn:focus {
-        outline: 0;
-    }
-
-#close-btn {
-    font-size: 20px;
-    position: fixed;
-    top: 0px;
-    right: 0px;
-    height: 32px;
-    width: 32px;
-    border: none;
-    background-color: transparent;
-}
-
-    #close-btn:focus {
-        outline: 0;
-    }
-
-/********
- * MAIN *
- ********/
-
-.container {
-    margin: 32px 8px 8px 8px
-}
-
-ul.tabs {
-    margin-left: 16px;
-    margin-right: 16px
-}
-
-    ul.tabs li {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 8px 8px 0 0;
-        cursor: pointer;
-        user-select: none
-    }
-
-.tab-content {
-    display: none;
-    padding: 8px;
-    border-radius: 8px;
-    /* todo? edit width&height */
-    width: 1200px;
-    height: 600px;
-    overflow-y: auto;
-}
-
-    .tab-content.current {
-        display: inherit
-    }
-
-.loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-    .loading.icon {
-        width: 50px;
-        height: 50px;
-        border: none;
-        margin-top: 250px;
-    }
-
-    .loading.text {
-        font-size: 28px;
-        line-height: 50px;
-        margin-top: 250px;
-    }
-
-/*********
- * PROXY *
- *********/
-
-#startproxy {
-    cursor: pointer;
-    user-select: none;
-    border-radius: 8px 8px 0 0;
-    padding: 8px 16px;
-    float: right;
-    text-align: center;
-    width: 180px
-}
-
-/********
- * LOGS *
- ********/
-
-#log {
-    overflow-y: hidden;
-}
-
-#clear-logs {
-    z-index: 999999;
-    font-size: 20px;
-    position: fixed;
-    top: 72px;
-    right: 30px;
-    /* todo: add 24px with scrollbar*/
-    height: 32px;
-    width: 32px;
-    border: none;
-    background-color: transparent;
-}
-
-    #clear-logs:focus {
-        outline: 0;
-    }
-
-.log-contents {
-    position: relative;
-    z-index: 99999;
-    height: 575px;
-    width: 100%;
-    overflow: scroll;
-    overflow-x: hidden;
-    user-select: text;
-    resize: none;
-    border: 1px solid;
-}
-
-    .log-contents > div {
-        word-wrap: break-word;
-        word-break: break-all;
-        overflow-wrap: break-word;
-        white-space: pre-wrap;
-        font-family: Consolas, monaco, monospace;
-        font-size: 12px;
-    }
-
-/***********
- * MODULES *
- ***********/
-
-#modInfo li {
-    display: block;
-}
-
-.moduleHeader {
-    border: 1px solid;
-    width: 100%;
-    display: block;
-    cursor: pointer;
-    overflow: hidden;
-    border-radius: 7px;
-    margin-top: 2px;
-}
-
-    .moduleHeader.name {
-        background: inherit;
-        width: 70%;
-        text-align: left;
-        font-size: 16px;
-        font-weight: bold;
-        float: left;
-        border: none;
-        padding-left: 5px;
-    }
-
-        .moduleHeader.name:hover {
-            background: inherit;
-        }
-
-    .moduleHeader.author {
-        background: inherit;
-        width: 30%;
-        text-align: right;
-        float: right;
-        border: none;
-        padding-right: 5px;
-    }
-
-        .moduleHeader.author:hover {
-            background: inherit;
-        }
-
-.moduleBody {
-    display: none;
-}
-
-    .moduleBody.description {
-        display: inherit;
-        text-align: left;
-        border: inherit;
-        padding-left: 5px;
-        padding-right: 50px;
-        float: left;
-        overflow: auto;
-        width: calc(100% - 100px);
-    }
-
-    .moduleBody.buttons {
-        display: inherit;
-        text-align: right;
-        float: right;
-        border: inherit;
-        padding-right: 5px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        margin-right: 5px;
-        vertical-align: middle;
-    }
-
-        .moduleBody.buttons.donate {
-            width: 28px;
-            height: 28px;
-            border: none;
-        }
-
-        .moduleBody.buttons.info {
-            width: 28px;
-            height: 28px;
-            border: none;
-            margin-top: 2px;
-        }
-
-        .moduleBody.buttons.uninstall {
-            width: 28px;
-            height: 28px;
-            border: none;
-            margin-left: 10px;
-        }
-
-        .moduleBody.buttons.loadEnabled {
-            width: 28px;
-            height: 28px;
-            border: none;
-        }
-
-        .moduleBody.buttons.loadDisabled {
-            width: 28px;
-            height: 28px;
-            border: none;
-        }
-
-        .moduleBody.buttons.updateEnabled {
-            width: 28px;
-            height: 28px;
-            border: none;
-            margin-left: 10px;
-        }
-
-        .moduleBody.buttons.updateDisabled {
-            width: 28px;
-            height: 28px;
-            border: none;
-            margin-left: 10px;
-        }
-
-/***********************
- * INSTALLABLE MODULES *
- ***********************/
-.installableModulesFilters {
-    width: 100%;
-    margin-bottom: 5px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-    .installableModulesFilters > label {
-        padding-right: 20px;
-    }
-
-    .installableModulesFilters > label > input[type=checkbox] {
-        position: relative;
-        top: 2px;
-        margin-right: 3px;
-    }
-
-    .installableModulesFilters > label > input[type=text] {
-        border: 1px solid;
-        border-radius: 3px;
-        padding: 2px;
-    }
-
-.installableModulesList {
-    display: block;
-}
-
-.installableModuleHeader {
-    border: 1px solid;
-    width: 100%;
-    display: block;
-    overflow: hidden;
-    border-radius: 7px;
-    margin-top: 2px;
-}
-
-    .installableModuleHeader.name {
-        background: inherit;
-        width: 70%;
-        text-align: left;
-        font-size: 16px;
-        font-weight: bold;
-        float: left;
-        border: none;
-        padding-left: 5px;
-    }
-
-    .installableModuleHeader.author {
-        background: inherit;
-        width: 30%;
-        text-align: right;
-        float: right;
-        border: none;
-        padding-right: 5px;
-    }
-
-.installableModuleBody {
-    display: block;
-}
-
-    .installableModuleBody.description {
-        display: inherit;
-        text-align: left;
-        border: inherit;
-        padding-left: 5px;
-        padding-right: 50px;
-        float: left;
-        overflow: auto;
-        width: calc(100% - 100px);
-    }
-
-    .installableModuleBody.buttons {
-        display: inherit;
-        text-align: right;
-        float: right;
-        border: inherit;
-        padding-right: 5px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        vertical-align: middle;
-    }
-
-        .installableModuleBody.buttons.install {
-            width: 28px;
-            height: 28px;
-            border: none;
-        }
-
-
-/*************
- * SCROLLBAR *
- *************/
-
+/* ************* */
+/* SCROLLBAR     */
+/* ************* */
 ::-webkit-scrollbar {
-    width: 8px
+	width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    border-radius: 4px
+	background: var(--scrollbar-track-color);
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 4px
+	background: var(--scrollbar-thumb-color);
 }
 
-/**********
- * CONFIG *
- **********/
-
-#settings {
-    padding-top: 110px;
+::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-thumb-hover-color);
 }
 
-#settings > div {
-    padding: 4px 8px;
-    margin: 4px 260px 4px 260px;
-    border-radius: 4px;
+/* ************* */
+/* HEADER     */
+/* ************* */
+.header-base {
+	display: flex;
+	min-height: 24px;
+	height: 24px;
+	background: var(--header-background-color);
 }
 
-    #settings > div > a {
-        cursor: default;
-        user-select: none;
-        width: 470px;
-        display: inline-block;
-        text-align: left;
-        margin-right: 8px;
-        font-size: 20px;
-    }
-
-.theme {
-    cursor: pointer;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin-right: 4px;
-    margin-bottom: -6px;
+.header-base> * {
+	font-size: 14px;
 }
 
-    .theme.black {
-        background-color: #292F33
-    }
+.header-button {
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	padding: 2px;
+	text-align: center;
+	vertical-align: middle;
+	transition: background ease 0.32s;
+}
 
-    .theme.white {
-        background-color: #E1E8ED
-    }
+.header-button:hover {
+	background-color: var(--header-button-hover-color);
+}
 
-    .theme.pink {
-        background-color: #F0438C
-    }
+.header-text {
+	-webkit-app-region: drag;
+	padding: 4px;
+	text-align: center;
+	vertical-align: middle;
+}
 
-/***********
- * CREDITS *
- ***********/
+.header-status {
+	-webkit-app-region: drag;
+	padding: 4px;
+	flex-grow: 1;
+	text-align: center;
+	vertical-align: middle;
+	margin-left: -65px;
+}
 
-.credits {
+#admin-badge {
+	padding-top: 3px;
+	font-size: 17px;
+}
+
+/* **************** */
+/* TABS ROW CONTROLS*/
+/* **************** */
+.tabs-base {
+	display: flex;
+	min-height: 36px;
+	height: 36px;
+	display: flex;
+	justify-content: center;
+	background: var(--main-control-background-color);
+}
+
+/* tabs control styling*/
+.tabs-base label {
+	padding: 9px;
+	cursor: pointer;
+}
+
+.tabs-base label:hover {
+	background-color: var(--main-control-hover-background-color);
+}
+
+/* tabs control styling*/
+.tabs-base label> span:first-child {
+	font-size: 17px;
+}
+
+.tabs-base button {
+	background-color: var(--main-control-start-button-background-color);
+	color: var(--main-font-color);
+	transition: background ease 0.32s;
+	border: 0px;
+	margin-left: 15px;
+	width: 125px;
+}
+
+.tabs-base button>span:first-child {
+	font-size: 16px;
+}
+
+.tabs-base button:hover {
+	background: var(--main-control-start-button-hover-color);
+}
+
+.tabs-base button:focus {
+	outline: 0;
+}
+
+.tabs-base input[type="radio"] {
+	display: none;
+}
+
+.tabs-base input[type="radio"]:checked+label {
+	background: var(--main-control-select-background-color);
+}
+
+/* **************** */
+/* TABS  WRAPPERS   */
+/* **************** */
+.tab {
+	display: none;
+	padding: 5px;
+	flex-grow: 1;
+	overflow: auto;
+	box-sizing: border-box;
+}
+
+.tab--active {
+	display: block;
+}
+
+/* ************* */
+/* LOG STYLES    */
+/* ************* */
+
+.log-contents {
+	background: var(--log-background);
+	color: var(--log-text-color);
+	padding: 2px;
+	font-family: Ubuntu Mono, monospace;
+	font-size: 14px;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+}
+
+.log-contents>div.log {
+	color: var(--log-text-color);
+}
+
+.log-contents>div.warn {
+	color: var(--log-text-warn-color);
+}
+
+.log-contents>div.error {
+	color: var(--log-text-error-color);
+}
+
+/* fuck you fking css and trash web */
+.scroller-smoll {
+	height: calc(100vh - 105px);
+	overflow-y: auto;
+}
+
+/* fuck you fking css and trash web */
+.scroller {
+	height: calc(100vh - 78px);
+	overflow-y: auto;
+}
+
+
+/* Visible content basic style */
+.flex-column {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Visible content basic style */
+.setting {
+	display: flex;
+	flex-direction: row;
+	background-color: var(--settings-background-color);
+	padding: 3px;
+	margin: 3px;
+	min-width: 90%;
+	font-size: 14px;
+}
+
+.setting > div:first-child {
+	margin-left: auto;
+	text-align: end;
+	width: 50%;
+}
+
+.setting > div:nth-child(2) {
+	margin-right: auto;
+	width: 50%;
+	margin-left: 15px;
+}
+
+.control-secondary {
     display: flex;
-    align-items: center;
     justify-content: center;
+    flex-direction: row;
+    background-color: var(--settings-background-color);
+    margin: 3px;
+    margin-top: 0px;
+    padding-top: 3px;
+    height: 24px;
+    font-size: 14px;
 }
 
-    .credits.text {
-        font-size: 28px;
-        line-height: 50px;
-        margin-top: 100px;
-        text-align: center;
-    }
+.mod-info {
+	background-color: var(--mod-card-background-color);
+	padding: 3px;
+	margin: 3px;
+	min-width: 95%;
+}
+
+.mod-info-disabled-border {
+	border-style: solid;
+	border-color: var(--mod-card-disabled-border-color);
+	border-width: 1px;
+}
+
+/* Visible content basic style */
+.mod-info-controls {
+	display: flex;
+	flex-direction: row;
+	margin-right: 10px;
+	justify-content: flex-end;
+}
+
+details:focus {
+	outline: 0;
+}
+
+summary:focus {
+	outline: 0;
+
+}
+
+details > summary {
+	list-style: none;
+}
+
+details > p {
+	margin-top: px;
+}
+
+details > summary::-webkit-details-marker {
+	display: none;
+}
+
+summary {
+	font-size: 14px;
+	color:var(--mod-card-info-font-color);
+}
+
+.floating-elem {
+	position: fixed;
+	top: 72px;
+	right: 16px;
+	display: block;
+	z-index: 9;
+	font-size: 20px;
+	color:var(--float-element-text-color);
+}
+
+.floating-elem:hover {
+	background-color: var(--float-element-hover-background-color);
+}
 
 /*************
  * MODAL BOX *
  *************/
-.modalbox {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    padding-top: 15%;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    text-align: center;
+ .modalbox {
+	display: none;
+	position: fixed;
+	z-index: 99;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: var(--modal-box-background-color);
 }
 
 .modalbox-content {
-    background-color: #393c40;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid;
-    width: 40%;
-    height: 60%;
+    background-color: var(--modal-box-content-background-color);
+	position: absolute;
+	padding: 15px;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .modalbox-text {
-    font-size: 20px;
+    font-size: 16px;
 }
 
-.modalbox-button {
-    padding: 5px;
-    padding-left: 4px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-    margin-top: 40px;
-    cursor: pointer;
-    border: 3px solid;
-    border-radius: 7px;
-    height: 35px;
-    width: 60px;
+/*************
+ *  LOADING  *
+ *************/
+
+#loading {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#loading img {
+	height: 64px;
+	width: 64px;
+	margin-bottom: 10px;
 }

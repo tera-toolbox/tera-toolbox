@@ -1,0 +1,480 @@
+/* eslint-disable no-undef */
+/* eslint-disable default-case */
+const { remote, ipcRenderer, shell } = require("electron");
+const { TeraToolboxMUI, LanguageNames } = require("tera-toolbox-mui");
+const Themes = ["black", "white"];
+
+let mui = null;
+
+function displayName(modInfo) {
+	if (modInfo.options) {
+		if (modInfo.options.guiName)
+			return modInfo.options.guiName;
+		if (modInfo.options.niceName)
+			return modInfo.options.niceName;
+	}
+
+	return modInfo.rawName || modInfo.name;
+}
+
+// eslint-disable-next-line no-undef
+jQuery(($) => {
+	const contents = $("#log-contents");
+
+	// --------------------------------------------------------------------
+	// --------------------------- MAIN BASIC CONTROLS --------------------
+	// --------------------------------------------------------------------
+
+	// MUI
+	function setLanguage(language) {
+		if (mui && language && mui.language === language)
+			return;
+
+		mui = new TeraToolboxMUI(language);
+		$("*").each(function () {
+			const str = $(this).attr("mui");
+			if (str) {
+				$(this).text(mui.get(str));
+			} else {
+				const str_html = $(this).attr("mui-html");
+				if (str_html)
+					$(this).html(mui.get(str_html));
+			}
+		});
+	}
+
+	// --------------------------------------------------------------------
+	// ----------------------------- MAIN ---------------------------------
+	// --------------------------------------------------------------------
+	$("#minimize-btn").click(() => {
+		if (Settings.gui.minimizetotray)
+			remote.getCurrentWindow().hide();
+		else
+			remote.getCurrentWindow().minimize();
+	});
+
+	$("#close-btn").click(() => {
+		remote.getCurrentWindow().close();
+	});
+
+	$("#info-btn").click(() => {
+		ShowModalHtml(mui.get("gui/main/static/tabs/credits/content"));
+	});
+
+	$("#discord-btn").click(() => {
+		shell.openExternal(remote.getGlobal("TeraProxy").SupportUrl);
+	});
+
+	// Disable mouse wheel clicks
+	// eslint-disable-next-line no-undef
+	$(document).on("auxclick", "a", (e) => {
+		if (e.which !== 2)
+			return true;
+
+		e.preventDefault();
+		e.stopPropagation();
+		e.stopImmediatePropagation();
+		return false;
+	});
+
+	// --------------------------------------------------------------------
+	// ------------------------- SETTINGS TAB -----------------------------
+	// --------------------------------------------------------------------
+	let Settings = null;
+
+	function onSettingsChanged(newSettings) {
+		Settings = newSettings;
+		setLanguage(Settings.uilanguage);
+		setProxyRunning(ProxyRunning);
+
+		$("#uilanguage").val(mui.language);
+		$("#uithemes").val(Settings.gui.theme);
+		$("#autostart").prop("checked", Settings.gui.autostart);
+		$("#updatelog").prop("checked", Settings.updatelog);
+		$("#logtimes").prop("checked", Settings.gui.logtimes);
+		$("#noupdate").prop("checked", Settings.noupdate);
+		$("#noselfupdate").prop("checked", Settings.noselfupdate);
+		$("#noslstags").prop("checked", Settings.noslstags);
+		$("#minimizetotray").prop("checked", Settings.gui.minimizetotray);
+		
+		$("#theme").attr("href", `css/themes/${Settings.gui.theme}.css`);
+	}
+
+	function updateSettings(newSettings) {
+		ipcRenderer.send("set config", newSettings);
+		onSettingsChanged(newSettings);
+	}
+
+	function updateSetting(key, value) {
+		let Override = {};
+		Override[key] = value;
+		updateSettings(Object.assign(Settings, Override));
+	}
+
+	function updateGUISetting(key, value) {
+		let Override = {};
+		Override[key] = value;
+
+		let SettingsCopy = { ...Settings};
+		SettingsCopy.gui = Object.assign(SettingsCopy.gui, Override);
+		updateSettings(SettingsCopy);
+	}
+
+	function loadSettingsLanguageNames() {
+		const LanguageSelector = $("#uilanguage");
+		Object.keys(LanguageNames).forEach(language_id => LanguageSelector.append($("<option/>", { "value": language_id, "text": LanguageNames[language_id] })));
+	}
+
+	function loadThemesNames() {
+		const ThemesSelector = $("#uithemes");
+		Themes.forEach(theme => ThemesSelector.append($("<option/>", { "value": theme, "text": theme })));
+	}
+
+	loadSettingsLanguageNames();
+	loadThemesNames();
+
+	ipcRenderer.on("set config", (_, newConfig) => {
+		onSettingsChanged(newConfig);
+	});
+
+	// UI events
+	$("#uilanguage").change(() => {
+		updateSetting("uilanguage", $("#uilanguage").val());
+	});
+
+	$("#uithemes").change(() => {
+		updateGUISetting("theme", $("#uithemes").val());
+	});
+
+	$("#autostart").click(() => {
+		updateGUISetting("autostart", $("#autostart").is(":checked"));
+	});
+
+	$("#updatelog").click(() => {
+		updateSetting("updatelog", $("#updatelog").is(":checked"));
+	});
+
+	$("#logtimes").click(() => {
+		updateGUISetting("logtimes", $("#logtimes").is(":checked"));
+	});
+
+	$("#noupdate").click(() => {
+		const checked = $("#noupdate").is(":checked");
+		if (checked)
+			updateSetting("noupdate", checked);
+	});
+
+	$("#noselfupdate").click(() => {
+		const checked = $("#noselfupdate").is(":checked");
+		if (checked)
+			updateSetting("noselfupdate", checked);
+	});
+
+	$("#noslstags").click(() => {
+		updateSetting("noslstags", $("#noslstags").is(":checked"));
+	});
+
+	$("#minimizetotray").click(() => {
+		updateGUISetting("minimizetotray", $("#minimizetotray").is(":checked"));
+	});
+	
+	// Admin indicator
+	let IsAdmin = false;
+	ipcRenderer.on("is admin", (_, isAdmin) => {
+		IsAdmin = isAdmin;
+		$("#admin-badge").css("color", IsAdmin ? "green": "gray");
+	});
+
+	// Update available indicator
+	let UpdateAvailable = false;
+	ipcRenderer.on("update available", _ => {
+		UpdateAvailable = true;
+		$("#title-status").text(mui.get("gui/main/status-update-available"));
+	});
+
+	// Proxy control
+	let ProxyRunning = false;
+	let ProxyStarting = false;
+
+	function setProxyStarting() {
+		ProxyStarting = true;
+		$("#startproxy").text(mui.get("gui/main/start-stop-proxy-starting"));
+	}
+
+	function setProxyRunning(running) {
+		if (!ProxyRunning && !running && ProxyStarting)
+			return;
+
+		ProxyRunning = running;
+		ProxyStarting = false;
+
+		$("#startproxy").text(mui.get(ProxyRunning ? "gui/main/start-stop-proxy-running" : "gui/main/start-stop-proxy-not-running"));
+		if (!UpdateAvailable)
+			$("#title-status").text(mui.get(ProxyRunning ? "gui/main/status-proxy-running" : "gui/main/status-proxy-not-running"));
+	}
+
+	function startProxy() {
+		if (ProxyStarting || ProxyRunning)
+			return;
+
+		setProxyStarting();
+		ipcRenderer.send("start proxy");
+	}
+
+	function stopProxy() {
+		if (!ProxyRunning)
+			return;
+
+		$("#startproxy").text(mui.get("gui/main/start-stop-proxy-stopping"));
+		ipcRenderer.send("stop proxy");
+	}
+
+	$("#startproxy-btn").click(() => {
+		if (ProxyRunning)
+			stopProxy();
+		else
+			startProxy();
+	});
+
+	// eslint-disable-next-line no-unused-vars
+	ipcRenderer.on("proxy starting", _ => setProxyStarting());
+	ipcRenderer.on("proxy running", (_, running) => setProxyRunning(running));
+
+	// ---------------------------------------------------------------------
+	// ------------------------ LOGS ---------------------------------------
+	// ---------------------------------------------------------------------
+	function log(msg, type) {
+		let timeStr = "";
+		if (Settings.gui.logtimes) {
+			const now = new Date();
+			timeStr = `[${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}.${now.getMilliseconds().toString().padStart(3, "0")}] `;
+		}
+
+		contents.append($("<div/>", { "class": type || "log" }).text(`${timeStr}${msg}`));
+		contents.scrollTop(contents[0].scrollHeight);
+	}
+
+	$("#clear-logs").click(() => {
+		$("#log-contents").empty();
+	});
+
+	ipcRenderer.on("log", (_, data, type) => {
+		log(data.toString(), type);
+	});
+
+	// ---------------------------------------------------------------------
+	// ------------------------ MODS LIST ----------------------------------
+	// ---------------------------------------------------------------------
+	let WaitingForModAction = false;
+
+	ipcRenderer.on("set mods", (_, modInfos) => {
+		WaitingForModAction = false;
+
+		let ModIndex = 0;
+		$("#modulesList").empty();
+		modInfos.forEach(modInfo => {
+			const escapedName = (ModIndex++).toString();
+			const headerId = `modheader-${escapedName}`;
+			const donationId = `moddonate-${escapedName}`;
+			const uninstallId = `moduninstall-${escapedName}`;
+			const infoId = `modinfo-${escapedName}`;
+			const enabledId = `modenabled-${escapedName}`;
+			const updateId = `modupdate-${escapedName}`;
+
+			const autoUpdateClass = `${!modInfo.disableAutoUpdate ? "mdi-progress-close" : "mdi-progress-download"}`;
+			const enabledClass = `${!modInfo.disabled ? "mdi-flask-minus-outline" : "mdi-flask-outline"}`;
+			const headerClasses= modInfo.disabled ? "mod-info mod-info-disabled-border" : "mod-info";
+			$("#modulesList").append(`
+				<div id="${headerId}" class="${headerClasses}">
+					<details>
+						<summary class="noselect">${modInfo.drmKey ? "<span class=\"mdi mdi-currency-usd\"></span>" : ""} ${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""} ${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
+						<p>${modInfo.description ? modInfo.description : " "}</p>
+						<div class="mod-info-controls">
+							${modInfo.donationUrl ? `<div class="header-button" id="${donationId}"><i class="mdi mdi-gift-outline"></i></div>` : ""}
+							${modInfo.supportUrl ? `<div class="header-button" id="${infoId}"><i class="mdi mdi-link-variant"></i></div>` : ""}
+							${(!modInfo.isCoreModule && modInfo.compatibility === "compatible") ? `<div class="header-button" id="${updateId}"><i class="mdi ${autoUpdateClass}"></i></div>` : ""}
+							${!modInfo.isCoreModule ? `<div class="header-button" id="${uninstallId}"><i class="mdi mdi-flask-remove-outline"></i></div>` : ""}
+							${(!modInfo.isCoreModule && modInfo.compatibility === "compatible") ? `<div class="header-button" id="${enabledId}"><i class="mdi ${enabledClass}"></i></div>` : ""}
+						</div>
+					</details>
+				</div>
+			`);
+
+			$(`#${donationId}`).on("click", (event) => {
+				event.preventDefault();
+				shell.openExternal(modInfo.donationUrl);
+				return false;
+			});
+
+			$(`#${infoId}`).on("click", (event) => {
+				event.preventDefault();
+				shell.openExternal(modInfo.supportUrl);
+				return false;
+			});
+			
+			$(`#${enabledId}`).on("click", (event) => {
+				event.preventDefault();
+				if (!WaitingForModAction) {
+					ipcRenderer.send("toggle mod load", modInfo);
+					WaitingForModAction = true;
+				}
+				return false;
+			});
+
+			$(`#${updateId}`).on("click", (event) => {
+				event.preventDefault();
+				if (!WaitingForModAction) {
+					ipcRenderer.send("toggle mod autoupdate", modInfo);
+					WaitingForModAction = true;
+				}
+				return false;
+			});
+
+			$(`#${uninstallId}`).on("click", (event) => {
+				event.preventDefault();
+				if (ProxyStarting || ProxyRunning) {
+					ShowModal(mui.get("gui/main/modal/error-cannot-uninstall-mod-while-running"));
+				} else if (!WaitingForModAction) {
+					ipcRenderer.send("uninstall mod", modInfo);
+					WaitingForModAction = true;
+				}
+				return false;
+			});
+			
+		});
+	});
+
+	// --------------------------------------------------------------------
+	// ---------------------- MODS INSTALLATION TAB -----------------------
+	// --------------------------------------------------------------------
+	let WaitingForModInstall = false;
+	let InstallableModInfos = [];
+	let InstallableModFilter = {
+		"keywords": [],
+		"network": true,
+		"client": true,
+	};
+
+	function requestInstallMod(modInfo) {
+		ipcRenderer.send("install mod", modInfo);
+		WaitingForModInstall = true;
+	}
+
+	function matchesInstallableModFilter(modInfo) {
+		if (!InstallableModFilter.network && (!modInfo.category || modInfo.category === "network"))
+			return false;
+		if (!InstallableModFilter.client && modInfo.category === "client")
+			return false;
+
+		return InstallableModFilter.keywords.length === 0 || InstallableModFilter.keywords.some(keyword => (modInfo.author && modInfo.author.toLowerCase().includes(keyword)) || (modInfo.description && modInfo.description.toLowerCase().includes(keyword)) || displayName(modInfo).toLowerCase().includes(keyword));
+	}
+
+	function rebuildInstallableModsList() {
+		let ModIndex = 0;
+		$("#installableModulesList").empty();
+		
+		InstallableModInfos.filter(modInfo => matchesInstallableModFilter(modInfo)).forEach(modInfo => {
+			const escapedName = (ModIndex++).toString();
+			const headerId = `installablemodheader-${escapedName}`;
+			const installId = `installablemodinstall-${escapedName}`;
+
+			$("#installableModulesList").append(`
+				<div id="${headerId}" class="mod-info">
+					<details>
+						<summary class="noselect">${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""} ${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
+						<p>${modInfo.description ? modInfo.description : " "}</p>
+						<div class="mod-info-controls">
+							<div class="header-button" id="${installId}"><i class="mdi mdi-progress-download"></i></div>
+						</div>
+					</details>
+				</div>
+			`);
+
+			$(`#${installId}`).on("click", (event) => {
+				event.preventDefault();
+				if (ProxyStarting || ProxyRunning)
+					ShowModal(mui.get("gui/main/modal/error-cannot-install-mod-while-running"));
+				else if (!WaitingForModInstall)
+					requestInstallMod(modInfo);
+				return false;
+			});
+		});
+	}
+
+	$("#installableModulesFilterString").on("input", () => {
+		InstallableModFilter.keywords = $("#installableModulesFilterString").val().split(",").map(x => x.trim().toLowerCase()).filter(x => x.length > 0);
+		rebuildInstallableModsList();
+	});
+
+	$("#installableModulesFilterNetwork").click(() => {
+		InstallableModFilter.network = $("#installableModulesFilterNetwork").is(":checked");
+		rebuildInstallableModsList();
+	});
+
+	$("#installableModulesFilterClient").click(() => {
+		InstallableModFilter.client = $("#installableModulesFilterClient").is(":checked");
+		rebuildInstallableModsList();
+	});
+
+	ipcRenderer.on("set installable mods", (_, modInfos) => {
+		$("#loading").hide();
+		$("#installableModulesList").show();
+		WaitingForModInstall = false;
+		InstallableModInfos = modInfos;
+		rebuildInstallableModsList();
+	});
+
+	// --------------------------------------------------------------------
+	// ---------------------------- MODAL BOX -----------------------------
+	// --------------------------------------------------------------------
+	function ShowModal(text) {
+		$("#modalbox-text").text(text);
+		$("#modalbox").show();
+	}
+
+	function ShowModalHtml(text) {
+		$("#modalbox-text").html(text);
+		$("#modalbox").show();
+	}
+
+	$("#modalbox").click(() => {
+		$("#modalbox").hide();
+	});
+
+	ipcRenderer.on("error", (_, error) => {
+		ShowModal(error);
+	});
+
+	// --------------------------------------------------------------------
+	// -------------------- TABS AND DATA UPDATE---------------------------
+	// --------------------------------------------------------------------
+	function handleTabs() {
+		const buttons = document.querySelectorAll("input[name=\"tabs\"]");
+		for (const button of buttons) button.addEventListener("click", onTabChange);
+	}
+
+	function onTabChange($e) {
+		const tab = $e.target.dataset.tab;
+
+		switch($e.target.dataset.tab) {
+		case("2"): ipcRenderer.send("get mods"); break;
+		case("3"): 
+			ipcRenderer.send("get installable mods"); 
+			$("#installableModulesList").hide();
+			$("#loading").show();
+			break;
+		case("4"): ipcRenderer.send("get config"); break;
+		}
+
+		const tabs = document.querySelectorAll(".tab--active");
+		for (const tab of tabs) tab.classList.remove("tab--active");
+		const contentElement = document.querySelector(`.tab[data-tab="${tab}"]`);
+		contentElement.classList.add("tab--active");
+	}
+	handleTabs();
+	
+	// --------------------------------------------------------------------
+	// ------------------------------ RUN! --------------------------------
+	// --------------------------------------------------------------------
+	ipcRenderer.send("init");
+});
