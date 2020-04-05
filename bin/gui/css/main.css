@@ -207,13 +207,11 @@ p {
 	color: var(--log-text-error-color);
 }
 
-/* fuck you fking css and trash web */
 .scroller-smoll {
 	height: calc(100vh - 105px);
 	overflow-y: auto;
 }
 
-/* fuck you fking css and trash web */
 .scroller {
 	height: calc(100vh - 78px);
 	overflow-y: auto;
