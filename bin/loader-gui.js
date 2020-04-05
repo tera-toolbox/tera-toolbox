@@ -323,11 +323,11 @@ class TeraProxyGUI {
 
 		// Initialize main window
 		const guiRoot = path.join(__dirname, "gui");
-		const guiIcon = path.join(guiRoot, "/icon.ico");
+		const guiIcon = path.join(guiRoot, "/assets/icon.ico");
 
 		this.window = new BrowserWindow({
 			"title": "TERA Toolbox",
-			"width": 400,
+			"width": 880,
 			"height": 500,
 			"icon": guiIcon,
 			"frame": false,
@@ -336,7 +336,7 @@ class TeraProxyGUI {
 			"show": false,
 			"webPreferences": {
 				"nodeIntegration": true,
-				"devTools": true
+				"devTools": false
 			}
 		});
 		this.window.loadFile(path.join(guiRoot, "main.html"));

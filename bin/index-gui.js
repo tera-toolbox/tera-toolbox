@@ -21,13 +21,13 @@ let SplashScreenShowTime = 0;
 function showSplashScreen() {
     try {
         const guiRoot = path.join(__dirname, 'gui');
-        const guiIcon = path.join(guiRoot, 'icon.ico');
+        const guiIcon = path.join(guiRoot, '/assets/icon.ico');
 
         const { BrowserWindow } = require('electron');
         SplashScreen = new BrowserWindow({
             title: 'TERA Toolbox',
-            width: 960,
-            height: 540,
+            width: 880,
+            height: 500,
             icon: guiIcon,
             frame: false,
             backgroundColor: '#292F33',
