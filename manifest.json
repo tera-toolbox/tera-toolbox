@@ -76,7 +76,7 @@
     "node_modules/tera-client-interface/index.js": "70d0307f09e306bc2c38404f0b94912cd669aa1d5dc21d057a4f8a059dac4f2a",
     "node_modules/tera-client-interface/module.js": "943b360fc815922b686025bd88cb15196551e4f15a379ef53f10843bc0d91301",
     "node_modules/tera-client-interface/moduleManager.js": "2e61d70f0f84f3b5fcb66d9e6d507b289721514f38d35da991b8e7b4db1bb424",
-    "node_modules/tera-client-interface/tera-client-interface.dll": "099dc3ba5101fca531e8906a2b0144a592e0d02442f70f365e3a4f8986b91a12",
+    "node_modules/tera-client-interface/tera-client-interface.dll": "c5ddace09c312ffa3fd92d2ae26174d3722ecd89a133d45be3801285a5054ec3",
     "node_modules/tera-client-interface/third party licenses": "198998ed77107633cedcc0a272939ef7979bbc1b701b9eeff804036a8cbd5676",
     "node_modules/tera-client-interface/scanner/index.js": "bfa4f7902e11a9adb852f940c24295abfe42295dcbdd6d6ddf5b149b86e985c0",
     "node_modules/tera-client-interface/scanner/scanner_72.node": "9ab9fb53c9d3704e528386bf969a979213f130a4b78fe979e1e7f5583ca0c292",
