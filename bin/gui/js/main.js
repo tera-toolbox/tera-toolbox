@@ -95,6 +95,7 @@ jQuery(($) => {
 		$("#noupdate").prop("checked", Settings.noupdate);
 		$("#noselfupdate").prop("checked", Settings.noselfupdate);
 		$("#noslstags").prop("checked", Settings.noslstags);
+		$("#noserverautojoin").prop("checked", Settings.noserverautojoin);
 		$("#minimizetotray").prop("checked", Settings.gui.minimizetotray);
 		
 		$("#theme").attr("href", `css/themes/${Settings.gui.theme}.css`);
@@ -172,6 +173,10 @@ jQuery(($) => {
 
 	$("#noslstags").click(() => {
 		updateSetting("noslstags", $("#noslstags").is(":checked"));
+	});
+
+	$("#noserverautojoin").click(() => {
+		updateSetting("noserverautojoin", $("#noserverautojoin").is(":checked"));
 	});
 
 	$("#minimizetotray").click(() => {

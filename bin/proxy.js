@@ -246,7 +246,8 @@ class TeraProxy {
                             patched_server.port = redirected_server.port;
                             return patched_server;
                         });
-
+                        
+                        if(this.config.noserverautojoin) data.default_server_id = 0
                         data.servers = !this.config.noslstags ? [...proxy_servers, ...data.servers] : proxy_servers;
                     }
 
