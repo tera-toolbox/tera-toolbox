@@ -75,6 +75,14 @@ p {
 	font-size: 14px;
 }
 
+.header-icon {
+	-webkit-app-region: drag;
+	width: 24px;
+	height: 24px;
+	background-image: url(../assets/icon.ico);
+	background-size: 24px;
+}
+
 .header-button {
 	width: 20px;
 	height: 20px;
@@ -105,9 +113,18 @@ p {
 	margin-left: -65px;
 }
 
-#admin-badge {
+.admin-badge {
+	-webkit-app-region: drag;
 	padding-top: 3px;
 	font-size: 17px;
+}
+
+.admin-badge-disabled {
+	color: gray;
+}
+
+.admin-badge-enabled {
+	color: #7053F8;
 }
 
 /* **************** */
@@ -142,12 +159,15 @@ p {
 	color: var(--main-font-color);
 	transition: background ease 0.32s;
 	border: 0px;
-	margin-left: 15px;
 	width: 125px;
 }
 
 .tabs-base button>span:first-child {
-	font-size: 16px;
+	font-size: 15px;
+}
+
+.tabs-base button>span:nth-child(2) {
+	font-size: 15px;
 }
 
 .tabs-base button:hover {
@@ -286,9 +306,11 @@ details:focus {
 
 summary:focus {
 	outline: 0;
-
 }
 
+.spacer {
+	flex-grow: 1
+}
 details > summary {
 	list-style: none;
 }
@@ -302,8 +324,12 @@ details > summary::-webkit-details-marker {
 }
 
 summary {
+	margin-left: 1px;
+	margin-right: 1px;
 	font-size: 14px;
+	cursor: pointer;
 	color:var(--mod-card-info-font-color);
+	display: flex;
 }
 
 .floating-elem {

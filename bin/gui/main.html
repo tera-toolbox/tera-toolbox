@@ -1,4 +1,4 @@
-<head>
+﻿<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" id="theme" href="">
@@ -15,20 +15,20 @@
 	</div>
 	<!-- Header -->
 	<div class="header-base noselect">
-		<img style="width: 24px;height: 24px;" src="./assets/icon.ico"></img>
-		<div class="header-text" id="title">TERA Toolbox</div>
-		<div id="admin-badge">
+		<div class="header-icon" id="icon"></div>
+		<div class="admin-badge admin-badge-disabled" id="admin-badge">
 			<i class="mdi mdi-security"></i>
 		</div>
+		<div class="header-text" id="title">TERA Toolbox</div>
 		<div class="header-status" id="title-status"></div>
 		<div class="header-button" id="discord-btn">
-			<i class="mdi mdi-link-variant"></i>
+			<i class="mdi mdi-forum-outline"></i>
 		</div>
 		<div class="header-button" id="info-btn">
 			<i class="mdi mdi-information-variant"></i>
 		</div>
 		<div class="header-button" id="minimize-btn">
-			<i class="mdi mdi-chevron-down"></i>
+			<i class="mdi mdi-window-minimize"></i>
 		</div>
 		<div class="header-button" id="close-btn">
 			<i class="mdi mdi-close"></i>
@@ -42,26 +42,27 @@
 			<span class="mdi mdi-console"></span>
 			<span mui="gui/main/static/tabs/log/title"></span>
 		</label>
-		<input type="radio" name="tabs" id="tabthree" data-tab="2">
-		<label for="tabthree">
+		<input type="radio" name="tabs" id="tabtwo" data-tab="2">
+		<label for="tabtwo">
 			<span class="mdi mdi-archive-outline"></span>
 			<span mui="gui/main/static/tabs/mods/title"></span>
 		</label>
-		<input type="radio" name="tabs" id="tabfour" data-tab="3">
-		<label for="tabfour">
+		<input type="radio" name="tabs" id="tabthree" data-tab="3">
+		<label for="tabthree">
 			<span class="mdi mdi-archive-arrow-down-outline"></span>
 			<span mui="gui/main/static/tabs/newmods/title"></span>
 		</label>
-		<input type="radio" name="tabs" id="tabfive" data-tab="4">
-		<label for="tabfive">
+		<input type="radio" name="tabs" id="tabfour" data-tab="4">
+		<label for="tabfour">
 			<span class="mdi mdi-cog-outline"></span>
 			<span mui="gui/main/static/tabs/settings/title"></span>
 		</label>
 		<button id="startproxy-btn">
-			<span class="mdi mdi-play-outline"></span>
+			<span id="startproxyicon" class="mdi mdi-play-pause"></span>
 			<span id="startproxy"></span>
 		</button>
 	</div>
+
 	<!-- Logs -->
 	<div class="tab tab--active" data-tab="1">
 		<div class="floating-elem" id="clear-logs">
@@ -70,6 +71,7 @@
 		<div class="flex-column log-contents scroller" id="log-contents">
 		</div>
 	</div>
+
 	<!-- Installed Modules -->
 	<div class="tab" data-tab="2">
 		<div class="flex-column scroller" id="modulesList"></div>
@@ -80,9 +82,12 @@
 		<div class="flex-column">
 			<!-- Search bar -->
 			<div class="control-secondary">
-				<label><span mui="gui/main/static/tabs/newmods/content/filter"></span><input type="text" id="installableModulesFilterString" /></label>
-				<label><input type="checkbox" id="installableModulesFilterNetwork" checked/><span mui="gui/main/static/tabs/newmods/content/filter/network"></span></label>
-				<label><input type="checkbox" id="installableModulesFilterClient" checked/><span mui="gui/main/static/tabs/newmods/content/filter/client"></span></label>
+				<label><span mui="gui/main/static/tabs/newmods/content/filter"></span><input type="text"
+						id="installableModulesFilterString" /></label>
+				<label><input type="checkbox" id="installableModulesFilterNetwork" checked /><span
+						mui="gui/main/static/tabs/newmods/content/filter/network"></span></label>
+				<label><input type="checkbox" id="installableModulesFilterClient" checked /><span
+						mui="gui/main/static/tabs/newmods/content/filter/client"></span></label>
 			</div>
 			<!-- Loading -->
 			<div id="loading" class="scroller-smoll">

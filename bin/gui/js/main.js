@@ -187,7 +187,14 @@ jQuery(($) => {
 	let IsAdmin = false;
 	ipcRenderer.on("is admin", (_, isAdmin) => {
 		IsAdmin = isAdmin;
-		$("#admin-badge").css("color", IsAdmin ? "green": "gray");
+
+		if (IsAdmin) {
+			$("#admin-badge").removeClass("admin-badge-disabled");
+			$("#admin-badge").addClass("admin-badge-enabled");
+		} else {
+			$("#admin-badge").removeClass("admin-badge-enabled");
+			$("#admin-badge").addClass("admin-badge-disabled");
+		}
 	});
 
 	// Update available indicator
@@ -292,7 +299,10 @@ jQuery(($) => {
 			$("#modulesList").append(`
 				<div id="${headerId}" class="${headerClasses}">
 					<details>
-						<summary class="noselect">${modInfo.drmKey ? "<span class=\"mdi mdi-currency-usd\"></span>" : ""} ${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""} ${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
+						<summary class="noselect">
+								${modInfo.drmKey ? "<span class=\"mdi mdi-currency-usd\"></span>" : ""} ${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""}
+								<div class="spacer"></div>
+								${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
 						<p>${modInfo.description ? modInfo.description : " "}</p>
 						<div class="mod-info-controls">
 							${modInfo.donationUrl ? `<div class="header-button" id="${donationId}"><i class="mdi mdi-gift-outline"></i></div>` : ""}
@@ -386,7 +396,11 @@ jQuery(($) => {
 			$("#installableModulesList").append(`
 				<div id="${headerId}" class="mod-info">
 					<details>
-						<summary class="noselect">${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""} ${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
+						<summary class="noselect">
+							${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""} 
+							<div class="spacer"></div>
+							${modInfo.author ? `by ${modInfo.author}` : ""}
+						</summary>
 						<p>${modInfo.description ? modInfo.description : " "}</p>
 						<div class="mod-info-controls">
 							<div class="header-button" id="${installId}"><i class="mdi mdi-progress-download"></i></div>
