@@ -28,6 +28,8 @@ function showSplashScreen() {
             title: 'TERA Toolbox',
             width: 880,
             height: 500,
+            minWidth: 880,
+            minHeight: 500,
             icon: guiIcon,
             frame: false,
             backgroundColor: '#292F33',
