@@ -1,7 +1,12 @@
+"use strict";
+
 const path = require("path");
 const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require("electron");
 const DataFolder = path.join(__dirname, "..", "data");
 const ModuleFolder = path.join(__dirname, "..", "mods");
+
+app.commandLine.appendSwitch("disable-http-cache");
+app.commandLine.appendSwitch("disk-cache-size", 0);
 
 // MUI
 const mui = require("tera-toolbox-mui").DefaultInstance;
@@ -36,6 +41,15 @@ function SaveConfiguration(newConfig) {
 	global.TeraProxy.UILanguage = mui.uilanguage;
 
 	require("./config").saveConfig(newConfig);
+}
+
+// UI State
+function LoadState() {
+	return require("./config-ui").loadState();
+}
+
+function SaveState(newConfig) {
+	require("./config-ui").saveState(newConfig);
 }
 
 // Migration
@@ -321,28 +335,51 @@ class TeraProxyGUI {
 			global.TeraProxy.GUITheme = config.gui.theme || "black";
 		}
 
+		//load UI state 
+		let state = LoadState();
+
 		// Initialize main window
 		const guiRoot = path.join(__dirname, "gui");
 		const guiIcon = path.join(guiRoot, "/assets/icon.ico");
 
 		this.window = new BrowserWindow({
 			"title": "TERA Toolbox",
-			"width": 880,
-			"height": 500,
+			"width": state.width || 880,
+			"height": state.height || 500,
+			"minWidth": 880,
+			"minHeight": 500,
 			"icon": guiIcon,
 			"frame": false,
 			"backgroundColor": "#292F33",
 			"resizable": true,
+			"centered": true,
 			"show": false,
 			"webPreferences": {
 				"nodeIntegration": true,
-				"devTools": false
+				"devTools": true,
+				"spellcheck": false
 			}
 		});
 		this.window.loadFile(path.join(guiRoot, "main.html"));
 		//this.window.webContents.openDevTools();
 
-		this.window.once("ready-to-show", () => this.window.show());
+		this.window.once("ready-to-show", () => {
+			this.window.show();
+			if(state.isMaximized) this.window.maximize();
+		});
+
+		this.window.on("close", () => { 
+			state.isMaximized = this.window.isMaximized();
+			if(!state.isMaximized)
+			{
+				let size = this.window.getSize();
+				state.width = size[0];
+				state.height = size[1];
+			}
+			
+			SaveState(state);
+		});
+		
 		//this.window.on('minimize', () => { this.window.hide(); });
 		this.window.on("closed", () => { StopProxy(); this.window = null; });
 
