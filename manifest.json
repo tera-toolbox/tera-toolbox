@@ -18,7 +18,7 @@
     "bin/standalone-injector.js": "4fe2ef16cac7a4a7233d75815b0eb35d0af22783302647545ee392efdfcaa763",
     "bin/update-electron.js": "d1b54c2c91964ba31db311972df89cef55413f63488b5430c9b582aab8cf1814",
     "bin/update-self.js": "b2818ad92252333188f0edcbfa7aa1e600998e5c3c4969e4705d840bebd46a0b",
-    "bin/update.js": "f0a0eae2aecc5e915426f2cd8487381199dfcefdfb6231e1f10d5f9cab2a0b64",
+    "bin/update.js": "ec16ef78f693ae92f9bfc90afbd827dafb510439c10041612e4d991a03f2bc2b",
     "bin/utils.js": "c82e5478878e79a1d9d4cd2b7cb109edf0e28ab9681a35a17f3fac32df245fcf",
     "bin/gui/icon.ico": "eddf1fe34c998df2b607cd36f69334d9890a7f150917b0aa4d1fb6db891aa5f0",
     "bin/gui/icon_xmas.ico": "b8897291594639f5efc3093e908f55567f0dd26368b8b935b05892947e394a1e",
