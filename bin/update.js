@@ -66,7 +66,9 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) 
         fs.writeFileSync(filepath, updatedFile);
         return [file, true, ""];
     } catch (e) {
-        return [file, false, e];
+        let err = e;
+        if (drmKey) err.message = err.message.split(`drmkey=${drmKey}`).join("drmkey=[censored]")
+        return [file, false, err];
     }
 }
 
