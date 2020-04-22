@@ -49,11 +49,15 @@ class ConnectionManager {
         socket.on('error', onConnectionError);
 
         srvConn.on('connect', () => {
-            remote = `${socket.remoteAddress}:${socket.remotePort}`;
-            console.log(mui.get('connectionmanager/connected', { remote, remoteAddress: srvConn.remoteAddress, remotePort: srvConn.remotePort }));
+            if (!connection.dispatch) {
+                connection.close();
+            } else {
+                remote = `${socket.remoteAddress}:${socket.remotePort}`;
+                console.log(mui.get('connectionmanager/connected', { remote, remoteAddress: srvConn.remoteAddress, remotePort: srvConn.remotePort }));
 
-            connection.dispatch.moduleManager.loadAll();
-            this.activeConnections.add(connection);
+                connection.dispatch.moduleManager.loadAll();
+                this.activeConnections.add(connection);
+            }
         });
 
         srvConn.on('error', (err) => {
