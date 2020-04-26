@@ -390,6 +390,8 @@ summary {
 }
 
 .modalbox-text {
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
     font-size: 16px;
 }
 
