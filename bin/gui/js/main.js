@@ -287,7 +287,7 @@ jQuery(($) => {
 		modInfos.forEach(modInfo => {
 			const escapedName = (ModIndex++).toString();
 			const headerId = `modheader-${escapedName}`;
-			const summaryId = `modsummary-${escapedName}`;
+
 			const donationId = `moddonate-${escapedName}`;
 			const uninstallId = `moduninstall-${escapedName}`;
 			const infoId = `modinfo-${escapedName}`;
@@ -297,6 +297,8 @@ jQuery(($) => {
 			const autoUpdateClass = `${!modInfo.disableAutoUpdate ? "mdi-progress-close" : "mdi-progress-download"}`;
 			const enabledClass = `${!modInfo.disabled ? "mdi-flask-minus-outline" : "mdi-flask-outline"}`;
 			const headerClasses = modInfo.disabled ? "mod-info disabled-border" : "mod-info";
+			
+			const summaryId = `modsummary-${modInfo.name}`;
 			$("#modulesList").append(`
 				<div  class="${headerClasses} noselect">
 					<details id="${headerId}" ${expandedModsSummary[modInfo.name] ? "open" : ""}>
@@ -317,7 +319,8 @@ jQuery(($) => {
 			`);
 
 			$(`#${summaryId}`).click(() => {
-				expandedModsSummary[modInfo.name] = expandedModsSummary[modInfo.name] ? false : true;
+				if(expandedModsSummary[modInfo.name]) delete expandedModsSummary[modInfo.name];
+				else expandedModsSummary[modInfo.name] = true;
 			});
 			
 			$(`#${donationId}`).on("click", (event) => {
