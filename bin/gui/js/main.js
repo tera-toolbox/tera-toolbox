@@ -298,7 +298,7 @@ jQuery(($) => {
 			const enabledClass = `${!modInfo.disabled ? "mdi-flask-minus-outline" : "mdi-flask-outline"}`;
 			const headerClasses = modInfo.disabled ? "mod-info disabled-border" : "mod-info";
 			
-			const summaryId = `modsummary-${modInfo.name}`;
+			const summaryId = `modsummary-${escapedName}`;
 			$("#modulesList").append(`
 				<div  class="${headerClasses} noselect">
 					<details id="${headerId}" ${expandedModsSummary[modInfo.name] ? "open" : ""}>
