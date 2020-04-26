@@ -91,6 +91,7 @@ p {
 	text-align: center;
 	vertical-align: middle;
 	transition: background ease 0.32s;
+	cursor: pointer;
 }
 
 .header-button:hover {
@@ -135,21 +136,23 @@ p {
 	min-height: 36px;
 	height: 36px;
 	display: flex;
-	justify-content: center;
 	background: var(--main-control-background-color);
 }
 
-/* tabs control styling*/
 .tabs-base label {
 	padding: 9px;
 	cursor: pointer;
+	transition: background ease 0.32s;
+}
+
+.tabs-base > div:first-child {
+	margin-left: 5px;
 }
 
 .tabs-base label:hover {
 	background-color: var(--main-control-hover-background-color);
 }
 
-/* tabs control styling*/
 .tabs-base label> span:first-child {
 	font-size: 17px;
 }
@@ -159,7 +162,10 @@ p {
 	color: var(--main-font-color);
 	transition: background ease 0.32s;
 	border: 0px;
-	width: 125px;
+	width: 170px;
+	margin-left: auto;
+	margin-right: 5px;
+	cursor: pointer;
 }
 
 .tabs-base button>span:first-child {
@@ -227,7 +233,7 @@ p {
 	color: var(--log-text-error-color);
 }
 
-.scroller-smoll {
+.scroller-small {
 	height: calc(100vh - 105px);
 	overflow-y: auto;
 }
@@ -244,6 +250,9 @@ p {
 	flex-direction: column;
 }
 
+/************
+ * SETTINGS *
+ ************/
 /* Visible content basic style */
 .setting {
 	display: flex;
@@ -279,18 +288,25 @@ p {
     font-size: 14px;
 }
 
+.control-secondary > *{
+	margin-right: 3px;;
+}
+/***********
+ * MODULES *
+ ***********/
 .mod-info {
 	background-color: var(--mod-card-background-color);
 	padding: 3px;
 	margin: 3px;
 	min-width: 95%;
+	border-style: solid;
+	border-width: 1px;
+	border-color: var(--mod-card-background-color);
 }
 
-.mod-info-disabled-border {
-	border-style: solid;
-	border-color: var(--mod-card-disabled-border-color);
-	border-width: 1px;
-}
+	.mod-info.disabled-border {
+		border-color: var(--mod-card-disabled-border-color);
+	}
 
 /* Visible content basic style */
 .mod-info-controls {
@@ -311,12 +327,15 @@ summary:focus {
 .spacer {
 	flex-grow: 1
 }
+
 details > summary {
 	list-style: none;
 }
 
 details > p {
-	margin-top: px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	color: var(--mod-card-info-font-color);
 }
 
 details > summary::-webkit-details-marker {
@@ -328,7 +347,6 @@ summary {
 	margin-right: 1px;
 	font-size: 14px;
 	cursor: pointer;
-	color:var(--mod-card-info-font-color);
 	display: flex;
 }
 
@@ -339,7 +357,8 @@ summary {
 	display: block;
 	z-index: 9;
 	font-size: 20px;
-	color:var(--float-element-text-color);
+	color: var(--float-element-text-color);
+	cursor: pointer;
 }
 
 .floating-elem:hover {

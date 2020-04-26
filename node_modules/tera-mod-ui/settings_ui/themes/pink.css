@@ -1,0 +1,28 @@
+:root {
+    --main-font-color: #292F33;
+    --main-background: #F9B8D2;
+    --border-color: darkgray;
+    --selection-color: rgb(48, 55, 59);
+    --scrollbar-track-color: #E9A8C2;
+    --scrollbar-thumb-color: #F0438C;
+    --scrollbar-thumb-hover-color: #FA4D96;
+    --header-background-color: #D0236C;
+    --header-button-hover-color: #F9B8D2;
+    --main-control-background-color: #F0438C;
+    --main-control-start-button-background-color: #F9B8D2;
+    --main-control-start-button-hover-color: #FFD2E4;
+    --main-control-select-background-color: #F9B8D2;
+    --main-control-hover-background-color: #F9B8D2;
+    --log-background: #E9A8C2;
+    --log-text-color: #292F33;
+    --log-text-warn-color: rgb(172, 106, 0);
+    --log-text-error-color: rgb(207, 39, 39);
+    --modal-box-background-color: rgba(0,0,0,0.6);
+    --modal-box-content-background-color: #F0438C;
+    --settings-background-color: #F0438C;
+    --mod-card-background-color: #F0438C;
+    --mod-card-info-font-color: #292F33;
+    --mod-card-disabled-border-color: #ff5050;
+    --float-element-text-color: #292F33;
+    --float-element-hover-background-color: #F9B8D2;
+}

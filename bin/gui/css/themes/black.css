@@ -1,18 +1,18 @@
 :root {
     --main-font-color: #e0e0e0;
     --main-background: #484d54;
-    --border-color: darkgray;
+    --border-color: rgb(117, 116, 116);
     --selection-color: rgb(48, 55, 59);
     --scrollbar-track-color: darkgray;
     --scrollbar-thumb-color: gray;
     --scrollbar-thumb-hover-color: #ff5050;
-    --header-background-color: #23272A;
+    --header-background-color: #2C2F33;
     --header-button-hover-color: #ff5050;
     --main-control-background-color: #2C2F33;
-    --main-control-start-button-background-color: #23272A;
-    --main-control-start-button-hover-color: #ff5050;
-    --main-control-select-background-color: #ff5050;
-    --main-control-hover-background-color: #23272A;
+    --main-control-start-button-background-color: #222426;
+    --main-control-start-button-hover-color: #393C40;
+    --main-control-select-background-color: #222426;
+    --main-control-hover-background-color: #393C40;
     --log-background: #2C2F33;
     --log-text-color: #BBB;
     --log-text-warn-color: rgb(255, 192, 92);

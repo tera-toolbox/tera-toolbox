@@ -2,7 +2,7 @@
 /* eslint-disable default-case */
 const { remote, ipcRenderer, shell } = require("electron");
 const { TeraToolboxMUI, LanguageNames } = require("tera-toolbox-mui");
-const Themes = ["black", "white"];
+const Themes = ["black", "white", "pink", "classic-black", "classic-white", "classic-pink"];
 
 let mui = null;
 
@@ -295,11 +295,11 @@ jQuery(($) => {
 
 			const autoUpdateClass = `${!modInfo.disableAutoUpdate ? "mdi-progress-close" : "mdi-progress-download"}`;
 			const enabledClass = `${!modInfo.disabled ? "mdi-flask-minus-outline" : "mdi-flask-outline"}`;
-			const headerClasses= modInfo.disabled ? "mod-info mod-info-disabled-border" : "mod-info";
+			const headerClasses = modInfo.disabled ? "mod-info disabled-border" : "mod-info";
 			$("#modulesList").append(`
-				<div id="${headerId}" class="${headerClasses}">
+				<div id="${headerId}" class="${headerClasses} noselect">
 					<details>
-						<summary class="noselect">
+						<summary>
 								${modInfo.drmKey ? "<span class=\"mdi mdi-currency-usd\"></span>" : ""} ${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""}
 								<div class="spacer"></div>
 								${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
@@ -394,9 +394,9 @@ jQuery(($) => {
 			const installId = `installablemodinstall-${escapedName}`;
 
 			$("#installableModulesList").append(`
-				<div id="${headerId}" class="mod-info">
+				<div id="${headerId}" class="mod-info noselect">
 					<details>
-						<summary class="noselect">
+						<summary>
 							${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""} 
 							<div class="spacer"></div>
 							${modInfo.author ? `by ${modInfo.author}` : ""}

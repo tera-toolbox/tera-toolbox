@@ -1,12 +1,7 @@
-"use strict";
-
 const path = require("path");
 const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require("electron");
 const DataFolder = path.join(__dirname, "..", "data");
 const ModuleFolder = path.join(__dirname, "..", "mods");
-
-app.commandLine.appendSwitch("disable-http-cache");
-app.commandLine.appendSwitch("disk-cache-size", 0);
 
 // MUI
 const mui = require("tera-toolbox-mui").DefaultInstance;
@@ -41,15 +36,6 @@ function SaveConfiguration(newConfig) {
 	global.TeraProxy.UILanguage = mui.uilanguage;
 
 	require("./config").saveConfig(newConfig);
-}
-
-// UI State
-function LoadState() {
-	return require("./config-ui").loadState();
-}
-
-function SaveState(newConfig) {
-	require("./config-ui").saveState(newConfig);
 }
 
 // Migration
@@ -164,7 +150,7 @@ function startUpdateCheck(branch, onUpdateAvailable, interval = 30 * 60 * 1000) 
 	UpdateCheckInterval = setInterval(async () => {
 		try {
 			const CheckResult = await UpdateChecker.check();
-			if (CheckResult.operations.length > 0)
+			if (CheckResult && CheckResult.operations && CheckResult.operations.length > 0)
 				onUpdateAvailable();
 		} catch (_) {
 			// Ignore
@@ -320,9 +306,13 @@ class TeraProxyGUI {
 
 		if (!config.gui) {
 			config.gui = {
-				"enabled": true,
-				"theme": "black",
-				"autostart": false
+				enabled: true,
+				theme: "black",
+				autostart: false,
+				logtimes: true,
+				width: 880,
+				height: 500,
+				maximized: false
 			};
 
 			SaveConfiguration(config);
@@ -335,29 +325,26 @@ class TeraProxyGUI {
 			global.TeraProxy.GUITheme = config.gui.theme || "black";
 		}
 
-		//load UI state 
-		let state = LoadState();
-
 		// Initialize main window
 		const guiRoot = path.join(__dirname, "gui");
 		const guiIcon = path.join(guiRoot, "/assets/icon.ico");
 
 		this.window = new BrowserWindow({
-			"title": "TERA Toolbox",
-			"width": state.width || 880,
-			"height": state.height || 500,
-			"minWidth": 880,
-			"minHeight": 500,
-			"icon": guiIcon,
-			"frame": false,
-			"backgroundColor": "#292F33",
-			"resizable": true,
-			"centered": true,
-			"show": false,
-			"webPreferences": {
-				"nodeIntegration": true,
-				"devTools": true,
-				"spellcheck": false
+			title: "TERA Toolbox",
+			width: config?.gui?.width || 880,
+			height: config?.gui?.height || 500,
+			minWidth: 880,
+			minHeight: 500,
+			icon: guiIcon,
+			frame: false,
+			backgroundColor: "#292F33",
+			resizable: true,
+			centered: true,
+			show: false,
+			webPreferences: {
+				nodeIntegration: true,
+				devTools: false,
+				spellcheck: false
 			}
 		});
 		this.window.loadFile(path.join(guiRoot, "main.html"));
@@ -365,19 +352,19 @@ class TeraProxyGUI {
 
 		this.window.once("ready-to-show", () => {
 			this.window.show();
-			if(state.isMaximized) this.window.maximize();
+			if (config?.gui?.maximized) this.window.maximize();
 		});
 
-		this.window.on("close", () => { 
-			state.isMaximized = this.window.isMaximized();
-			if(!state.isMaximized)
+		this.window.on("close", () => {
+			config.gui.maximized = this.window.isMaximized();
+			if (!config.gui.maximized)
 			{
-				let size = this.window.getSize();
-				state.width = size[0];
-				state.height = size[1];
+				const size = this.window.getSize();
+				config.gui.width = size[0];
+				config.gui.height = size[1];
 			}
-			
-			SaveState(state);
+
+			SaveConfiguration(config);
 		});
 		
 		//this.window.on('minimize', () => { this.window.hide(); });

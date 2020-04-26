@@ -1,0 +1,89 @@
+:root {
+    --main-font-color: #292F33;
+    --main-background: #F0438C;
+    --border-color: #F0438C;
+    --selection-color: rgb(48, 55, 59);
+    --scrollbar-track-color: #F0438C;
+    --scrollbar-thumb-color: #F9B8D2;
+    --scrollbar-thumb-hover-color: #F9B8D2;
+    --header-background-color: #F0438C;
+    --header-button-hover-color: #808080;
+    --main-control-background-color: #F0438C;
+    --main-control-start-button-background-color: #F9B8D2;
+    --main-control-start-button-hover-color: #FFD2E4;
+    --main-control-select-background-color: #F9B8D2;
+    --main-control-hover-background-color: #F9B8D2;
+    --log-background: #F9B8D2;
+    --log-text-color: #292F33;
+    --log-text-warn-color: rgb(172, 106, 0);
+    --log-text-error-color: rgb(207, 39, 39);
+    --modal-box-background-color: rgba(0,0,0,0.6);
+    --modal-box-content-background-color: #F9B8D2;
+    --settings-background-color: #F9B8D2;
+    --mod-card-background-color: #F9B8D2;
+    --mod-card-info-font-color: #292F33;
+    --mod-card-disabled-border-color: #ff5050;
+    --float-element-text-color: #292F33;
+    --float-element-hover-background-color: none;
+}
+
+.header-button:hover {
+    color: var(--header-button-hover-color);
+    background-color: inherit;
+}
+
+.tabs-base label {
+    border-radius: 8px 8px 0 0;
+}
+
+.tabs-base button {
+    border-radius: 8px 8px 0 0;
+}
+
+.tab {
+    background: #FFF;
+    border: solid 4px #F9B8D2;
+}
+
+.floating-elem:hover {
+    color: #808080;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+
+.control-secondary {
+    border-radius: 7px;
+}
+
+.mod-info {
+    border-radius: 7px;
+    padding: 3px;
+    margin: 3px;
+    min-width: 95%;
+}
+
+.mod-info:hover {
+    background-color: #F0438C;
+    border-color: #F0438C;
+    padding: 3px;
+    margin: 3px;
+    min-width: 95%;
+}
+
+    .mod-info.disabled-border:hover {
+        border-color: var(--mod-card-disabled-border-color);
+    }
+
+.setting {
+    border-radius: 7px;
+}
+
+.modalbox-content {
+    border-radius: 7px;
+}
