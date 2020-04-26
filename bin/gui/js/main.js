@@ -278,7 +278,7 @@ jQuery(($) => {
 	// ------------------------ MODS LIST ----------------------------------
 	// ---------------------------------------------------------------------
 	let WaitingForModAction = false;
-
+	let expandedModsSummary = {};
 	ipcRenderer.on("set mods", (_, modInfos) => {
 		WaitingForModAction = false;
 
@@ -287,6 +287,7 @@ jQuery(($) => {
 		modInfos.forEach(modInfo => {
 			const escapedName = (ModIndex++).toString();
 			const headerId = `modheader-${escapedName}`;
+			const summaryId = `modsummary-${escapedName}`;
 			const donationId = `moddonate-${escapedName}`;
 			const uninstallId = `moduninstall-${escapedName}`;
 			const infoId = `modinfo-${escapedName}`;
@@ -297,9 +298,9 @@ jQuery(($) => {
 			const enabledClass = `${!modInfo.disabled ? "mdi-flask-minus-outline" : "mdi-flask-outline"}`;
 			const headerClasses = modInfo.disabled ? "mod-info disabled-border" : "mod-info";
 			$("#modulesList").append(`
-				<div id="${headerId}" class="${headerClasses} noselect">
-					<details>
-						<summary>
+				<div  class="${headerClasses} noselect">
+					<details id="${headerId}" ${expandedModsSummary[modInfo.name] ? "open" : ""}>
+						<summary id="${summaryId}">
 								${modInfo.drmKey ? "<span class=\"mdi mdi-currency-usd\"></span>" : ""} ${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""}
 								<div class="spacer"></div>
 								${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
@@ -315,6 +316,10 @@ jQuery(($) => {
 				</div>
 			`);
 
+			$(`#${summaryId}`).click(() => {
+				expandedModsSummary[modInfo.name] = expandedModsSummary[modInfo.name] ? false : true;
+			});
+			
 			$(`#${donationId}`).on("click", (event) => {
 				event.preventDefault();
 				shell.openExternal(modInfo.donationUrl);
@@ -395,7 +400,7 @@ jQuery(($) => {
 
 			$("#installableModulesList").append(`
 				<div id="${headerId}" class="mod-info noselect">
-					<details>
+					<details open>
 						<summary>
 							${displayName(modInfo)} ${modInfo.version ? `(${modInfo.version})` : ""} 
 							<div class="spacer"></div>
