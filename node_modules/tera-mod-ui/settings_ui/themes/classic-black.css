@@ -1,0 +1,89 @@
+:root {
+    --main-font-color: #BBB;
+    --main-background: #292F33;
+    --border-color: #292F33;
+    --selection-color: rgb(48, 55, 59);
+    --scrollbar-track-color: #222426;
+    --scrollbar-thumb-color: #393C40;
+    --scrollbar-thumb-hover-color: #393C40;
+    --header-background-color: #292F33;
+    --header-button-hover-color: #ff5050;
+    --main-control-background-color: #292F33;
+    --main-control-start-button-background-color: #222426;
+    --main-control-start-button-hover-color: #393C40;
+    --main-control-select-background-color: #222426;
+    --main-control-hover-background-color: #393C40;
+    --log-background: #222426;
+    --log-text-color: #BBB;
+    --log-text-warn-color: rgb(255, 192, 92);
+    --log-text-error-color: rgb(255, 96, 96);
+    --modal-box-background-color: rgba(0,0,0,0.6);
+    --modal-box-content-background-color: #393C40;
+    --settings-background-color: #2C2F33;
+    --mod-card-background-color: #222426;
+    --mod-card-info-font-color: #BBB;
+    --mod-card-disabled-border-color: #ff5050;
+    --float-element-text-color: #BBB;
+    --float-element-hover-background-color: none;
+}
+
+.header-button:hover {
+    color: var(--header-button-hover-color);
+    background-color: inherit;
+}
+
+.tabs-base label {
+    border-radius: 8px 8px 0 0;
+}
+
+.tabs-base button {
+    border-radius: 8px 8px 0 0;
+}
+
+.tab {
+    background: #14171A;
+    border: solid 4px #222426;
+}
+
+.floating-elem:hover {
+    color: #E81C4F;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+
+.control-secondary {
+    border-radius: 7px;
+}
+
+.mod-info {
+    border-radius: 7px;
+    padding: 3px;
+    margin: 3px;
+    min-width: 95%;
+}
+
+.mod-info:hover {
+    background-color: #292F33;
+    border-color: #292F33;
+    padding: 3px;
+    margin: 3px;
+    min-width: 95%;
+}
+
+    .mod-info.disabled-border:hover {
+        border-color: var(--mod-card-disabled-border-color);
+    }
+
+.setting {
+    border-radius: 7px;
+}
+
+.modalbox-content {
+    border-radius: 7px;
+}

@@ -14,7 +14,8 @@ function loadConfig() {
             devmode: false,
             noselfupdate: false,
             noupdate: false,
-            noslstags: false
+            noslstags: false,
+            noserverautojoin: false
         };
     }
 

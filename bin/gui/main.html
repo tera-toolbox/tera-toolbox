@@ -1,148 +1,169 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>TERA Toolbox</title>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-		<link rel="stylesheet" href="css/main.css">
-		<script>window.$ = window.jQuery = require('./js/jquery-3.2.1.min.js')</script>
-		<script src="main.js"></script>
-	</head>
+﻿<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" id="theme" href="">
+	<script>window.$ = window.jQuery = require('./js/jquery-3.5.0.slim.min.js');</script>
+	<script src="js/main.js"></script>
+</head>
 
-	<body>
-        <!-- Title Bar -->
-        <div id="title-bar" class="title-bar">
-            <img src="icon.ico" id="title-icon">
-            <div id="title" mui="gui/main/title/noadmin"></div>
-            <div id="title-status"></div>
-            <button id="minimize-btn" class="nodrag">-</button>
-            <button id="close-btn" class="nodrag">&times;</button>
-        </div>
+<body>
+	<!-- Modal Box -->
+	<div id="modalbox" class="modalbox">
+		<div class="modalbox-content">
+			<div id="modalbox-text" class="modalbox-text"></div>
+		</div>
+	</div>
+	<!-- Header -->
+	<div class="header-base noselect">
+		<div class="header-icon" id="icon"></div>
+		<div class="admin-badge admin-badge-disabled" id="admin-badge">
+			<i class="mdi mdi-security"></i>
+		</div>
+		<div class="header-text" id="title" mui="gui/main/title"></div>
+		<div class="header-status" id="title-status"></div>
+		<div class="header-button" id="discord-btn">
+			<i class="mdi mdi-forum-outline"></i>
+		</div>
+		<div class="header-button" id="info-btn">
+			<i class="mdi mdi-information-variant"></i>
+		</div>
+		<div class="header-button" id="minimize-btn">
+			<i class="mdi mdi-window-minimize"></i>
+		</div>
+		<div class="header-button" id="close-btn">
+			<i class="mdi mdi-close"></i>
+		</div>
+	</div>
+	<!-- Controls -->
+	<div class="tabs-base noselect">
+		<div></div>
+		<input type="radio" name="tabs" id="tabone" checked data-tab="1">
+		<label for="tabone">
+			<span class="mdi mdi-console"></span>
+			<span mui="gui/main/static/tabs/log/title"></span>
+		</label>
+		<input type="radio" name="tabs" id="tabtwo" data-tab="2">
+		<label for="tabtwo">
+			<span class="mdi mdi-archive-outline"></span>
+			<span mui="gui/main/static/tabs/mods/title"></span>
+		</label>
+		<input type="radio" name="tabs" id="tabthree" data-tab="3">
+		<label for="tabthree">
+			<span class="mdi mdi-archive-arrow-down-outline"></span>
+			<span mui="gui/main/static/tabs/newmods/title"></span>
+		</label>
+		<input type="radio" name="tabs" id="tabfour" data-tab="4">
+		<label for="tabfour">
+			<span class="mdi mdi-cog-outline"></span>
+			<span mui="gui/main/static/tabs/settings/title"></span>
+		</label>
+		<button id="startproxy-btn">
+			<span id="startproxyicon" class="mdi mdi-play-pause"></span>
+			<span id="startproxy"></span>
+		</button>
+	</div>
 
-        <!-- Content -->
-        <div class="container">
-            <!-- Tab Header -->
-            <ul class="tabs">
-                <li class="tab-link nodrag current" tabname="log" mui="gui/main/static/tabs/log/title"></li>
-                <li class="tab-link nodrag" tabname="mods" mui="gui/main/static/tabs/mods/title"></li>
-                <li class="tab-link nodrag" tabname="newmods" mui="gui/main/static/tabs/newmods/title"></li>
-                <li class="tab-link nodrag" tabname="settings" mui="gui/main/static/tabs/settings/title"></li>
-                <li class="tab-link nodrag" tabname="help" tabclickonly="true" mui="gui/main/static/tabs/help/title"></li>
-                <li class="tab-link nodrag" tabname="modsfolder" tabclickonly="true" mui="gui/main/static/tabs/modsfolder/title"></li>
-                <li class="tab-link nodrag" tabname="credits" mui="gui/main/static/tabs/credits/title"></li>
-                <a class="nodrag" id="startproxy"></a>
-            </ul>
+	<!-- Logs -->
+	<div class="tab tab--active" data-tab="1">
+		<div class="floating-elem" id="clear-logs">
+			<i class="mdi mdi-close"></i>
+		</div>
+		<div class="flex-column log-contents scroller" id="log-contents">
+		</div>
+	</div>
 
-            <!-- Console -->
-            <div id="log_loading" class="tab-content nodrag">
-                <div class="loading">
-                    <div class="loading icon"></div>
-                    <div class="loading text" mui="gui/main/static/tabs/log/loading"></div>
-                </div>
-            </div>
-            <div id="log" class="tab-content nodrag current">
-                <div id="log-contents" class="log-contents"></div>
-                <button id="clear-logs">&times;</button>
-            </div>
+	<!-- Installed Modules -->
+	<div class="tab" data-tab="2">
+		<div class="flex-column scroller" id="modulesList"></div>
+	</div>
 
-            <!-- Installed Modules -->
-            <div id="mods_loading" class="tab-content nodrag">
-                <div class="loading">
-                    <div class="loading icon"></div>
-                    <div class="loading text" mui="gui/main/static/tabs/mods/loading"></div>
-                </div>
-            </div>
-            <div id="mods" class="tab-content nodrag">
-                <div class="modulesList">
-                </div>
-            </div>
+	<!-- Modules for install -->
+	<div class="tab" data-tab="3">
+		<div class="flex-column">
+			<!-- Search bar -->
+			<div class="control-secondary">
+				<label><span mui="gui/main/static/tabs/newmods/content/filter"></span><input type="text"
+						id="installableModulesFilterString" /></label>
+				<label><input type="checkbox" id="installableModulesFilterNetwork" checked /><span
+						mui="gui/main/static/tabs/newmods/content/filter/network"></span></label>
+				<label><input type="checkbox" id="installableModulesFilterClient" checked /><span
+						mui="gui/main/static/tabs/newmods/content/filter/client"></span></label>
+			</div>
+			<!-- Loading -->
+			<div id="loading" class="scroller-small">
+				<img src="assets/tb.gif" />
+				<div mui="gui/main/static/tabs/newmods/loading"></div>
+			</div>
+			<!-- Modules for install content -->
+			<div class="flex-column scroller-small" id="installableModulesList"></div>
+		</div>
+	</div>
 
-            <!-- New Module Installation -->
-            <div id="newmods_loading" class="tab-content nodrag">
-                <div class="loading">
-                    <div class="loading icon"></div>
-                    <div class="loading text" mui="gui/main/static/tabs/newmods/loading"></div>
-                </div>
-            </div>
-            <div id="newmods" class="tab-content nodrag">
-                <div class="installableModulesFilters">
-                    <label><span mui="gui/main/static/tabs/newmods/content/filter"></span><input type="text" id="installableModulesFilterString" /></label>
-                    <label><input type="checkbox" id="installableModulesFilterNetwork" checked/><span mui="gui/main/static/tabs/newmods/content/filter/network"></span></label>
-                    <label><input type="checkbox" id="installableModulesFilterClient" checked/><span mui="gui/main/static/tabs/newmods/content/filter/client"></span></label>
-                </div>
-                <div class="installableModulesList">
-                </div>
-            </div>
+	<!-- Settings -->
+	<div class="tab" data-tab="4">
+		<div class="flex-column">
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/uilanguage"></div>
+				<div>
+					<select id="uilanguage"></select>
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/theme"></div>
+				<div>
+					<select id="uithemes"></select>
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/autostart"></div>
+				<div>
+					<input id="autostart" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/updatelog"></div>
+				<div>
+					<input id="updatelog" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/logtimes"></div>
+				<div>
+					<input id="logtimes" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/noupdate"></div>
+				<div>
+					<input id="noupdate" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/noselfupdate"></div>
+				<div>
+					<input id="noselfupdate" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/noslstags"></div>
+				<div>
+					<input id="noslstags" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/noserverautojoin"></div>
+				<div>
+					<input id="noserverautojoin" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/minimizetotray"></div>
+				<div>
+					<input id="minimizetotray" type="checkbox">
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
 
-            <!-- Settings -->
-            <div id="settings_loading" class="tab-content nodrag">
-                <div class="loading">
-                    <div class="loading icon"></div>
-                    <div class="loading text" mui="gui/main/static/tabs/settings/loading"></div>
-                </div>
-            </div>
-            <div id="settings" class="tab-content nodrag">
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/uilanguage"></a>
-                    <select id="uilanguage"></select>
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/theme"></a>
-                    <div id="theme_black" class="theme black"></div>
-                    <div id="theme_white" class="theme white"></div>
-                    <div id="theme_pink" class="theme pink"></div>
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/autostart"></a>
-                    <input id="autostart" type="checkbox">
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/updatelog"></a>
-                    <input id="updatelog" type="checkbox">
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/logtimes"></a>
-                    <input id="logtimes" type="checkbox">
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/noupdate"></a>
-                    <input id="noupdate" type="checkbox">
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/noselfupdate"></a>
-                    <input id="noselfupdate" type="checkbox">
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/devmode"></a>
-                    <input id="devmode" type="checkbox">
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/noslstags"></a>
-                    <input id="noslstags" type="checkbox">
-                </div>
-                <div>
-                    <a mui="gui/main/static/tabs/settings/content/minimizetotray"></a>
-                    <input id="minimizetotray" type="checkbox">
-                </div>
-            </div>
-
-            <!-- Credits -->
-            <div id="credits_loading" class="tab-content nodrag">
-                <div class="loading">
-                    <div class="loading icon"></div>
-                    <div class="loading text" mui="gui/main/static/tabs/credits/loading"></div>
-                </div>
-            </div>
-            <div id="credits" class="tab-content nodrag">
-                <div class="credits text" mui-html="gui/main/static/tabs/credits/content"></div>
-            </div>
-
-            <!-- Modal Box -->
-            <div id="modalbox" class="modalbox">
-                <div class="modalbox-content">
-                    <div id="modalbox-text" class="modalbox-text"></div>
-                    <button id="modalbox-ok" class="modalbox-button" mui="gui/main/modal/buttons/ok"></button>
-                </div>
-            </div>
-        </div>
-	</body>
 </html>

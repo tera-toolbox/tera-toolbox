@@ -21,13 +21,15 @@ let SplashScreenShowTime = 0;
 function showSplashScreen() {
     try {
         const guiRoot = path.join(__dirname, 'gui');
-        const guiIcon = path.join(guiRoot, 'icon.ico');
+        const guiIcon = path.join(guiRoot, '/assets/icon.ico');
 
         const { BrowserWindow } = require('electron');
         SplashScreen = new BrowserWindow({
             title: 'TERA Toolbox',
-            width: 960,
-            height: 540,
+            width: 880,
+            height: 500,
+            minWidth: 880,
+            minHeight: 500,
             icon: guiIcon,
             frame: false,
             backgroundColor: '#292F33',
@@ -99,7 +101,7 @@ async function updateSelf() {
         setSplashScreenInfo(`Server ${serverIndex}`);
     });
     updater.on('check_fail', (serverIndex, e) => {
-        // TODO: show more helpful error messages based on error code
+        errors.push(`TERA Toolbox was unable to check for updates on server ${serverIndex}!\n${e}`);
         console.log(`[update] Update check failed (Server: ${serverIndex}): ${e}`);
 
         setSplashScreenCaption(`Update check failed (server ${serverIndex})!`);

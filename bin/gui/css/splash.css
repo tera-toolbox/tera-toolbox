@@ -1,43 +1,28 @@
-@keyframes fadein {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-html {
-    box-sizing: border-box;
-    height: 100%;
-    animation: fadein 0.5s;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: inherit;
-}
+@import url("./ubuntu-regular.css");
 
 body {
-    user-select: none;
-    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-    font-size: 14px;
-    line-height: 1.42857143;
-    overflow: hidden;
+	margin: 0px;
+	background: #2f3136;
+	font-family: Ubuntu, sans serif;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
 }
 
-#caption {
-    position: absolute;
-    bottom: 8px;
-    left: 10px;
-    color: #CCCCCC;
+.ui {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: 100%;
 }
 
-#info {
-    position: absolute;
-    bottom: 8px;
-    right: 10px;
-    color: #CCCCCC;
+.ui>img {
+	height: 196px;
+	width: 196px;
+}
+
+.ui>div {
+	color: white;
+	font-size: 14px;
 }

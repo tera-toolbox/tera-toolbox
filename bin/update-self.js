@@ -87,7 +87,7 @@ class Updater extends EventEmitter {
                 return await this.check(serverIndex + 1);
             } else {
                 this.emit('check_fail_all');
-                throw e;
+                return null;
             }
         }
     }
@@ -97,54 +97,60 @@ class Updater extends EventEmitter {
         if (!checkResult)
             checkResult = await this.check();
 
-        let success = true;
-        if (checkResult.operations.length > 0) {
-            this.emit('prepare_start');
+        let success;
+        if (checkResult) {
+            success = true;
 
-            // Prepare and validate operations
-            for (let operation of checkResult.operations) {
-                if (operation.type === 'update') {
-                    this.emit('download_start', checkResult.serverIndex, operation.relpath);
-                    operation.data = await this.downloadRaw(checkResult.serverIndex, operation.relpath);
-                    if (operation.hash === hash(operation.data)) {
-                        this.emit('download_finish', checkResult.serverIndex, operation.relpath);
-                    } else {
-                        this.emit('download_error', operation.relpath, operation.hash, hash(operation.data));
-                        success = false;
-                        break;
-                    }
-                }
-            }
+            if (checkResult.operations.length > 0) {
+                this.emit('prepare_start');
 
-            this.emit('prepare_finish');
-
-            if (success) {
-                this.emit('execute_start');
-
-                // All operations have been prepared and validated, so execute them now
+                // Prepare and validate operations
                 for (let operation of checkResult.operations) {
-                    switch (operation.type) {
-                        case 'update': {
-                            this.emit('install_start', operation.relpath);
-                            try {
-                                forcedirSync(path.dirname(operation.abspath));
-                                fs.writeFileSync(operation.abspath, operation.data);
-                                this.emit('install_finish', operation.relpath);
-                            } catch (e) {
-                                success = false;
-                                this.emit('install_error', operation.relpath, e);
-                            }
+                    if (operation.type === 'update') {
+                        this.emit('download_start', checkResult.serverIndex, operation.relpath);
+                        operation.data = await this.downloadRaw(checkResult.serverIndex, operation.relpath);
+                        if (operation.hash === hash(operation.data)) {
+                            this.emit('download_finish', checkResult.serverIndex, operation.relpath);
+                        } else {
+                            this.emit('download_error', operation.relpath, operation.hash, hash(operation.data));
+                            success = false;
                             break;
                         }
                     }
                 }
 
-                this.emit('execute_finish');
+                this.emit('prepare_finish');
+
+                if (success) {
+                    this.emit('execute_start');
+
+                    // All operations have been prepared and validated, so execute them now
+                    for (let operation of checkResult.operations) {
+                        switch (operation.type) {
+                            case 'update': {
+                                this.emit('install_start', operation.relpath);
+                                try {
+                                    forcedirSync(path.dirname(operation.abspath));
+                                    fs.writeFileSync(operation.abspath, operation.data);
+                                    this.emit('install_finish', operation.relpath);
+                                } catch (e) {
+                                    success = false;
+                                    this.emit('install_error', operation.relpath, e);
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    this.emit('execute_finish');
+                }
             }
+        } else {
+            success = false;
         }
 
         this.emit('run_finish', success);
-        return checkResult.operations.length !== 0;
+        return checkResult && checkResult.operations && checkResult.operations.length !== 0;
     }
 }
 
