@@ -7,12 +7,12 @@
     --scrollbar-thumb-color: gray;
     --scrollbar-thumb-hover-color: #747f8d;
     --header-background-color: #e3e5e8;
-    --header-button-hover-color: #747f8d;
+    --header-button-hover-color: #b2b7bd;
     --main-control-background-color: #e3e5e8;
-    --main-control-start-button-background-color: #4f5660;
-    --main-control-start-button-hover-color: #424850;
-    --main-control-select-background-color: #747f8d;
-    --main-control-hover-background-color: #424850;
+    --main-control-start-button-background-color: #b2b7bd;
+    --main-control-start-button-hover-color: #9ea2a8;
+    --main-control-select-background-color: #b2b7bd;
+    --main-control-hover-background-color: #b2b7bd;
     --log-background: #ebedef;
     --log-text-color: #000;
     --log-text-warn-color: rgb(255, 156, 0);
