@@ -63,16 +63,12 @@
 
 .mod-info {
     border-radius: 7px;
-    padding: 3px;
-    margin: 3px;
     min-width: 95%;
 }
 
 .mod-info:hover {
     background-color: #F0438C;
     border-color: #F0438C;
-    padding: 3px;
-    margin: 3px;
     min-width: 95%;
 }
 
