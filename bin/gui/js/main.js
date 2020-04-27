@@ -314,11 +314,11 @@ jQuery(($) => {
 								${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
 						<p>${modInfo.description ? modInfo.description : " "}</p>
 						<div class="mod-info-controls">
-							${modInfo.donationUrl ? `<div class="mod-action-button" id="${donationId}"><i class="mdi mdi-gift-outline"></i></div>` : ""}
-							${modInfo.supportUrl ? `<div class="mod-action-button" id="${infoId}"><i class="mdi mdi-link-variant"></i></div>` : ""}
-							${(!modInfo.isCoreModule && modInfo.compatibility === "compatible") ? `<div class="mod-action-button" id="${updateId}"><i class="mdi ${autoUpdateClass}"></i></div>` : ""}
-							${!modInfo.isCoreModule ? `<div class="mod-action-button" id="${uninstallId}"><i class="mdi mdi-flask-remove-outline"></i></div>` : ""}
-							${(!modInfo.isCoreModule && modInfo.compatibility === "compatible") ? `<div class="mod-action-button" id="${enabledId}"><i class="mdi ${enabledClass}"></i></div>` : ""}
+							${modInfo.donationUrl ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/donate")}" role="tooltip" class="mod-action-button" id="${donationId}"><i class="mdi mdi-gift-outline"></i></div>` : ""}
+							${modInfo.supportUrl ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/supportLink")}" role="tooltip" class="mod-action-button" id="${infoId}"><i class="mdi mdi-link-variant"></i></div>` : ""}
+							${(!modInfo.isCoreModule && modInfo.compatibility === "compatible") ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/toggleModAutoupdate")}" role="tooltip" class="mod-action-button" id="${updateId}"><i class="mdi ${autoUpdateClass}"></i></div>` : ""}
+							${!modInfo.isCoreModule ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/remove")}" role="tooltip" class="mod-action-button" id="${uninstallId}"><i class="mdi mdi-flask-remove-outline"></i></div>` : ""}
+							${(!modInfo.isCoreModule && modInfo.compatibility === "compatible") ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/toggleMod")}" role="tooltip" class="mod-action-button" id="${enabledId}"><i class="mdi ${enabledClass}"></i></div>` : ""}
 						</div>
 					</details>
 				</div>
@@ -417,7 +417,7 @@ jQuery(($) => {
 						</summary>
 						<p>${modInfo.description ? modInfo.description : " "}</p>
 						<div class="mod-info-controls">
-							<div class="mod-action-button" id="${installId}"><i class="mdi mdi-progress-download"></i></div>
+							<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/download")}" role="tooltip" class="mod-action-button" id="${installId}"><i class="mdi mdi-progress-download"></i></div>
 						</div>
 					</details>
 				</div>
