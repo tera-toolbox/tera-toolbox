@@ -85,10 +85,9 @@ p {
 }
 
 .header-button {
-	width: 32px;
-	height: 32px;
+	margin-bottom: 6px;
 	font-size: 20px;
-	padding: 4px;
+	padding: 2px;
 	text-align: center;
 	vertical-align: middle;
 	transition: background ease 0.32s;
@@ -125,6 +124,8 @@ p {
 	padding: 8px;
 	flex-grow: 1;
 	vertical-align: middle;
+	text-align: center;
+	margin-left: -65px;
 	opacity: 50%;
 }
 
@@ -269,12 +270,12 @@ p {
 }
 
 .scroller-small {
-	height: calc(100vh - 105px);
+	height: calc(100vh - 118px);
 	overflow-y: auto;
 }
 
 .scroller {
-	height: calc(100vh - 78px);
+	height: calc(100vh - 84px);
 	overflow-y: auto;
 }
 
@@ -315,7 +316,7 @@ p {
     display: flex;
     justify-content: center;
     flex-direction: row;
-    /* background-color: var(--settings-background-color); */
+    background-color: transparent;
 	margin: 1px;
 	padding-top: 2px;
     margin-bottom: 2px;

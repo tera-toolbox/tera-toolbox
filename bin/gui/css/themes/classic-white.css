@@ -61,6 +61,16 @@
     border-radius: 7px;
 }
 
+.scroller {
+	height: calc(100vh - 94px);
+	overflow-y: auto;
+}
+
+.scroller-small {
+	height: calc(100vh - 126px);
+	overflow-y: auto;
+}
+
 .mod-info {
     border-radius: 7px;
     min-width: 95%;
