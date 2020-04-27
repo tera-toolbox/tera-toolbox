@@ -166,13 +166,15 @@ jQuery(($) => {
 	$("#noupdate").click(() => {
 		const checked = $("#noupdate").is(":checked");
 		if (checked)
-			updateSetting("noupdate", checked);
+			ShowModal(mui.get('gui/main/modal/warn-mod-update-disabled'));
+		updateSetting("noupdate", checked);
 	});
 
 	$("#noselfupdate").click(() => {
 		const checked = $("#noselfupdate").is(":checked");
 		if (checked)
-			updateSetting("noselfupdate", checked);
+			ShowModal(mui.get('gui/main/modal/warn-self-update-disabled'));
+		updateSetting("noselfupdate", checked);
 	});
 
 	$("#noslstags").click(() => {
