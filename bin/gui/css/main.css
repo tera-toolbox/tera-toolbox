@@ -316,7 +316,7 @@ p {
     display: flex;
     justify-content: center;
     flex-direction: row;
-    background-color: transparent;
+    background-color: var(--control-secondary-background-color);
 	margin: 1px;
 	padding-top: 2px;
     margin-bottom: 2px;
