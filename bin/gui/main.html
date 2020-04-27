@@ -21,9 +21,6 @@
 		</div>
 		<div class="header-text" id="title" mui="gui/main/title"></div>
 		<div class="header-status" id="title-status"></div>
-		<div class="header-button" id="mods-btn">
-			<i class="mdi mdi-folder-heart-outline"></i>
-		</div>
 		<div class="header-button" id="discord-btn">
 			<i class="mdi mdi-forum-outline"></i>
 		</div>
@@ -77,7 +74,18 @@
 
 	<!-- Installed Modules -->
 	<div class="tab" data-tab="2">
-		<div class="flex-column scroller" id="modulesList"></div>
+		<div class="flex-column">
+			<!-- Secondary functions -->
+			<div class="control-secondary noselect">
+				<label class="secondary-button" id="mods-btn">
+					<span class="mdi mdi-folder-table-outline"></span>
+					<span mui="gui/main/static/tabs/modsfolder/title"></span>
+				</label>
+				<div class="spacer"></div>
+			</div>
+			<div class="flex-column scroller-small" id="modulesList"></div>
+		</div>
+
 	</div>
 
 	<!-- Modules for install -->

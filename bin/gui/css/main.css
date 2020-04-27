@@ -111,7 +111,7 @@ p {
 	flex-grow: 1;
 	text-align: center;
 	vertical-align: middle;
-	margin-left: -45px;
+	margin-left: -65px;
 }
 
 .admin-badge {
@@ -126,6 +126,27 @@ p {
 
 .admin-badge-enabled {
 	color: #7053F8;
+}
+
+/* **************** */
+/* Custom secondary button*/
+/* **************** */
+
+.secondary-button {
+	padding: 4px;
+	padding-top: 0px;
+	padding-left: 6px;
+	padding-right: 6px;
+	cursor: pointer;
+	transition: background ease 0.32s;
+}
+
+.secondary-button > span:first-child {
+	font-size: 17px;
+}
+
+.secondary-button:hover {
+	background-color: var(--main-control-hover-background-color);
 }
 
 /* **************** */
@@ -283,13 +304,13 @@ p {
     background-color: var(--settings-background-color);
     margin: 3px;
     margin-top: 0px;
-    padding-top: 3px;
     height: 24px;
     font-size: 14px;
 }
 
 .control-secondary > *{
-	margin-right: 3px;;
+	margin-right: 3px;
+	padding-top: 1px;
 }
 /***********
  * MODULES *
