@@ -65,6 +65,10 @@ jQuery(($) => {
 		shell.openExternal(remote.getGlobal("TeraProxy").SupportUrl);
 	});
 
+	$("#mods-btn").click(() => {
+		ipcRenderer.send('show mods folder');
+	});
+
 	// Disable mouse wheel clicks
 	// eslint-disable-next-line no-undef
 	$(document).on("auxclick", "a", (e) => {
