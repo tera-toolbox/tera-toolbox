@@ -33,6 +33,11 @@
     background-color: inherit;
 }
 
+.mod-action-button:hover {
+    color: var(--header-button-hover-color);
+    background-color: inherit;
+}
+
 .tabs-base label {
     border-radius: 8px 8px 0 0;
 }

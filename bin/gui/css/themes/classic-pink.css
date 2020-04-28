@@ -2,7 +2,7 @@
     --main-font-color: #292F33;
     --main-background: #F0438C;
     --border-color: #F0438C;
-    --selection-color: rgb(48, 55, 59);
+    --selection-color: #E9A8C2;
     --scrollbar-track-color: #F0438C;
     --scrollbar-thumb-color: #F9B8D2;
     --scrollbar-thumb-hover-color: #F9B8D2;
@@ -25,10 +25,15 @@
     --mod-card-disabled-border-color: #ff5050;
     --float-element-text-color: #292F33;
     --float-element-hover-background-color: none;
-    --control-secondary-background-color : transparent;
+    --control-secondary-background-color: transparent;
 }
 
 .header-button:hover {
+    color: var(--header-button-hover-color);
+    background-color: inherit;
+}
+
+.mod-action-button:hover {
     color: var(--header-button-hover-color);
     background-color: inherit;
 }
