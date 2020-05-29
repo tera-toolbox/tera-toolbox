@@ -18,7 +18,7 @@
     "bin/standalone-injector.js": "55c0ebf0877e1c2e64482daaa30465e22d984c31db915cbbf9d0701a18c9df7d",
     "bin/update-electron.js": "3bf879c04fbe918970f1ab22b3e8b332522f37f6a32c2239a4b0c7c15f272a86",
     "bin/update-self.js": "d043bcc4f391539397ace3720e19fcc960bfe921396ede6cc22de3c0855072ae",
-    "bin/update.js": "ec16ef78f693ae92f9bfc90afbd827dafb510439c10041612e4d991a03f2bc2b",
+    "bin/update.js": "fdf012437f1186fbf8cb889e6851d31e5e155033319ff31d643e77715d9efdbf",
     "bin/utils.js": "ff0da0bf002a6313cf629e24fd6a8e8e5f034d6e8972640b78dfa2b9866bc9a8",
     "bin/gui/main.html": "61d87eb20d36c360ca028d9488b29715ac17c838913ab2ce5aa5b369b565be56",
     "bin/gui/splash.html": "d3a68e60caf813cba4300e18bc1edfa4990d0035225d4bb54b949692aa91480b",
