@@ -9,6 +9,7 @@ function RegionFromLanguage(language) {
         case 'EUR':
         case 'FRA':
         case 'GER':
+        case 'RUS':
             return 'EU';
         case 'KOR':
             return 'KR';
@@ -16,32 +17,13 @@ function RegionFromLanguage(language) {
             return 'JP';
         case 'TW':
             return 'TW';
-        case 'RUS':
-            return 'RU';
         default:
             throw new Error(`Invalid language "${language}"!`);
     }
 }
 
-function ProxyTagFromLanguage(language) {
-    switch (language.toUpperCase()) {
-        case 'USA':
-            return ' (Proxy)';
-        case 'EUR':
-        case 'FRA':
-        case 'GER':
-            return ' (Proxy)';
-        case 'KOR':
-            return ' (대리)';
-        case 'JPN':
-            return '（プロキシ）';
-        case 'TW':
-            return '（代理）';
-        case 'RUS':
-            return ' (Прокси)';
-        default:
-            throw new Error(`Invalid language "${language}"!`);
-    }
+function TagFromLanguage(language) {
+    return ' (Toolbox)';
 }
 
 function LoadProtocolMap(dataFolder, version) {
@@ -216,11 +198,11 @@ class TeraProxy {
                             };
                         });
 
-                        // Inject / patch proxy servers
+                        // Inject / patch proxied servers
                         const proxy_servers = data.servers.filter(server => !data.servers.some(other_server => other_server.id === server.id && other_server.ip === this.listenIp)).map(server => {
                             let patched_server = Object.assign({}, server);
                             if (!this.config.noslstags) {
-                                const tag = ProxyTagFromLanguage(client.info.language);
+                                const tag = TagFromLanguage(client.info.language);
                                 patched_server.name += tag;
                                 patched_server.title += tag;
                             }
