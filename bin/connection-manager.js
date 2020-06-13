@@ -4,16 +4,16 @@ const { Connection, RealClient } = require('tera-network-proxy');
 function onConnectionError(err) {
     switch (err.code) {
         case 'ETIMEDOUT':
-            console.error(mui.get('connectionmanager/error-ETIMEDOUT-1', { address: err.address, port: err.port }));
-            console.error(mui.get('connectionmanager/error-ETIMEDOUT-2'));
-            console.error(mui.get('connectionmanager/error-ETIMEDOUT-3'));
+            console.error(mui.get('connection-manager/error-ETIMEDOUT-1', { address: err.address, port: err.port }));
+            console.error(mui.get('connection-manager/error-ETIMEDOUT-2'));
+            console.error(mui.get('connection-manager/error-ETIMEDOUT-3'));
             break;
         case 'ECONNABORTED':
         case 'ECONNRESET':
         case 'EPIPE':
-            console.error(mui.get('connectionmanager/error-ECONNABORTED-ECONNRESET-EPIPE-1', { code: err.code }));
-            console.error(mui.get('connectionmanager/error-ECONNABORTED-ECONNRESET-EPIPE-2'));
-            console.error(mui.get('connectionmanager/error-ECONNABORTED-ECONNRESET-EPIPE-3'));
+            console.error(mui.get('connection-manager/error-ECONNABORTED-ECONNRESET-EPIPE-1', { code: err.code }));
+            console.error(mui.get('connection-manager/error-ECONNABORTED-ECONNRESET-EPIPE-2'));
+            console.error(mui.get('connection-manager/error-ECONNABORTED-ECONNRESET-EPIPE-3'));
             break;
         default:
             console.error(err);
@@ -22,8 +22,8 @@ function onConnectionError(err) {
 }
 
 class ConnectionManager {
-    constructor(moduleFolder) {
-        this.moduleFolder = moduleFolder;
+    constructor(modManager) {
+        this.modManager = modManager;
         this.activeConnections = new Set;
     }
 
@@ -35,7 +35,8 @@ class ConnectionManager {
     start(target, socket, metadata, clientInterfaceConnection) {
         socket.setNoDelay(true);
 
-        const connection = new Connection(this.moduleFolder, metadata, clientInterfaceConnection);
+        const connection = new Connection(metadata, clientInterfaceConnection);
+        const dispatch = connection.dispatch;
 
         const client = new RealClient(connection, socket);
         const srvConn = connection.connect(client, {
@@ -53,20 +54,24 @@ class ConnectionManager {
                 connection.close();
             } else {
                 remote = `${socket.remoteAddress}:${socket.remotePort}`;
-                console.log(mui.get('connectionmanager/connected', { remote, remoteAddress: srvConn.remoteAddress, remotePort: srvConn.remotePort }));
+                console.log(mui.get('connection-manager/connected', { remote, remoteAddress: srvConn.remoteAddress, remotePort: srvConn.remotePort }));
 
-                connection.dispatch.moduleManager.loadAll();
+                this.modManager.loadAllNetwork(connection.dispatch);
                 this.activeConnections.add(connection);
             }
         });
 
         srvConn.on('error', (err) => {
+            this.modManager.unloadAllNetwork(dispatch);
+
             onConnectionError(err);
             this.activeConnections.delete(connection);
         });
 
         srvConn.on('close', () => {
-            console.log(mui.get('connectionmanager/disconnected', { remote }));
+            this.modManager.unloadAllNetwork(dispatch);
+
+            console.log(mui.get('connection-manager/disconnected', { remote }));
             this.activeConnections.delete(connection);
         });
     }

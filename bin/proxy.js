@@ -2,21 +2,21 @@
 const path = require('path');
 const fs = require('fs');
 
-function RegionFromLanguage(language) {
+function PublisherFromLanguage(language) {
     switch (language.toUpperCase()) {
         case 'USA':
-            return 'NA';
+            return 'EME';
         case 'EUR':
         case 'FRA':
         case 'GER':
         case 'RUS':
-            return 'EU';
+            return 'GF';
         case 'KOR':
-            return 'KR';
+            return 'NX';
         case 'JPN':
-            return 'JP';
+            return 'PM';
         case 'TW':
-            return 'TW';
+            return 'M5';
         default:
             throw new Error(`Invalid language "${language}"!`);
     }
@@ -47,8 +47,8 @@ function LoadProtocolMap(dataFolder, version) {
 }
 
 class TeraProxy {
-    constructor(moduleFolder, dataFolder, config) {
-        this.moduleFolder = moduleFolder;
+    constructor(modFolder, dataFolder, config) {
+        this.modFolder = modFolder;
         this.dataFolder = dataFolder;
         this.config = config;
         this.running = false;
@@ -56,11 +56,15 @@ class TeraProxy {
         this.listenIp = config.listenip || '127.0.0.20';
         this.listenPort = config.listenport || 9250;
 
-        const ConnectionManager = require('./connectionManager');
-        this.connectionManager = new ConnectionManager(moduleFolder);
+        const ModManager = require('./mod-manager');
+        this.modManager = new ModManager(this.modFolder);
+        this.modManager.loadAll();
+
+        const ConnectionManager = require('./connection-manager');
+        this.connectionManager = new ConnectionManager(this.modManager);
 
         const ClientInterfaceServer = require('tera-client-interface');
-        this.clientInterfaceServer = new ClientInterfaceServer(global.TeraProxy.IsAdmin, config.interface_listenip || '127.0.0.10', config.interface_listenport || 9250, moduleFolder,
+        this.clientInterfaceServer = new ClientInterfaceServer(global.TeraProxy.IsAdmin, config.interface_listenip || '127.0.0.10', config.interface_listenport || 9250,
             client => {
                 this.onClientInterfaceConnected(client);
             },
@@ -86,6 +90,11 @@ class TeraProxy {
     }
 
     destructor() {
+        if (this.modManager) {
+            this.modManager.destructor();
+            this.modManager = null;
+        }
+
         if (this.clientInterfaceServer) {
             this.clientInterfaceServer.destructor();
             this.clientInterfaceServer = null;
@@ -109,7 +118,7 @@ class TeraProxy {
 
     redirect(name, ip, port, metadata, clientInterfaceConnection) {
         // Try to find server that's already listening
-        const key = `${metadata.platform}-${metadata.region}-${metadata.environment}-${metadata.majorPatchVersion}.${metadata.minorPatchVersion}-${metadata.serverId}-${ip}:${port}`;
+        const key = `${metadata.platform}-${metadata.publisher}-${metadata.environment}-${metadata.majorPatchVersion}.${metadata.minorPatchVersion}-${metadata.serverId}-${ip}:${port}`;
         const cached = clientInterfaceConnection.proxyServers.get(key);
         if (cached)
             return { ip: cached.address().address, port: cached.address().port };
@@ -120,7 +129,7 @@ class TeraProxy {
         const listenPort = this.listenPort++;
         server.listen(listenPort, this.listenIp, () => {
             const { address: listen_ip, port: listen_port } = server.address();
-            console.log(mui.get('proxy/redirecting-server', {name, region: metadata.region, serverId: metadata.serverId, listen_ip, listen_port, ip, port}));
+            console.log(mui.get('proxy/redirecting-server', { name, publisher: metadata.publisher, serverId: metadata.serverId, listen_ip, listen_port, ip, port}));
         });
 
         clientInterfaceConnection.proxyServers.set(key, server);
@@ -136,25 +145,26 @@ class TeraProxy {
 
                     if (data.error) {
                         console.log(mui.get('proxy/client-interface-connection-error', { error: data.error }));
+                        if (JustStarted)
+                            client.resume();
                     } else {
-                        const region = RegionFromLanguage(data.language);
                         client.info = data;
-                        client.info.region = region.toLowerCase();
+                        client.info.language = client.info.language.toLowerCase();
+                        client.info.publisher = PublisherFromLanguage(data.language).toLowerCase();
+                        client.info.platform = 'pc';
+                        client.info.environment = 'live'; // TODO
                         delete client.info.just_started;
 
-                        console.log(mui.get('proxy/client-interface-connected', { justStarted: JustStarted, region, majorPatchVersion: data.majorPatchVersion, minorPatchVersion: data.minorPatchVersion }));
+                        console.log(mui.get('proxy/client-interface-connected', { justStarted: JustStarted, publisher: client.info.publisher, majorPatchVersion: data.majorPatchVersion, minorPatchVersion: data.minorPatchVersion }));
+
+                        this.modManager.loadAllClient(client);
 
                         if (JustStarted) {
-                            client.canInstallGPKs = true;
                             client.GPKManager.initialize(path.join(client.info.path, '..'));
+                            this.modManager._installAllClient(client).then(() => client.resume());
                         }
-
-                        client.moduleManager.loadAll();
                     }
 
-                    client.canInstallGPKs = false;
-                    if (JustStarted)
-                        client.resume();
                     break;
                 }
                 case 'ready': {
@@ -167,7 +177,7 @@ class TeraProxy {
                         client.info.protocol = Object.assign(LoadProtocolMap(this.dataFolder, client.info.protocolVersion), client.info.protocol);
 
                         if (Object.keys(client.info.protocol).length === 0) {
-                            console.warn(mui.get('proxy/warning-unmapped-protocol-1', { protocolVersion: client.info.protocolVersion, region: client.info.region, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
+                            console.warn(mui.get('proxy/warning-unmapped-protocol-1', { protocolVersion: client.info.protocolVersion, publisher: client.info.publisher, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
                             console.warn(mui.get('proxy/warning-unmapped-protocol-2'));
                             console.warn(mui.get('proxy/warning-unmapped-protocol-3'));
                             console.warn(mui.get('proxy/warning-unmapped-protocol-4'));
@@ -176,10 +186,10 @@ class TeraProxy {
                             console.warn(mui.get('proxy/warning-unmapped-protocol-7'));
                             console.warn(mui.get('proxy/warning-unmapped-protocol-8', { supportUrl: global.TeraProxy.SupportUrl }));
                         } else {
-                            console.log(mui.get('proxy/protocol-loaded', { protocolVersion: client.info.protocolVersion, region: client.info.region, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
+                            console.log(mui.get('proxy/protocol-loaded', { protocolVersion: client.info.protocolVersion, publisher: client.info.publisher, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
                         }
                     } catch (e) {
-                        console.error(mui.get('proxy/error-cannot-load-protocol', { protocolVersion: client.info.protocolVersion, region: client.info.region, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
+                        console.error(mui.get('proxy/error-cannot-load-protocol', { protocolVersion: client.info.protocolVersion, publisher: client.info.publisher, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
                         console.log(e);
                     }
                     break;
@@ -211,9 +221,10 @@ class TeraProxy {
                                 dataFolder: this.dataFolder,
                                 serverId: server.id,
                                 serverList: serverlist,
-                                platform: 'pc',
-                                region: client.info.region,
-                                environment: 'live', // TODO
+                                platform: client.info.platform,
+                                publisher: client.info.publisher,
+                                environment: client.info.environment,
+                                language: client.info.language,
                                 majorPatchVersion: client.info.majorPatchVersion,
                                 minorPatchVersion: client.info.minorPatchVersion,
                                 protocolVersion: client.info.protocolVersion,
@@ -229,7 +240,9 @@ class TeraProxy {
                             return patched_server;
                         });
                         
-                        if(this.config.noserverautojoin) data.default_server_id = 0
+                        if (this.config.noserverautojoin)
+                            data.default_server_id = 0
+
                         data.servers = !this.config.noslstags ? [...proxy_servers, ...data.servers] : proxy_servers;
                     }
 
@@ -240,6 +253,9 @@ class TeraProxy {
         });
 
         client.on('disconnect', e => {
+            if (this.modManager)
+                this.modManager.unloadAllClient(client);
+
             console.log(mui.get('proxy/client-interface-disconnected'));
             client.proxyServers.forEach(server => server.close());
             client.proxyServers.clear();

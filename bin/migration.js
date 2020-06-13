@@ -115,6 +115,7 @@ function ToolboxMigration() {
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'x64'));
 
     // Delete no longer used files
+    tryUnlink(path.join(__dirname, "connectionManager.js"));
     tryUnlink(path.join(__dirname, "index.js"));
     tryUnlink(path.join(__dirname, "loader.js"));
     tryUnlink(path.join(__dirname, "loader-console.js"));
@@ -127,6 +128,8 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'injector.exe'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener-dll-injector.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'module.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'moduleManager.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_72.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_75.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_79.node'));
@@ -136,6 +139,9 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_72.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_75.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_79.node'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'index.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'module.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'moduleManager.js'));
 }
 
 module.exports = { ToolboxMigration };
