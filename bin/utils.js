@@ -5,7 +5,7 @@ function checkRuntimeCompatibility() {
             throw new Error('NodeTooOld');
     } else {
         // We're on Electron
-        if (process.versions.modules < 76)
+        if (process.versions.modules < 80)
             throw new Error('NodeTooOld');
     }
 

@@ -94,7 +94,7 @@ class GlobalModInterface extends ModInterfaceBase {
                     throw new Error(`Required mod not found: ${key}`);
 
                 let globalMod = mod.loadGlobalInstance(false);
-                return { globalMod: globalMod ? globalMod.instance : null };
+                return mod.requireInterface(globalMod ? globalMod.instance : null, null, null, this);
             },
             set() {
                 throw new TypeError('Cannot set property of require');
@@ -128,7 +128,7 @@ class ClientModInterface extends ModInterfaceBase {
                 let globalMod = mod.loadGlobalInstance(false);
                 let clientMod = mod.loadClientInstance(this.clientInterface, false);
                 let networkMod = mod.getNetworkInstanceByClientInterface(this.clientInterface);
-                return { globalMod: globalMod ? globalMod.instance : null, clientMod: clientMod ? clientMod.instance : null, networkMod: networkMod ? networkMod.instance : null };
+                return mod.requireInterface(globalMod ? globalMod.instance : null, clientMod ? clientMod.instance : null, networkMod ? networkMod.instance : null, this);
             },
             set() {
                 throw new TypeError('Cannot set property of require');
@@ -199,7 +199,7 @@ class NetworkModInterface extends ModInterfaceBase {
                 let globalMod = mod.loadGlobalInstance(false);
                 let clientMod = mod.loadClientInstance(this.clientInterface, false);
                 let networkMod = mod.loadNetworkInstance(this.dispatch, false);
-                return { globalMod: globalMod ? globalMod.instance : null, clientMod: clientMod ? clientMod.instance : null, networkMod: networkMod ? networkMod.instance : null };
+                return mod.requireInterface(globalMod ? globalMod.instance : null, clientMod ? clientMod.instance : null, networkMod ? networkMod.instance : null, this);
             },
             set() {
                 throw new TypeError('Cannot set property of require');
@@ -255,16 +255,14 @@ class NetworkModInterface extends ModInterfaceBase {
         if (this._command)
             return this._command;
 
-        const _command = this.require['command'];
-        return this._command = _command.networkMod.createInstance(this);
+        return this._command = this.require['command'].createInstance(this);
     }
 
     get game() {
         if (this._game)
             return this._game;
 
-        const _game = this.require['tera-game-state'];
-        return this._game = _game.networkMod;
+        return this._game = this.require['tera-game-state'];
     }
 
     // Global & client mod instances
@@ -372,6 +370,7 @@ class Mod {
         this.info = info;
         this.implementation = null;
 
+        this.requireInterface = null;
         this.globalInstance = null;
         this.clientInstances = new Map;
         this.networkInstances = new Map;
@@ -394,6 +393,7 @@ class Mod {
         this.networkInstancesByClientInterface.clear();
         this.clientInstances.forEach((mod, clientInterface) => this.unloadClientInstance(clientInterface, logInfo));
         this.unloadGlobalInstance(logInfo);
+        this.requireInterface = null;
         this.unloadCache();
 
         if (this.settingsAutosaveOnClose)
@@ -432,8 +432,14 @@ class Mod {
     loadCache(logInfo = true) {
         try {
             this.implementation = require(this.info.path);
+
             if (!this.implementation.GlobalMod && !this.implementation.ClientMod && !this.implementation.NetworkMod)
                 this.implementation = ModLegacyWrapper(this.info, this.implementation);
+
+            if (this.implementation.RequireInterface)
+                this.requireInterface = this.implementation.RequireInterface;
+            else
+                this.requireInterface = (globalMod, clientMod, networkMod, requiredBy) => ({ globalMod, clientMod, networkMod });
 
             if (logInfo)
                 console.log(mui.get('mod/mod-preloaded', { name: this.printableName }));

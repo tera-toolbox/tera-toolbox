@@ -72,11 +72,13 @@ function ClientModWrapper(info, implementation) {
 
 function NetworkModWrapper(info, implementation) {
     return function (mod) {
-        if (global.TeraProxy.DevMode)
-            mod.warn('Using deprecated mod API. Please update!');
-
         let modRequireWrapper = new Proxy(Object.create(null), {
             get: (obj, key) => {
+                let res = mod.require[key];
+                if (!res.networkMod)
+                    return res;
+
+                DeprecationWarning(mod, "require without RequireInterface");
                 return mod.require[key].networkMod;
             },
             set() {
@@ -131,7 +133,6 @@ function NetworkModWrapper(info, implementation) {
                         return mod.dispatch.protocolVersion;
                     }
                     case 'require': {
-                        DeprecationWarning(mod, prop);
                         return modRequireWrapper;
                     }
                     default:
