@@ -14,7 +14,7 @@
     "bin/loader-cli.js": "d25b53f5e8a6d84df1a60b42a8c838aef76aecbeb137a82f6e2b259488916b01",
     "bin/loader-gui.js": "603a4b1f5729a2b122f7b10e0eb76db5aaa2a4933e3f3e88e21a9e75c1ebfc5c",
     "bin/migration.js": "25e5be6a00d99d177444caa076f34bc943643a667599da9e041c34d119d8b3f5",
-    "bin/mod-legacy-wrapper.js": "8eccbf4a71539998acb0618c26654c2c030c070dc8a686c4f6fb3ca3a966d729",
+    "bin/mod-legacy-wrapper.js": "f90a1e9e1d157cbf9bf080a577d10dedceb87de8f5ac9b0744a6b953b666e8de",
     "bin/mod-manager.js": "caa661756e6ee466335a356d01da25ffcbbf9c5861093e33745046f9ca4b2ac0",
     "bin/mod.js": "c31a8b857393b3f2e6b55eebb4b7dc8bd3223ec98a2e1ae36bb97b24333048f4",
     "bin/proxy.js": "37ffcb99cebcf122d19d173a3dd00705904c10beff0e34647ed51384e20c16c0",

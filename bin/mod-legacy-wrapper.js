@@ -141,12 +141,8 @@ function NetworkModWrapper(info, implementation) {
         });
 
         let instance = new implementation(modWrapper);
-        if (typeof instance.destructor === 'function') {
-            console.log('redirect destructor');
-            this.destructor = () => {
-                console.log('destructor called!'); instance.destructor();
-            }
-        }
+        if (typeof instance.destructor === 'function')
+            this.destructor = () => instance.destructor();
     }
 }
 
