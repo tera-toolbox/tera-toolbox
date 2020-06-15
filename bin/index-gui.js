@@ -272,6 +272,9 @@ try {
     console.warn('[update] WARNING: An error occurred while trying to read the config file! Falling back to default values.');
 }
 
+// Backwards compatibility until next major update
+app.allowRendererProcessReuse = false;
+
 // Boot
 if (!app.requestSingleInstanceLock()) {
     app.quit();
