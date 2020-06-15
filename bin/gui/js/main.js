@@ -390,9 +390,9 @@ jQuery(($) => {
 	}
 
 	function matchesInstallableModFilter(modInfo) {
-		if (!InstallableModFilter.network && (modInfo.keywords && modInfo.keywords.length > 0 && modInfo.keywords.includes('network')))
+		if (!InstallableModFilter.network && modInfo.keywords && modInfo.keywords.includes('network'))
 			return false;
-		if (!InstallableModFilter.client && (modInfo.keywords && modInfo.keywords.length > 0 && modInfo.keywords.includes('client')))
+		if (!InstallableModFilter.client && modInfo.keywords && modInfo.keywords.includes('client'))
 			return false;
 
 		return InstallableModFilter.keywords.length === 0 || InstallableModFilter.keywords.some(keyword => (modInfo.author && modInfo.author.toLowerCase().includes(keyword)) || (modInfo.description && modInfo.description.toLowerCase().includes(keyword)) || displayName(modInfo).toLowerCase().includes(keyword) || (modInfo.keywords && modInfo.keywords.includes(keyword)));

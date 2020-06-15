@@ -4,8 +4,9 @@
     "description": "Add ingame chat commands to your mod.",
     "version": "1.1",
     "options": {
-        "niceName": "Command",
-        "settingsVersion": 2,
+        "cliName": "Command",
+        "guiName": "Command",
+        "settingsVersion": 3,
         "settingsFile": "config.json",
         "settingsMigrator": "settings_migrator.js"
     },

@@ -3,7 +3,8 @@
     "author": "Pinkie Pie",
     "description": "Simulates skills client-side, eliminating ping-based delays and animation lock.",
     "options": {
-        "niceName": "PSP",
+        "cliName": "PSP",
+        "guiName": "Skill Prediction",
         "settingsVersion": 4,
         "settingsFile": "./settings.json",
         "settingsMigrator": "./migration.js"
