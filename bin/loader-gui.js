@@ -33,7 +33,6 @@ function SaveConfiguration(newConfig) {
 	global.TeraProxy.GUITheme = newConfig.gui.theme;
 
 	InitializeMUI(newConfig.uilanguage);
-	global.TeraProxy.UILanguage = mui.uilanguage;
 
 	require("./config").saveConfig(newConfig);
 }
@@ -302,7 +301,6 @@ class TeraProxyGUI {
 
 		global.TeraProxy.GUIMode = true;
 		global.TeraProxy.DevMode = !!config.devmode;
-		global.TeraProxy.UILanguage = mui.language;
 
 		if (!config.gui) {
 			config.gui = {

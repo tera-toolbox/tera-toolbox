@@ -28,7 +28,7 @@ function ClientModWrapper(info, implementation) {
                     }
                     case 'niceName': {
                         DeprecationWarning(mod, prop);
-                        return mod.info.options.niceName || mod.info.rawName;
+                        return mod.info.options.cliName || mod.info.rawName;
                     }
                     case 'rootFolder': {
                         DeprecationWarning(mod, prop);
@@ -95,7 +95,7 @@ function NetworkModWrapper(info, implementation) {
                     }
                     case 'niceName': {
                         DeprecationWarning(mod, prop);
-                        return mod.info.options.niceName || mod.info.rawName;
+                        return mod.info.options.cliName || mod.info.rawName;
                     }
                     case 'rootFolder': {
                         DeprecationWarning(mod, prop);
@@ -148,9 +148,7 @@ function NetworkModWrapper(info, implementation) {
 }
 
 module.exports = function ModLegacyWrapper(info, implementation) {
-    switch (info.category) {
-        case 'network': return { NetworkMod: NetworkModWrapper(info, implementation) }
-        case 'client': return { ClientMod: ClientModWrapper(info, implementation) }
-        default: throw new Error(`Invalid mod category "${info.category}"!`);
-    }
+    if (info.keywords.includes('client'))
+        return { ClientMod: ClientModWrapper(info, implementation) };
+    return { NetworkMod: NetworkModWrapper(info, implementation) };
 }

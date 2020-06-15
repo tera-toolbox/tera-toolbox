@@ -23,6 +23,23 @@ For a module using this feature in a real-world scenario, check out [Flasher](ht
 ## Configuring Camera Shaking Behavior
 Camera shaking feels annoying, or might even cause medical issues, for some people. It cannot be fully disabled using the game's settings, but TERA Toolbox offers this feature through `mod.clientInterface.configureCameraShake(enabled, power = 1.0, speed = 1.0)`. As an example, `mod.clientInterface.configureCameraShake(false)` simply disables camera shaking altogether. The optional `power` and `speed` params allow you to control the strength (multiples of the default settings) of camera shaking effects, if enabled. You can even set them to really high values if you want!
 
+## Checking if the Game Window is focused
+You can check if the game window is currently focused as follows:
+```js
+// either by promise
+mod.clientInterface.hasFocus().then(focused => {
+    if (focused) {
+        // Do stuff...
+    }
+});
+
+// or using await inside an async function
+const focused = await mod.clientInterface.hasFocus();
+if (focused) {
+    // Do stuff...
+}
+```
+
 ## Querying Data from the Game Client's DataCenter [TBD: further documentation]
 Using the game client interface, a module can query arbitrary data from the game's currently loaded DataCenter file, with multi-region support (even running game clients from multiple different regions in parallel). Note that you can use either `mod.queryData` or `mod.clientInterface.queryData`, with the former being just a redirect to the latter for shorter code.
 
@@ -86,12 +103,22 @@ mod.command.add('huntingzones', async () => {
 ### Example 6: Building a list of all items that are tier 12 or higher 
 Note how we're using a different operator (`>=`) here. Currently supported operators: `=`, `!=`, `>=`, `>`, `<=`, and `<`.
 ```js
+// Prints a list of all tier 12 items
 mod.queryData('/ItemData/Item@rank>=?/', [12], true).then(results => {
     results.forEach(entry => mod.log(`Item ${entry.attributes.id} is tier ${entry.attributes.rank}`));
 });
 ```
 
-### Example 7: Optimization - ignoring child nodes
+### Example 7: Operators IN and NOT IN
+The operators `=` and `!=` also support an array of values. In this case, `=` means "in array" (value equals at least one of the values in the array) and `!=` means "not in array" (value does not equal any of the values in the array).
+```js
+// Prints a list of all tier 11, 12, and 13 items
+mod.queryData('/ItemData/Item@rank=?/', [[11, 12, 13]], true).then(results => {
+    results.forEach(entry => mod.log(`Item ${entry.attributes.id} is tier ${entry.attributes.rank}`));
+});
+```
+
+### Example 8: Optimization - ignoring child nodes
 Note the `false` that indicates that we're only interested in the queried node's attributes, not its children.
 ```js
 mod.queryData('/SkillData@huntingZoneId=?/Skill@templateId=?', [0, 16060], true, false).then(results => {
@@ -99,7 +126,7 @@ mod.queryData('/SkillData@huntingZoneId=?/Skill@templateId=?', [0, 16060], true,
 });
 ```
 
-### Example 8: Optimization - filtering attributes
+### Example 9: Optimization - filtering attributes
 Note the list of attribute names that narrows down the returned attributes.
 ```js
 mod.queryData('/ItemData/Item@rank>=?/', [12], true, false, ['id', 'combatItemType']).then(results => {

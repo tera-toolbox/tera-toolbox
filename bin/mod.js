@@ -167,6 +167,7 @@ class ClientModInterface extends ModInterfaceBase {
 
         let installer = {
             gpk: (fromPath, filename = null) => this.clientInterface.installGPK(path.join(this.info.path, fromPath), filename),
+            dll: filename => this.clientInterface.injectDLL(path.join(this.info.path, filename)),
         };
 
         try {
@@ -464,8 +465,8 @@ class Mod {
     }
     
     get printableName() {
-        if (this.info.options.niceName && this.info.options.niceName !== this.info.name)
-            return `"${this.info.options.niceName}" (${this.info.rawName})`;
+        if (this.info.options.cliName && this.info.options.cliName !== this.info.name)
+            return `"${this.info.options.cliName}" (${this.info.rawName})`;
         return `"${this.info.rawName}"`;
     }
 

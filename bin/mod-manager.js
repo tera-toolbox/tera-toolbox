@@ -3,8 +3,8 @@ const Mod = require('./mod');
 const { isCoreModule, listModules, loadModuleInfo } = require('tera-mod-management');
 
 function printableName(info) {
-    if (info.options.niceName && info.options.niceName !== info.name)
-        return `"${info.options.niceName}" (${info.rawName})`;
+    if (info.options.cliName && info.options.cliName !== info.name)
+        return `"${info.options.cliName}" (${info.rawName})`;
     return `"${info.rawName}"`;
 }
 
