@@ -10,6 +10,19 @@ function tryUnlink(file) {
     }
 }
 
+function tryUninstallMod(name) {
+    try {
+        const ModuleFolder = path.join(__dirname, '..', 'mods');
+        const { listModuleInfos, uninstallModule } = require('tera-mod-management');
+
+        const modInfo = listModuleInfos(ModuleFolder).find(modInfo => modInfo.name === name);
+        if (modInfo)
+            uninstallModule(modInfo);
+    } catch (e) {
+        // Ignore
+    }
+}
+
 // Migrate from old versions
 function ToolboxMigration() {
     // Delete legacy servers folder
@@ -144,6 +157,9 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'index.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'module.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'moduleManager.js'));
+
+    // Delete no longer used mods
+    tryUninstallMod('tera-game-state-helper');
 }
 
 module.exports = { ToolboxMigration };
