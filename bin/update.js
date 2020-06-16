@@ -200,6 +200,10 @@ async function autoUpdate(moduleBase, updatelog, updatelimit) {
                 let updateData = JSON.parse(fs.readFileSync(path.join(moduleInfo.path, 'module.json'), 'utf8'));
 
                 for (let dependency in updateData["dependencies"]) {
+                    // Temporary workaround for migration phase
+                    if (dependency === 'tera-game-state-helper')
+                        continue;
+
                     if (!installedModuleInfos.some(mod => mod.name === dependency.toLowerCase()) && addedModules.indexOf(dependency) < 0) {
                         const dependency_result = await autoUpdateFile('module.json', path.join(moduleBase, dependency, 'module.json'), updateData["dependencies"][dependency]);
                         if (!dependency_result[1])
