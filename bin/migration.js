@@ -126,6 +126,7 @@ function ToolboxMigration() {
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'sysmsg'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'ia32'));
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'x64'));
+    rimraf(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch'));
 
     // Delete no longer used files
     tryUnlink(path.join(__dirname, "connectionManager.js"));
@@ -154,9 +155,6 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_75.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_76.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_79.node'));
-    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'index.js'));
-    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'module.js'));
-    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'moduleManager.js'));
 
     // Delete no longer used mods
     tryUninstallMod('tera-game-state-helper');
