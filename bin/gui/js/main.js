@@ -10,8 +10,8 @@ function displayName(modInfo) {
 	if (modInfo.options) {
 		if (modInfo.options.guiName)
 			return modInfo.options.guiName;
-		if (modInfo.options.niceName)
-			return modInfo.options.niceName;
+		if (modInfo.options.cliName)
+			return modInfo.options.cliName;
 	}
 
 	return modInfo.rawName || modInfo.name;
@@ -390,12 +390,12 @@ jQuery(($) => {
 	}
 
 	function matchesInstallableModFilter(modInfo) {
-		if (!InstallableModFilter.network && (!modInfo.category || modInfo.category === "network"))
+		if (!InstallableModFilter.network && modInfo.keywords && modInfo.keywords.includes('network'))
 			return false;
-		if (!InstallableModFilter.client && modInfo.category === "client")
+		if (!InstallableModFilter.client && modInfo.keywords && modInfo.keywords.includes('client'))
 			return false;
 
-		return InstallableModFilter.keywords.length === 0 || InstallableModFilter.keywords.some(keyword => (modInfo.author && modInfo.author.toLowerCase().includes(keyword)) || (modInfo.description && modInfo.description.toLowerCase().includes(keyword)) || displayName(modInfo).toLowerCase().includes(keyword));
+		return InstallableModFilter.keywords.length === 0 || InstallableModFilter.keywords.some(keyword => (modInfo.author && modInfo.author.toLowerCase().includes(keyword)) || (modInfo.description && modInfo.description.toLowerCase().includes(keyword)) || displayName(modInfo).toLowerCase().includes(keyword) || (modInfo.keywords && modInfo.keywords.includes(keyword)));
 	}
 
 	function rebuildInstallableModsList() {

@@ -5,30 +5,41 @@ function checkRuntimeCompatibility() {
             throw new Error('NodeTooOld');
     } else {
         // We're on Electron
-        if (process.versions.modules < 76)
+        if (process.versions.modules < 80)
             throw new Error('NodeTooOld');
     }
 
     return true;
 }
 
-async function initGlobalSettings(DevMode = false, UILanguage = 'en') {
+async function initGlobalSettings(DevMode = false) {
     global.TeraProxy = {
         DevMode: !!DevMode,
         DiscordUrl: 'https://discord.gg/dUNDDtw',
         SupportUrl: 'https://discord.gg/659YbNY',
         GUIMode: !!process.versions.electron,
-        UILanguage: UILanguage,
         IsAdmin: await isAdmin(),
+        get UILanguage() {
+            console.warn('Accessing deprecated "global.TeraProxy.UILanguage", use "require(\'tera-toolbox-mui\').language" instead! Stack:');
+            console.warn(new Error().stack);
+            return require('tera-toolbox-mui').language;
+        },
     };
 }
 
-// See https://stackoverflow.com/questions/37322862/check-if-electron-app-is-launched-with-admin-privileges-on-windows
+// See https://github.com/sindresorhus/is-admin
 function isAdmin() {
     const { exec } = require('child_process');
     return new Promise((resolve, reject) => {
-        exec('NET SESSION', (err, so, se) => {
-            resolve(se.length === 0);
+        exec('fsutil dirty query %systemdrive%', (err, so, se) => {
+            if (!err) {
+                resolve(true);
+            } else {
+                if (err.code === 1)
+                    resolve(false);
+                else
+                    reject(err);
+            }
         });
     });
 }

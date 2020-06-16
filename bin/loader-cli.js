@@ -108,7 +108,6 @@ initGlobalSettings(false).then(() => {
                 InitializeMUI(ProxyConfig.uilanguage);
                 global.TeraProxy.DevMode = !!ProxyConfig.devmode;
                 global.TeraProxy.GUIMode = false;
-                global.TeraProxy.UILanguage = mui.language;
                     
                 // Auto-update mods and run
                 if (ProxyConfig.noupdate) {

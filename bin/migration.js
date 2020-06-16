@@ -10,6 +10,19 @@ function tryUnlink(file) {
     }
 }
 
+function tryUninstallMod(name) {
+    try {
+        const ModuleFolder = path.join(__dirname, '..', 'mods');
+        const { listModuleInfos, uninstallModule } = require('tera-mod-management');
+
+        const modInfo = listModuleInfos(ModuleFolder).find(modInfo => modInfo.name === name);
+        if (modInfo)
+            uninstallModule(modInfo);
+    } catch (e) {
+        // Ignore
+    }
+}
+
 // Migrate from old versions
 function ToolboxMigration() {
     // Delete legacy servers folder
@@ -115,6 +128,7 @@ function ToolboxMigration() {
     rimraf(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'x64'));
 
     // Delete no longer used files
+    tryUnlink(path.join(__dirname, "connectionManager.js"));
     tryUnlink(path.join(__dirname, "index.js"));
     tryUnlink(path.join(__dirname, "loader.js"));
     tryUnlink(path.join(__dirname, "loader-console.js"));
@@ -127,15 +141,25 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'injector.exe'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener-dll-injector.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'module.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'moduleManager.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_72.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_75.node'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_76.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_79.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'binding.gyp'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'fallback.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'main.cpp'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_72.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_75.node'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_76.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_79.node'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'index.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'module.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-proxy', 'lib', 'connection', 'dispatch', 'moduleManager.js'));
+
+    // Delete no longer used mods
+    tryUninstallMod('tera-game-state-helper');
 }
 
 module.exports = { ToolboxMigration };
