@@ -80,6 +80,10 @@ class ModInterfaceBase {
     log(...args) { console.log(mui.get('mod/prefix-log', { name: this.info.name }), ...args); }
     warn(...args) { console.warn(mui.get('mod/prefix-warn', { name: this.info.name }), ...args); }
     error(...args) { console.error(mui.get('mod/prefix-error', { name: this.info.name }), ...args); }
+
+    // Module settings
+    loadSettings() { this.parent.loadSettings(); }
+    saveSettings() { this.parent.saveSettings(); }
 }
 
 class GlobalModInterface extends ModInterfaceBase {

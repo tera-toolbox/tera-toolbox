@@ -16,7 +16,7 @@
     "bin/migration.js": "bab7c572bec38a16b3d65e0899d42832d9a31aebf27def1426f0941bcea34e25",
     "bin/mod-legacy-wrapper.js": "568e0ef7306613ddaea911add61b8086fdea2dea76d2640d2e65594ea6c6622d",
     "bin/mod-manager.js": "025c11a33186f6ff56f77b3bc700c7cdf4064c745b63aeae4d5dcbbb36efb95c",
-    "bin/mod.js": "7d9b04e689e360e1aa189defae9417319170a25be3e1cadfe42ba6f67e70fd71",
+    "bin/mod.js": "237113e793bfea4312d058f065dc0c0af5d7209226278ab9983dbe1c8863dcbc",
     "bin/proxy.js": "37ffcb99cebcf122d19d173a3dd00705904c10beff0e34647ed51384e20c16c0",
     "bin/standalone-injector.js": "55c0ebf0877e1c2e64482daaa30465e22d984c31db915cbbf9d0701a18c9df7d",
     "bin/update-electron.js": "b74741db87cc18e745c074143d3fe48ef0ae29a53ca78e7be673d64642674630",
