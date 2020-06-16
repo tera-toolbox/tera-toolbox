@@ -13,137 +13,137 @@
 }
 
 function ClientModWrapper(info, implementation) {
-    return function (mod) {
-        if (global.TeraProxy.DevMode)
-            mod.warn('Using deprecated mod API. Please update!');
+    return class extends implementation {
+        constructor(mod) {
+            if (global.TeraProxy.DevMode)
+                mod.warn('Using deprecated mod API. Please update!');
 
-        let installedGPKs = [];
+            let installedGPKs = [];
 
-        let modWrapper = new Proxy(Object.create(null), {
-            get: function (target, prop, receiver) {
-                switch (prop) {
-                    case 'name': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.name;
-                    }
-                    case 'niceName': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.options.cliName || mod.info.rawName;
-                    }
-                    case 'rootFolder': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.path;
-                    }
-                    case 'options': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.options;
-                    }
-                    case 'proxyAuthor': {
-                        DeprecationWarning(mod, prop);
-                        return 'caali';
-                    }
-                    case 'region': {
-                        DeprecationWarning(mod, prop);
-                        switch (mod.publisher) {
-                            case 'gf': return 'eu';
-                            case 'eme': return 'na';
-                            case 'nx': return 'kr';
-                            case 'pm': return 'jp';
-                            case 'm5': return 'tw';
-                            default: return 'int';
+            let modWrapper = new Proxy(Object.create(null), {
+                get: function (target, prop, receiver) {
+                    switch (prop) {
+                        case 'name': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.name;
                         }
+                        case 'niceName': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.options.cliName || mod.info.rawName;
+                        }
+                        case 'rootFolder': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.path;
+                        }
+                        case 'options': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.options;
+                        }
+                        case 'proxyAuthor': {
+                            DeprecationWarning(mod, prop);
+                            return 'caali';
+                        }
+                        case 'region': {
+                            DeprecationWarning(mod, prop);
+                            switch (mod.publisher) {
+                                case 'gf': return 'eu';
+                                case 'eme': return 'na';
+                                case 'nx': return 'kr';
+                                case 'pm': return 'jp';
+                                case 'm5': return 'tw';
+                                default: return 'int';
+                            }
+                        }
+                        case "installGPK": {
+                            DeprecationWarning(mod, prop);
+                            return (fromPath, filename = null) => installedGPKs.push([fromPath, filename]);
+                        }
+                        default:
+                            return mod[prop];
                     }
-                    case "installGPK": {
-                        DeprecationWarning(mod, prop);
-                        return (fromPath, filename = null) => installedGPKs.push([fromPath, filename]);
-                    }
-                    default:
-                        return mod[prop];
                 }
-            }
-        });
+            });
 
-        let instance = new implementation(modWrapper);
-        this.install = installer => installedGPKs.forEach(file => installer.gpk(...file));
-        if (typeof instance.destructor === 'function')
-            this.destructor = () => instance.destructor();
+            super(modWrapper);
+            this.install = installer => installedGPKs.forEach(file => installer.gpk(...file));
+        }
     }
 }
 
 function NetworkModWrapper(info, implementation) {
-    return function (mod) {
-        let modRequireWrapper = new Proxy(Object.create(null), {
-            get: (obj, key) => {
-                let res = mod.require[key];
-                if (!res.networkMod)
-                    return res;
+    return class extends implementation {
+        constructor(mod) {
+            let modRequireWrapper = new Proxy(Object.create(null), {
+                get: (obj, key) => {
+                    let res = mod.require[key];
+                    if (!res.networkMod)
+                        return res;
 
-                DeprecationWarning(mod, "require without RequireInterface");
-                return mod.require[key].networkMod;
-            },
-            set() {
-                throw new TypeError('Cannot set property of require');
-            }
-        });
-
-        let modWrapper = new Proxy(Object.create(null), {
-            get: function (target, prop, receiver) {
-                switch (prop) {
-                    case 'name': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.name;
-                    }
-                    case 'niceName': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.options.cliName || mod.info.rawName;
-                    }
-                    case 'rootFolder': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.path;
-                    }
-                    case 'options': {
-                        DeprecationWarning(mod, prop);
-                        return mod.info.options;
-                    }
-                    case 'proxyAuthor': {
-                        DeprecationWarning(mod, prop);
-                        return 'caali';
-                    }
-                    case 'isConsole': {
-                        DeprecationWarning(mod, prop);
-                        return ['ps4', 'xb1'].includes(mod.platform);
-                    }
-                    case 'isClassic': {
-                        DeprecationWarning(mod, prop);
-                        return mod.majorPatchVersion <= 27;
-                    }
-                    case 'region': {
-                        DeprecationWarning(mod, prop);
-                        switch (mod.publisher) {
-                            case 'gf': return 'eu';
-                            case 'eme': return 'na';
-                            case 'nx': return 'kr';
-                            case 'pm': return 'jp';
-                            case 'm5': return 'tw';
-                            default: return 'int';
-                        }
-                    }
-                    case 'protocolVersion': {
-                        DeprecationWarning(mod, prop);
-                        return mod.dispatch.protocolVersion;
-                    }
-                    case 'require': {
-                        return modRequireWrapper;
-                    }
-                    default:
-                        return mod[prop];
+                    DeprecationWarning(mod, "require without RequireInterface");
+                    return res.networkMod;
+                },
+                set() {
+                    throw new TypeError('Cannot set property of require');
                 }
-            }
-        });
+            });
 
-        let instance = new implementation(modWrapper);
-        if (typeof instance.destructor === 'function')
-            this.destructor = () => instance.destructor();
+            let modWrapper = new Proxy(Object.create(null), {
+                get: function (target, prop, receiver) {
+                    switch (prop) {
+                        case 'name': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.name;
+                        }
+                        case 'niceName': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.options.cliName || mod.info.rawName;
+                        }
+                        case 'rootFolder': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.path;
+                        }
+                        case 'options': {
+                            DeprecationWarning(mod, prop);
+                            return mod.info.options;
+                        }
+                        case 'proxyAuthor': {
+                            DeprecationWarning(mod, prop);
+                            return 'caali';
+                        }
+                        case 'isConsole': {
+                            DeprecationWarning(mod, prop);
+                            return ['ps4', 'xb1'].includes(mod.platform);
+                        }
+                        case 'isClassic': {
+                            DeprecationWarning(mod, prop);
+                            return mod.majorPatchVersion <= 27;
+                        }
+                        case 'region': {
+                            DeprecationWarning(mod, prop);
+                            switch (mod.publisher) {
+                                case 'gf': return 'eu';
+                                case 'eme': return 'na';
+                                case 'nx': return 'kr';
+                                case 'pm': return 'jp';
+                                case 'm5': return 'tw';
+                                default: return 'int';
+                            }
+                        }
+                        case 'protocolVersion': {
+                            DeprecationWarning(mod, prop);
+                            return mod.dispatch.protocolVersion;
+                        }
+                        case 'require': {
+                            return modRequireWrapper;
+                        }
+                        default:
+                            return mod[prop];
+                    }
+                }
+            });
+
+            super(modWrapper);
+        }
     }
 }
 
