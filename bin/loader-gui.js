@@ -273,7 +273,7 @@ ipcMain.on("uninstall mod", (event, modInfo) => {
 });
 
 ipcMain.on("show mods folder", () => {
-	shell.openItem(ModuleFolder);
+	shell.openPath(ModuleFolder);
 });
 
 // GUI

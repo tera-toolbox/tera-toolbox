@@ -675,7 +675,7 @@ class Mod {
         } catch (e) {
             if (e.toString().includes('at position 0')) {
                 console.error(mui.get('mod/settings-load-error-corrupted-1'));
-                console.error(mui.get('mod/settings-load-error-corrupted-2', { name: this.name }));
+                console.error(mui.get('mod/settings-load-error-corrupted-2', { name: this.info.name }));
                 console.error(mui.get('mod/settings-load-error-corrupted-3'));
                 console.error(mui.get('mod/settings-load-error-corrupted-4'));
                 console.error(mui.get('mod/settings-load-error-corrupted-5'));
@@ -684,7 +684,7 @@ class Mod {
                 this.saveSettings();
                 return;
             } else {
-                console.error(mui.get('mod/settings-load-error-invalid-format-1', { name: this.name }));
+                console.error(mui.get('mod/settings-load-error-invalid-format-1', { name: this.info.name }));
                 console.error(mui.get('mod/settings-load-error-invalid-format-2'));
                 console.error(mui.get('mod/settings-load-error-invalid-format-3'));
                 console.error(mui.get('mod/settings-load-error-invalid-format-4'));
