@@ -124,6 +124,7 @@
     "node_modules/tera-network-proxy/lib/connection/encryption/sha0.js": "49748cdd71917d10232013990dd03ccbbd01a27dc85dfd6c534c211cffe14398",
     "node_modules/tera-toolbox-mui/index.js": "e00699d2481089ca05e6579b2860850ace047d8e8aa23a54c6f84ce9b23257d8",
     "node_modules/tera-toolbox-mui/language/ar.js": "558b1aa2f2bdb26ccf3cb413858f730bcf0326fd0f878adda81b64cbea5e3c24",
+    "node_modules/tera-toolbox-mui/language/ba.js": "4e572af4f4055098fcf83392a8e71571cc3b2c8a0bf841b54936de9fc7fc5062",
     "node_modules/tera-toolbox-mui/language/de.js": "472cf2a16a2a5f2450718c66ded854f0f1acef197c863f21fd7a5610e9eae65a",
     "node_modules/tera-toolbox-mui/language/en.js": "a6e2269826de8e08f0592196ef74cac27f6f7dee50a5d3497065c07751dce76c",
     "node_modules/tera-toolbox-mui/language/es.js": "26bfe5cbbb0125cb826e76d46d18487f23f10964d9a28bb579b6839ded99c966",
