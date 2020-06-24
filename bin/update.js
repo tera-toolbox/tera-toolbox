@@ -62,7 +62,7 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) 
         if (!requestPayload.ok)
             throw `ERROR: ${ url }\nCan't download file from update server (${ requestPayload.status } - ${requestPayload.statusText})! Possible causes:\n   + Incorrect manifest specified by developer\n   + Server is not available anymore\n   + Access denied\n   + Internal server error`;
 
-		const updatedFile = await (requestPayload).buffer();
+        const updatedFile = await (requestPayload).buffer();
         if (expectedHash && expectedHash !== hash(updatedFile))
             throw "ERROR: " + url + "\nDownloaded file doesn't match hash specified in patch manifest! Possible causes:\n   + Incorrect manifest specified by developer\n   + NoPing (if you're using it) has a bug that can fuck up the download";
 
