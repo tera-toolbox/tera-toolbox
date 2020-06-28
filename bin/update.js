@@ -62,16 +62,14 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null, 
         if (!requestPayload.ok)
             throw `ERROR: ${ url }\nCan't download file from update server (${ requestPayload.status } - ${requestPayload.statusText})! Possible causes:\n   + Incorrect manifest specified by developer\n   + Server is not available anymore\n   + Access denied\n   + Internal server error`;
 
-        let updatedFile = null;
+        let updatedFile = await requestPayload.buffer();
         
-        switch(receiveAs) {
-        case("json"): 
-            try { updatedFile = await (requestPayload).json(); }
-            catch(e) { throw `ERROR: ${ url }\nCan't download file from update server! Possible causes:\n   + Internal server error`; }
-            break;
-        case("buffer"):
-        default: 
-            updatedFile = await (requestPayload).buffer();
+        if (receiveAs === "json") {
+            try {
+                JSON.parse(updatedFile);
+            } catch(e) {
+                throw `ERROR: ${ url }\nMalformed JSON file!\n${e}`;
+            }
         }
         
         if (expectedHash && expectedHash !== hash(updatedFile))
