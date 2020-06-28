@@ -52,7 +52,7 @@ let HTTPSAgent = new https.Agent({
     keepAlive: true
 });
 
-async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) {
+async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null, receiveAs = "buffer") {
     try {
         let fileUrl = new URL(url);
         if (drmKey)
@@ -62,7 +62,18 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null) 
         if (!requestPayload.ok)
             throw `ERROR: ${ url }\nCan't download file from update server (${ requestPayload.status } - ${requestPayload.statusText})! Possible causes:\n   + Incorrect manifest specified by developer\n   + Server is not available anymore\n   + Access denied\n   + Internal server error`;
 
-        const updatedFile = await (requestPayload).buffer();
+        let updatedFile = null;
+        
+        switch(receiveAs) {
+        case("json"): 
+            try { updatedFile = await (requestPayload).json(); }
+            catch(e) { throw `ERROR: ${ url }\nCan't download file from update server! Possible causes:\n   + Internal server error`; }
+            break;
+        case("buffer"):
+        default: 
+            updatedFile = await (requestPayload).buffer();
+        }
+        
         if (expectedHash && expectedHash !== hash(updatedFile))
             throw "ERROR: " + url + "\nDownloaded file doesn't match hash specified in patch manifest! Possible causes:\n   + Incorrect manifest specified by developer\n   + NoPing (if you're using it) has a bug that can fuck up the download";
 
@@ -113,7 +124,7 @@ async function autoUpdateModule(name, root, updateData, updatelog, updatelimit, 
         if (updatelog)
             console.log(mui.get('update/module-download-manifest', { serverIndex }));
 
-        let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url, updateData["drmKey"], null);
+        let manifest_result = await autoUpdateFile(manifest_file, manifest_path, manifest_url, updateData["drmKey"], null, "json");
         if (!manifest_result[1])
             throw new Error(`Unable to download update manifest for module "${name}":\n${manifest_result[2]}`);
 

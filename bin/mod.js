@@ -31,6 +31,7 @@ class ModInterfaceBase {
     get manager() { return this.parent.manager; }
     get info() { return this.parent.info; }
     get settings() { return this.parent.settings; }
+    set settings(val) { return this.parent.settings = val; }
 
     // Timers
     setTimeout(callback, delay, ...args) {
