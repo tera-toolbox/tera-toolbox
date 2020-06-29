@@ -211,11 +211,8 @@ class TeraProxy {
                         // Inject / patch proxied servers
                         const proxy_servers = data.servers.filter(server => !data.servers.some(other_server => other_server.id === server.id && other_server.ip === this.listenIp)).map(server => {
                             let patched_server = Object.assign({}, server);
-                            if (!this.config.noslstags) {
-                                const tag = TagFromLanguage(client.info.language);
-                                patched_server.name += tag;
-                                patched_server.title += tag;
-                            }
+                            if (!this.config.noslstags)
+                                patched_server.title += TagFromLanguage(client.info.language);
 
                             const redirected_server_metadata = {
                                 dataFolder: this.dataFolder,
