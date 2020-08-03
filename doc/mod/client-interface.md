@@ -4,6 +4,7 @@ Besides the TCP connection used for game network traffic redirection, TERA Toolb
 ## Generic Information
 The `info` object contains some useful information about the linked game client process:
 - `mod.clientInterface.info.pid`: The Windows process ID of the linked game client process.
+- `mod.clientInterface.info.arch`: `x64` if the game client process is 64-bit, `ia32` otherwise.
 - `mod.clientInterface.info.publisher`: The linked game client's publisher (e.g. `eme` for USA); see `mod.publisher`.
 - `mod.clientInterface.info.platform`: The linked game client's platform (e.g. `pc`); see `mod.platform`.
 - `mod.clientInterface.info.environment`: The linked game client's publisher-specific environment (e.g. `live`); see `mod.environment`.

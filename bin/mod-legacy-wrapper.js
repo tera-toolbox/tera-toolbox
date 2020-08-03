@@ -1,22 +1,22 @@
 ﻿function DeprecationWarning(mod, prop) {
-    if (global.TeraProxy.DevMode) {
-        const stack = new Error().stack.split('\n').slice(1);
-        while (stack.length > 0 && stack[0].includes(__dirname))
-            stack.shift();
-        let end = stack.findIndex(line => line.includes(__dirname));
-        if (end > -1)
-            stack.splice(end);
+    const stack = new Error().stack.split('\n').slice(1);
+    while (stack.length > 0 && stack[0].includes(__dirname))
+        stack.shift();
+    let end = stack.findIndex(line => line.includes(__dirname));
+    if (end > -1)
+        stack.splice(end);
 
-        mod.warn(`Accessing deprecated "${prop}"! Call stack:`);
-        mod.warn(stack.map(line => line.replace(/^ {4}at /, '')).join('\n'));
-    }
+    mod.warn(`Accessing deprecated "${prop}"! Call stack:`);
+    mod.warn(stack.map(line => line.replace(/^ {4}at /, '')).join('\n'));
 }
 
 function ClientModWrapper(info, implementation) {
     return class extends implementation {
         constructor(mod) {
-            if (global.TeraProxy.DevMode)
-                mod.warn('Using deprecated mod API. Please update!');
+            if (mod.clientInterface.info.arch === 'x64')
+                throw Error(`Incompatible with 64-bit client. Wait for the module to be updated!`);
+
+            mod.warn('Using deprecated client mod API!');
 
             let installedGPKs = [];
 

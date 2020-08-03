@@ -144,6 +144,7 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener-dll-injector.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'module.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'moduleManager.js'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'tera-client-interface.dll'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_72.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_75.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'scanner', 'scanner_76.node'));

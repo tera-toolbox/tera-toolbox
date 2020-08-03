@@ -337,7 +337,7 @@ class NetworkModInterface extends ModInterfaceBase {
         if (typeof name !== 'string')
             throw Error('Raw send() is not supported');
 
-        switch (name[0]) {
+        switch (name[name.indexOf('TTB_') === 0 ? 4 : 0]) {
             case 'S':
             case 'I':
                 return this.dispatch.write(false, name, version, data);
