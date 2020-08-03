@@ -380,7 +380,10 @@ class TeraProxyGUI {
 		const old_stderr = process.stderr.write;
 		process.stderr.write = function (msg, ...args) {
 			old_stderr(msg, ...args);
-			log(msg, "error");
+			if(msg.startsWith("warn:"))
+				log(msg.replace("warn:", ""), "warn");
+			else 
+				log(msg, "error");
 		};
 
 		// Initialize tray icon

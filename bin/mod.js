@@ -79,7 +79,7 @@ class ModInterfaceBase {
 
     // Logging
     log(...args) { console.log(mui.get('mod/prefix-log', { name: this.info.name }), ...args); }
-    warn(...args) { console.warn(mui.get('mod/prefix-warn', { name: this.info.name }), ...args); }
+    warn(...args) { console.warn(`warn:${mui.get('mod/prefix-warn', { name: this.info.name })}`, ...args); }
     error(...args) { console.error(mui.get('mod/prefix-error', { name: this.info.name }), ...args); }
 
     // Module settings
