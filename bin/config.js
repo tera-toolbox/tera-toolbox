@@ -19,11 +19,11 @@ function loadConfig() {
         };
     }
 
-    return JSON.parse(result);
+    return JSON.parse(result, (key,val) => (typeof val === "string" && val.includes("bigint:")) ? BigInt(val.replace('bigint:', '')) : val);
 }
 
 function saveConfig(newConfig) {
-    fs.writeFileSync(ConfigFilePath, JSON.stringify(newConfig, null, 4));
+    fs.writeFileSync(ConfigFilePath, JSON.stringify(newConfig, (key,val) => typeof val === "bigint" ? String(`bigint:${val}`) : val, 4));
 }
 
 module.exports = { loadConfig, saveConfig };
