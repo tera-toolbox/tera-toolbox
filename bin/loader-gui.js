@@ -87,6 +87,11 @@ function _StartProxy(ModuleFolder, ProxyConfig) {
 	const TeraProxy = require("./proxy");
 	proxy = new TeraProxy(ModuleFolder, DataFolder, ProxyConfig);
 	try {
+		// Switch to highest process priority so we don't starve because of game client using all CPU
+		const { setHighestProcessPriority } = require("./utils");
+		setHighestProcessPriority();
+
+		// Start proxy
 		proxy.run();
 		proxyRunning = true;
 		return true;
@@ -130,9 +135,15 @@ async function StopProxy() {
 	if (!proxy || !proxyRunning)
 		return false;
 
+	// Stop proxy
 	proxy.destructor();
 	proxy = null;
 	proxyRunning = false;
+
+	// Switch back to normal process priority
+	const { setNormalProcessPriority } = require("./utils");
+	setNormalProcessPriority();
+
 	return true;
 }
 

@@ -61,6 +61,11 @@ function RunProxy(ModuleFolder, ProxyConfig) {
     const TeraProxy = require('./proxy');
     let proxy = new TeraProxy(ModuleFolder, DataFolder, ProxyConfig);
     try {
+        // Switch to highest process priority so we don't starve because of game client using all CPU
+        const { setHighestProcessPriority } = require("./utils");
+        setHighestProcessPriority();
+
+        // Start proxy
         proxy.run();
     } catch (e) {
         console.error(mui.get('loader-cli/error-cannot-start-proxy'));

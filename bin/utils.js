@@ -27,6 +27,16 @@ async function initGlobalSettings(DevMode = false) {
     };
 }
 
+function setHighestProcessPriority() {
+    const os = require('os');
+    os.setPriority(os.constants.priority.PRIORITY_HIGHEST);
+}
+
+function setNormalProcessPriority() {
+    const os = require('os');
+    os.setPriority(os.constants.priority.PRIORITY_NORMAL);
+}
+
 // See https://github.com/sindresorhus/is-admin
 function isAdmin() {
     const { exec } = require('child_process');
@@ -67,4 +77,4 @@ function rimraf(dir_path) {
     }
 }
 
-module.exports = { checkRuntimeCompatibility, initGlobalSettings, isAdmin, rimraf };
+module.exports = { checkRuntimeCompatibility, initGlobalSettings, setNormalProcessPriority, setHighestProcessPriority, isAdmin, rimraf };
