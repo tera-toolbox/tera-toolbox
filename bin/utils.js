@@ -29,7 +29,7 @@ async function initGlobalSettings(DevMode = false) {
 
 function setHighestProcessPriority() {
     const os = require('os');
-    os.setPriority(os.constants.priority.PRIORITY_HIGHEST);
+    os.setPriority(os.constants.priority.PRIORITY_ABOVE_NORMAL);
 }
 
 function setNormalProcessPriority() {
