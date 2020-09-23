@@ -73,16 +73,16 @@ class TeraProxy {
                 this.running = true;
             },
             e => {
-                console.log(mui.get('proxy/client-interface-error'));
+                console.error(mui.get('proxy/client-interface-error'));
                 switch (e.code) {
                     case 'EADDRINUSE':
-                        console.log(mui.get('proxy/client-interface-error-EADDRINUSE'));
+                        console.error(mui.get('proxy/client-interface-error-EADDRINUSE'));
                         break;
                     case 'EADDRNOTAVAIL':
-                        console.log(mui.get('proxy/client-interface-error-EADDRNOTAVAIL'));
+                        console.error(mui.get('proxy/client-interface-error-EADDRNOTAVAIL'));
                         break;
                     default:
-                        console.log(e);
+                        console.error(e);
                         break;
                 }
             }
@@ -144,7 +144,7 @@ class TeraProxy {
                     const JustStarted = data.just_started;
 
                     if (data.error) {
-                        console.log(mui.get('proxy/client-interface-connection-error', { error: data.error }));
+                        console.error(mui.get('proxy/client-interface-connection-error', { error: data.error }));
                         if (JustStarted)
                             client.resume();
                     } else {
@@ -161,14 +161,23 @@ class TeraProxy {
 
                         if (JustStarted) {
                             client.GPKManager.initialize(path.join(client.info.path, '..'));
-                            this.modManager._installAllClient(client).then(() => client.resume());
+                            this.modManager._installAllClient(client).then(() => client._installGPKs());
                         }
                     }
 
                     break;
                 }
+                case 'installgpksresult': {
+                    if (!data.success) {
+                        console.error(mui.get('proxy/error-installing-gpks'));
+                        console.error(data.error);
+                    }
+                    client.resume();
+                    break;
+                }
                 case 'ready': {
-                    client.info.protocolVersion = data.versionDataCenter;
+                    client.info.protocolVersion = data.protocolVersion;
+                    client.info.sysmsgVersion = data.sysmsgVersion;
                     client.info.sysmsg = data.sysmsg;
 
                     // Load protocol map
@@ -190,7 +199,7 @@ class TeraProxy {
                         }
                     } catch (e) {
                         console.error(mui.get('proxy/error-cannot-load-protocol', { protocolVersion: client.info.protocolVersion, publisher: client.info.publisher, majorPatchVersion: client.info.majorPatchVersion, minorPatchVersion: client.info.minorPatchVersion }));
-                        console.log(e);
+                        console.error(e);
                     }
                     break;
                 }
