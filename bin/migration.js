@@ -159,6 +159,8 @@ function ToolboxMigration() {
 
     // Delete no longer used mods
     tryUninstallMod('tera-game-state-helper');
+    tryUninstallMod('tcc-stub');
+    tryUninstallMod('tcc-chat-link');
 }
 
 module.exports = { ToolboxMigration };
