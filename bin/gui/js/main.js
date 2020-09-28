@@ -381,7 +381,7 @@ jQuery(($) => {
 	let InstallableModFilter = {
 		"keywords": [],
 		"network": true,
-		"client": false,
+		"client": true,
 	};
 
 	function requestInstallMod(modInfo) {
