@@ -1,5 +1,5 @@
 const path = require("path");
-const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, powerMonitor, Tray, Menu, ipcMain, shell } = require("electron");
 const DataFolder = path.join(__dirname, "..", "data");
 const ModuleFolder = path.join(__dirname, "..", "mods");
 
@@ -419,6 +419,21 @@ class TeraProxyGUI {
 					this.window.webContents.send("update available");
 			});
 		}
+
+		powerMonitor.on('suspend', () => {
+			if (this.window) {
+				if (!proxy || !proxyRunning)
+					return;
+
+				console.log(mui.get("loader-gui/proxy-stopping"));
+				
+				StopProxy().then(() => {
+					this.window.webContents.send("proxy running", false);
+					console.log(mui.get("loader-gui/proxy-stopped"));
+				});
+
+			}
+		});
 	}
 
 	hide() {
