@@ -2,7 +2,7 @@
 
 body {
 	margin: 0px;
-	background: #2f3136;
+	background: hsl(223, 7%, 20%);
 	font-family: Ubuntu, sans serif;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -18,11 +18,11 @@ body {
 }
 
 .ui>img {
-	height: 196px;
-	width: 196px;
+	height: 200px;
+	width: 200px;
 }
 
 .ui>div {
 	color: white;
-	font-size: 14px;
+	font-size: 13px;
 }
