@@ -351,6 +351,7 @@ class TeraProxyGUI {
 			show: false,
 			webPreferences: {
 				nodeIntegration: true,
+				enableRemoteModule: true,
 				devTools: false,
 				spellcheck: false
 			}

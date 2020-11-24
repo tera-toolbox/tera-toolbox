@@ -37,6 +37,7 @@ function showSplashScreen() {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
+                enableRemoteModule: true,
                 devTools: false
             }
         });
