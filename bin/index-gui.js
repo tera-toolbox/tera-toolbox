@@ -273,7 +273,7 @@ try {
 }
 
 // Backwards compatibility until next major update
-app.allowRendererProcessReuse = false;
+//app.allowRendererProcessReuse = false;
 
 // Boot
 if (!app.requestSingleInstanceLock()) {
