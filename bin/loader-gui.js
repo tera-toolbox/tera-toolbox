@@ -336,8 +336,7 @@ class TeraProxyGUI {
 
 		// Initialize main window
 		const guiRoot = path.join(__dirname, "gui");
-		const guiIcon = path.join(guiRoot, "/assets/icon.ico");
-
+		const guiIcon = path.join(guiRoot, "/assets/icon.ico")
 		this.window = new BrowserWindow({
 			title: "TERA Toolbox",
 			width: config?.gui?.width || 880,
@@ -429,8 +428,9 @@ class TeraProxyGUI {
 	_setTray() {
 		if(this.tray) return;
 
+		
 		// Initialize tray icon
-		this.tray = new Tray(guiIcon);
+		this.tray = new Tray(path.join(__dirname, "gui", "/assets/icon.ico"));
 		this.tray.setToolTip("TERA Toolbox");
 		this.tray.setContextMenu(Menu.buildFromTemplate([
 			{

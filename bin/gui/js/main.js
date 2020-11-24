@@ -231,12 +231,22 @@ jQuery(($) => {
 			$("#title-status").text(mui.get(ProxyRunning ? "gui/main/status-proxy-running" : "gui/main/status-proxy-not-running"));
 	}
 
+	function selectLogForcefully() {
+		document.getElementById("tabone").checked = true;
+		const tabs = document.querySelectorAll(".tab--active");
+		for (const tab of tabs) tab.classList.remove("tab--active");
+		const contentElement = document.querySelector(`.tab[data-tab="1"]`);
+		contentElement.classList.add("tab--active");
+	}
+
 	function startProxy() {
 		if (ProxyStarting || ProxyRunning)
 			return;
 
 		setProxyStarting();
 		ipcRenderer.send("start proxy");
+		
+		selectLogForcefully();
 	}
 
 	function stopProxy() {
