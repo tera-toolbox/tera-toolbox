@@ -378,6 +378,11 @@ class TeraProxyGUI {
 		
 		//this.window.on('minimize', () => { this.window.hide(); });
 		this.window.on("closed", () => { StopProxy(); this.window = null; });
+		
+		this.window.on("hide", () => { this._setTray(); });
+		this.window.on("minimize", () => { this._setTray(); });
+		this.window.on("restore", () => { this._removeTray(); });
+		this.window.on("show", () => { this._removeTray(); });
 
 		// Redirect console to built-in one
 		const nodeConsole = require("console");
@@ -396,21 +401,6 @@ class TeraProxyGUI {
 			else 
 				log(msg, "error");
 		};
-
-		// Initialize tray icon
-		this.tray = new Tray(guiIcon);
-		this.tray.setToolTip("TERA Toolbox");
-		this.tray.setContextMenu(Menu.buildFromTemplate([
-			{
-				"label": mui.get("loader-gui/tray/quit"),
-				"click": () => { app.exit(); }
-			}
-		]));
-
-		this.tray.on("click", () => {
-			if (this.window)
-				this.window.isVisible() ? this.window.hide() : this.window.show();
-		});
 
 		// Start periodic update check
 		if (!config.noselfupdate) {
@@ -434,6 +424,32 @@ class TeraProxyGUI {
 
 			}
 		});
+	}
+
+	_setTray() {
+		if(this.tray) return;
+
+		// Initialize tray icon
+		this.tray = new Tray(guiIcon);
+		this.tray.setToolTip("TERA Toolbox");
+		this.tray.setContextMenu(Menu.buildFromTemplate([
+			{
+				"label": mui.get("loader-gui/tray/quit"),
+				"click": () => { app.exit(); }
+			}
+		]));
+
+		this.tray.on("click", () => {
+			if (this.window)
+				this.window.isVisible() ? this.window.hide() : this.window.show();
+		});
+	}
+
+	_removeTray() {
+		if(!this.tray) return;
+		
+		this.tray.destroy();
+		this.tray = null;
 	}
 
 	hide() {
