@@ -282,6 +282,8 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+app.commandLine.appendSwitch("force_low_power_gpu");
+
 if (app.isReady())
     main();
 else
