@@ -400,7 +400,22 @@ summary {
 	cursor: pointer;
 }
 
+.floating-elem-two {
+	position: fixed;
+	top: 80px;
+	right: 34px;
+	display: block;
+	z-index: 9;
+	font-size: 20px;
+	color: var(--float-element-text-color);
+	cursor: pointer;
+}
+
 .floating-elem:hover {
+	background-color: var(--float-element-hover-background-color);
+}
+
+.floating-elem-two:hover {
 	background-color: var(--float-element-hover-background-color);
 }
 

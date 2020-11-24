@@ -1,8 +1,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable default-case */
-const { remote, ipcRenderer, shell } = require("electron");
+const { remote, ipcRenderer, shell} = require("electron");
 const { TeraToolboxMUI, LanguageNames } = require("tera-toolbox-mui");
 const Themes = ["black", "white", "pink", "classic-black", "classic-white", "classic-pink"];
+const fs = require("fs");
 
 let mui = null;
 
@@ -66,7 +67,7 @@ jQuery(($) => {
 	});
 
 	$("#mods-btn").click(() => {
-		ipcRenderer.send('show mods folder');
+		ipcRenderer.send("show mods folder");
 	});
 
 	// Disable mouse wheel clicks
@@ -166,14 +167,14 @@ jQuery(($) => {
 	$("#noupdate").click(() => {
 		const checked = $("#noupdate").is(":checked");
 		if (checked)
-			ShowModal(mui.get('gui/main/modal/warn-mod-update-disabled'));
+			ShowModal(mui.get("gui/main/modal/warn-mod-update-disabled"));
 		updateSetting("noupdate", checked);
 	});
 
 	$("#noselfupdate").click(() => {
 		const checked = $("#noselfupdate").is(":checked");
 		if (checked)
-			ShowModal(mui.get('gui/main/modal/warn-self-update-disabled'));
+			ShowModal(mui.get("gui/main/modal/warn-self-update-disabled"));
 		updateSetting("noselfupdate", checked);
 	});
 
@@ -235,7 +236,7 @@ jQuery(($) => {
 		document.getElementById("tabone").checked = true;
 		const tabs = document.querySelectorAll(".tab--active");
 		for (const tab of tabs) tab.classList.remove("tab--active");
-		const contentElement = document.querySelector(`.tab[data-tab="1"]`);
+		const contentElement = document.querySelector(".tab[data-tab=\"1\"]");
 		contentElement.classList.add("tab--active");
 	}
 
@@ -284,6 +285,31 @@ jQuery(($) => {
 
 	$("#clear-logs").click(() => {
 		$("#log-contents").empty();
+	});
+
+	$("#save-logs").click(() => {
+		remote.dialog.showSaveDialog({ 
+			"title": "Select the File Path to save", 
+			// defaultPath: path.join(__dirname, '../assets/'), 
+			"buttonLabel": "Save File", 
+			// Restricting the user to only Text Files. 
+			"filters": [ 
+				{ 
+					"name": "Text Files", 
+					"extensions": ["log"] 
+				}, ], 
+			"properties": [] 
+		}).then(file => { 
+			if (!file.canceled) { 
+				// Creating and Writing to the sample.txt file 
+				fs.writeFile(file.filePath.toString(),  
+					$("#log-contents").text(), function (err) { 
+						if (err) throw err; 
+					}); 
+			} 
+		}).catch(err => { 
+			console.log(err); 
+		}); 
 	});
 
 	ipcRenderer.on("log", (_, data, type) => {
@@ -400,9 +426,9 @@ jQuery(($) => {
 	}
 
 	function matchesInstallableModFilter(modInfo) {
-		if (!InstallableModFilter.network && modInfo.keywords && modInfo.keywords.includes('network'))
+		if (!InstallableModFilter.network && modInfo.keywords && modInfo.keywords.includes("network"))
 			return false;
-		if (!InstallableModFilter.client && modInfo.keywords && modInfo.keywords.includes('client'))
+		if (!InstallableModFilter.client && modInfo.keywords && modInfo.keywords.includes("client"))
 			return false;
 
 		return InstallableModFilter.keywords.length === 0 || InstallableModFilter.keywords.some(keyword => (modInfo.author && modInfo.author.toLowerCase().includes(keyword)) || (modInfo.description && modInfo.description.toLowerCase().includes(keyword)) || displayName(modInfo).toLowerCase().includes(keyword) || (modInfo.keywords && modInfo.keywords.includes(keyword)));
