@@ -251,7 +251,7 @@ p {
 .log-contents {
 	background: var(--log-background);
 	color: var(--log-text-color);
-	padding: 2px;
+	padding: 1px;
 	font-family: Ubuntu Mono, monospace;
 	font-size: 14px;
 	word-wrap: break-word;
