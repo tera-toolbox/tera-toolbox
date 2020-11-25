@@ -2,7 +2,7 @@
 
 body {
 	margin: 0px;
-	background: hsl(223, 7%, 20%);
+	background: #1d2125;
 	font-family: Ubuntu, sans serif;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -23,6 +23,6 @@ body {
 }
 
 .ui>div {
-	color: white;
+	color: darkgray;
 	font-size: 13px;
 }

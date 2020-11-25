@@ -2,7 +2,7 @@
 /* eslint-disable default-case */
 const { remote, ipcRenderer, shell} = require("electron");
 const { TeraToolboxMUI, LanguageNames } = require("tera-toolbox-mui");
-const Themes = ["black", "white", "pink", "classic-black", "classic-white", "classic-pink"];
+const Themes = ["black", "grey", "white", "pink", "classic-black", "classic-white", "classic-pink"];
 const fs = require("fs");
 
 let mui = null;
