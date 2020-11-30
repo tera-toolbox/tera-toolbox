@@ -279,7 +279,7 @@ jQuery(($) => {
 			timeStr = `[${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}.${now.getMilliseconds().toString().padStart(3, "0")}] `;
 		}
 
-		contents.append(`<div class=${type || "log"}><textarea>${timeStr}${msg}</textarea></div>`);
+		contents.append(`<div class=${type || "log"}><textarea readonly='true'>${timeStr}${msg}</textarea></div>`);
 		contents.scrollTop(contents[0].scrollHeight);
 	}
 
