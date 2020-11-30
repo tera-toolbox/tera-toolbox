@@ -279,7 +279,7 @@ jQuery(($) => {
 			timeStr = `[${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}.${now.getMilliseconds().toString().padStart(3, "0")}] `;
 		}
 
-		contents.append(`<div class=${type || "log"}>${timeStr}${msg}</div>`);
+		contents.append(`<a><div class=${type || "log"}>${timeStr}${msg}</div></a>`);
 		contents.scrollTop(contents[0].scrollHeight);
 	}
 
