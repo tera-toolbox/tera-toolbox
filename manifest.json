@@ -44,7 +44,7 @@
     "bin/gui/fonts/ubuntu-mono-v9-regular-full.woff2": "74321af37a7bc768466f411ae3cea2408cfe597b3744ef14d3720a449ef0253f",
     "bin/gui/fonts/ubuntu-v14-regular-full.woff2": "450a235e4617e79014b8124e7c0ac2ba9110bcc11ee512e5bcac5bdc0255bf92",
     "bin/gui/js/jquery-3.5.1.slim.min.js": "e3e5f35d586c0e6a9a9d7187687be087580c40a5f8d0e52f0c4053bbc25c98db",
-    "bin/gui/js/main.js": "3c16ddaddcbcdc74fdc79e87db4d308b4ab95365481a603ae1636c345cd1345d",
+    "bin/gui/js/main.js": "e2d8e227fd537cc0b50ce0048ea0569813314aab3f588b2adb950a1b064ac014",
     "bin/gui/js/splash.js": "ca944b498623059e84c2d436096710e756029796028e114c03327f65195e3c8a",
     "data/data.json": "04ab918fccf2484d30e551f29534423dc6a6d2b7ea4b1a96433f0dd29825aa84",
     "data/definitions/README.md": "3bea1b2efa503a07a01cdcd63945b61e59a0426a2790b0a32605e8362630400a",
