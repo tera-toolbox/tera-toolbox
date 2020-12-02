@@ -102,8 +102,10 @@ jQuery(($) => {
 		$("#noslstags").prop("checked", Settings.noslstags);
 		$("#noserverautojoin").prop("checked", Settings.noserverautojoin);
 		$("#minimizetotray").prop("checked", Settings.gui.minimizetotray);
-		
+		$("#cleanstart").prop("checked", Settings.gui.cleanstart);
 		$("#theme").attr("href", `css/themes/${Settings.gui.theme}.css`);
+		$("#removecounters").prop("checked", Settings.removecounters);
+
 	}
 
 	function updateSettings(newSettings) {
@@ -190,6 +192,13 @@ jQuery(($) => {
 		updateGUISetting("minimizetotray", $("#minimizetotray").is(":checked"));
 	});
 	
+	$("#cleanstart").click(() => {
+		updateGUISetting("cleanstart", $("#cleanstart").is(":checked"));
+	});
+
+	$("#removecounters").click(() => {
+		updateSetting("removecounters", $("#removecounters").is(":checked"));
+	});
 	// Admin indicator
 	let IsAdmin = false;
 	ipcRenderer.on("is admin", (_, isAdmin) => {
@@ -240,6 +249,10 @@ jQuery(($) => {
 		contentElement.classList.add("tab--active");
 	}
 
+	function startProxyLogJob() {
+		if(Settings.gui.cleanstart) $("#log-contents").empty();
+	}
+
 	function startProxy() {
 		if (ProxyStarting || ProxyRunning)
 			return;
@@ -248,6 +261,7 @@ jQuery(($) => {
 		ipcRenderer.send("start proxy");
 		
 		selectLogForcefully();
+		startProxyLogJob();
 	}
 
 	function stopProxy() {

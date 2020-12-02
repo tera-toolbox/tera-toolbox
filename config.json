@@ -6,9 +6,11 @@
     "noselfupdate": false,
     "noupdate": false,
     "noslstags": false,
+    "removecounters": false,
     "gui": {
         "theme": "black",
         "autostart": false,
-        "logtimes": true
+        "logtimes": true,
+        "cleanstart": false
     }
 }
