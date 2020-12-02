@@ -105,6 +105,13 @@ p {
 	cursor: pointer;
 }
 
+.mod-empty-action-button {
+	width: 10px;
+	height: 20px;
+	font-size: 20px;
+	padding: 2px;
+}
+
 .header-button:hover {
 	background-color: var(--header-button-hover-color);
 }

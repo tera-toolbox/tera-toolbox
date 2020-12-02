@@ -1,4 +1,5 @@
 const path = require("path");
+const exec = require('child_process').exec;
 const { app, BrowserWindow, powerMonitor, Tray, Menu, ipcMain, shell } = require("electron");
 const DataFolder = path.join(__dirname, "..", "data");
 const ModuleFolder = path.join(__dirname, "..", "mods");
@@ -285,6 +286,10 @@ ipcMain.on("uninstall mod", (event, modInfo) => {
 
 ipcMain.on("show mods folder", () => {
 	shell.openPath(ModuleFolder);
+});
+
+ipcMain.on("open in notepad", (event, str) => {
+	exec(`notepad "${str}"`)
 });
 
 // GUI
