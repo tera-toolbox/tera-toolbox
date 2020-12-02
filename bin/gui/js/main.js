@@ -351,7 +351,7 @@ jQuery(($) => {
 								${modInfo.author ? `by ${modInfo.author}` : ""} </summary>
 						<p>${modInfo.description ? modInfo.description : " "}</p>
 						<div class="mod-info-controls">
-							${modInfo.readmePath ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/donate")}" role="tooltip" class="mod-action-button" id="${readmePathId}"><i class="mdi mdi-information-outline"></i></div>` : ""}
+							${modInfo.readmePath ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/readme")}" role="tooltip" class="mod-action-button" id="${readmePathId}"><i class="mdi mdi-information-outline"></i></div>` : ""}
 							${modInfo.donationUrl ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/donate")}" role="tooltip" class="mod-action-button" id="${donationId}"><i class="mdi mdi-gift-outline"></i></div>` : ""}
 							${modInfo.supportUrl ? `<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/supportLink")}" role="tooltip" class="mod-action-button" id="${infoId}"><i class="mdi mdi-link-variant"></i></div>` : ""}
 							${(modInfo.supportUrl || modInfo.donationUrl || modInfo.readmePath) && !modInfo.isCoreModule ? `<div class="mod-empty-action-button"></div>` : ""}
