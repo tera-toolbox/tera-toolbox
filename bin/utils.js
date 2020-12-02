@@ -1,11 +1,11 @@
 function checkRuntimeCompatibility() {
     if (process.versions.electron === undefined) {
         // We're on Node.JS
-        if (process.versions.modules < 83)
+        if (process.versions.modules < 85)
             throw new Error('NodeTooOld');
     } else {
         // We're on Electron
-        if (process.versions.modules < 80)
+        if (process.versions.modules < 83)
             throw new Error('NodeTooOld');
     }
 
