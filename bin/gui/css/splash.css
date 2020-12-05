@@ -26,3 +26,14 @@ body {
 	color: darkgray;
 	font-size: 13px;
 }
+
+.snowflake {
+	position: fixed;
+	background-color: #CCC;
+	user-select: none;
+	z-index: 1000;
+	pointer-events: none;
+	border-radius: 50%;
+	width: 10px;
+	height: 10px;
+  }
