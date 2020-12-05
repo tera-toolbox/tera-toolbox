@@ -344,10 +344,10 @@ class TeraProxyGUI {
 		const guiIcon = path.join(guiRoot, "/assets/icon.ico")
 		this.window = new BrowserWindow({
 			title: "TERA Toolbox",
-			width: config?.gui?.width || 880,
-			height: config?.gui?.height || 500,
-			minWidth: 700,
-			minHeight: 435,
+			width: config?.gui?.width || 732,
+			height: config?.gui?.height || 460,
+			minWidth: 725,
+			minHeight: 460,
 			icon: guiIcon,
 			frame: false,
 			backgroundColor: "#292F33",

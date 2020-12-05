@@ -476,7 +476,7 @@ jQuery(($) => {
 						</summary>
 						<p>${modInfo.description ? modInfo.description : " "}</p>
 						<div class="mod-info-controls">
-							<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/download")}" role="tooltip" class="mod-action-button" id="${installId}"><i class="mdi mdi-progress-download"></i></div>
+							<div data-microtip-position="bottom-left" aria-label="${mui.get("gui/tooltip/download")}" role="tooltip" class="mod-action-button" id="${installId}"><i class="mdi mdi-cloud-download"></i></div>
 						</div>
 					</details>
 				</div>
