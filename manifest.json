@@ -15,7 +15,7 @@
     "bin/loader-gui.js": "331e53e36543540f589bae90b24e41be44b8c6971fa33f4019be5c98a03c7762",
     "bin/migration.js": "73742522848f1973ca0bcf6e5a547332708521f03b1f7dbe2ba3fc57f1905d89",
     "bin/mod-legacy-wrapper.js": "301a31ed1a9388195a6942ff4300362284fe66fcbf91d4046b46c9d35f374896",
-    "bin/mod-manager.js": "025c11a33186f6ff56f77b3bc700c7cdf4064c745b63aeae4d5dcbbb36efb95c",
+    "bin/mod-manager.js": "69da2a83996586b38bb333c38df02f72472845dee28d2a34ca73f4a1361580f0",
     "bin/mod.js": "6d7047bb5d32caeeec615e57e562837d9529ce708aa9b0cb3740767144ab68d4",
     "bin/proxy.js": "66ad599c3499f80232d9f69270e75fc22254987e4d883bb587bd2492e63accb9",
     "bin/standalone-injector.js": "a312b217bc2d5a2bedd3a86c676ef1240587ff62a71ac7b7e47f68a5b9ecfcb5",
