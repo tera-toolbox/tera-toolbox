@@ -45,7 +45,7 @@ class ModManager {
     loadAll() {
         // List installed modules
         this.installedMods.clear();
-        listModules(this.rootFolder).filter(x => !x.includes("library")).forEach(name => {
+        listModules(this.rootFolder).forEach(name => {
             // Safely load mod info
             let info;
             try {
