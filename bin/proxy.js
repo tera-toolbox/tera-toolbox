@@ -248,6 +248,12 @@ class TeraProxy {
                             data.default_server_id = 0
 
                         data.servers = !this.config.noslstags ? [...proxy_servers, ...data.servers] : proxy_servers;
+
+                        if (this.config.removecounters)
+                            for(let server in Object.keys(data.servers)) {
+                                data.servers[server].title = data.servers[server].title.replace(/\s+\(\d+\)/g, "");
+                            }
+
                     }
 
                     client.send("sls", data);
