@@ -308,6 +308,15 @@ p {
 	font-size: 14px;
 }
 
+.setting-transparent {
+	
+	background-color: transparent;
+	padding: 5px;
+	margin: 1px;
+	min-width: 90%;
+	font-size: 14px;
+}
+
 .setting > div:first-child {
 	margin-left: auto;
 	text-align: end;
