@@ -105,6 +105,13 @@ p {
 	cursor: pointer;
 }
 
+.mod-empty-action-button {
+	width: 10px;
+	height: 20px;
+	font-size: 20px;
+	padding: 2px;
+}
+
 .header-button:hover {
 	background-color: var(--header-button-hover-color);
 }
@@ -251,7 +258,7 @@ p {
 .log-contents {
 	background: var(--log-background);
 	color: var(--log-text-color);
-	padding: 2px;
+	padding: 1px;
 	font-family: Ubuntu Mono, monospace;
 	font-size: 14px;
 	word-wrap: break-word;
@@ -295,6 +302,15 @@ p {
 	display: flex;
 	flex-direction: row;
 	background-color: var(--settings-background-color);
+	padding: 5px;
+	margin: 1px;
+	min-width: 90%;
+	font-size: 14px;
+}
+
+.setting-transparent {
+	
+	background-color: transparent;
 	padding: 5px;
 	margin: 1px;
 	min-width: 90%;
@@ -400,7 +416,22 @@ summary {
 	cursor: pointer;
 }
 
+.floating-elem-two {
+	position: fixed;
+	top: 80px;
+	right: 34px;
+	display: block;
+	z-index: 9;
+	font-size: 20px;
+	color: var(--float-element-text-color);
+	cursor: pointer;
+}
+
 .floating-elem:hover {
+	background-color: var(--float-element-hover-background-color);
+}
+
+.floating-elem-two:hover {
 	background-color: var(--float-element-hover-background-color);
 }
 
@@ -451,3 +482,16 @@ summary {
 	width: 64px;
 	margin-bottom: 10px;
 }
+
+.snowflake {
+	position: fixed;
+	background-color: #CCC;
+	user-select: none;
+	z-index: 1000;
+	pointer-events: none;
+	border-radius: 50%;
+	width: 10px;
+	height: 10px;
+  }
+
+Input[type=checkbox]:checked{filter:hue-rotate(35deg);}

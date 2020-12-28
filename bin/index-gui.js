@@ -37,6 +37,7 @@ function showSplashScreen() {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
+                enableRemoteModule: true,
                 devTools: false
             }
         });
@@ -273,7 +274,7 @@ try {
 }
 
 // Backwards compatibility until next major update
-app.allowRendererProcessReuse = false;
+//app.allowRendererProcessReuse = false;
 
 // Boot
 if (!app.requestSingleInstanceLock()) {
@@ -282,6 +283,8 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+app.commandLine.appendSwitch("force_low_power_gpu");
+
 if (app.isReady())
     main();
 else

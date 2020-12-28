@@ -1,5 +1,6 @@
 const path = require("path");
-const { app, BrowserWindow, Tray, Menu, ipcMain, shell } = require("electron");
+const exec = require('child_process').exec;
+const { app, BrowserWindow, powerMonitor, Tray, Menu, ipcMain, shell } = require("electron");
 const DataFolder = path.join(__dirname, "..", "data");
 const ModuleFolder = path.join(__dirname, "..", "mods");
 
@@ -287,6 +288,10 @@ ipcMain.on("show mods folder", () => {
 	shell.openPath(ModuleFolder);
 });
 
+ipcMain.on("open in notepad", (event, str) => {
+	exec(`notepad "${str}"`)
+});
+
 // GUI
 class TeraProxyGUI {
 	constructor() {
@@ -336,14 +341,13 @@ class TeraProxyGUI {
 
 		// Initialize main window
 		const guiRoot = path.join(__dirname, "gui");
-		const guiIcon = path.join(guiRoot, "/assets/icon.ico");
-
+		const guiIcon = path.join(guiRoot, "/assets/icon.ico")
 		this.window = new BrowserWindow({
 			title: "TERA Toolbox",
-			width: config?.gui?.width || 880,
-			height: config?.gui?.height || 500,
-			minWidth: 700,
-			minHeight: 435,
+			width: config?.gui?.width || 743,
+			height: config?.gui?.height || 514,
+			minWidth: 743,
+			minHeight: 514,
 			icon: guiIcon,
 			frame: false,
 			backgroundColor: "#292F33",
@@ -352,6 +356,7 @@ class TeraProxyGUI {
 			show: false,
 			webPreferences: {
 				nodeIntegration: true,
+				enableRemoteModule: true,
 				devTools: false,
 				spellcheck: false
 			}
@@ -378,6 +383,21 @@ class TeraProxyGUI {
 		
 		//this.window.on('minimize', () => { this.window.hide(); });
 		this.window.on("closed", () => { StopProxy(); this.window = null; });
+		
+		// Initialize tray icon
+		this.tray = new Tray(guiIcon);
+		this.tray.setToolTip("TERA Toolbox");
+		this.tray.setContextMenu(Menu.buildFromTemplate([
+			{
+				"label": mui.get("loader-gui/tray/quit"),
+				"click": () => { app.exit(); }
+			}
+		]));
+
+		this.tray.on("click", () => {
+			if (this.window)
+				this.window.isVisible() ? this.window.hide() : this.window.show();
+		});
 
 		// Redirect console to built-in one
 		const nodeConsole = require("console");
@@ -397,21 +417,6 @@ class TeraProxyGUI {
 				log(msg, "error");
 		};
 
-		// Initialize tray icon
-		this.tray = new Tray(guiIcon);
-		this.tray.setToolTip("TERA Toolbox");
-		this.tray.setContextMenu(Menu.buildFromTemplate([
-			{
-				"label": mui.get("loader-gui/tray/quit"),
-				"click": () => { app.exit(); }
-			}
-		]));
-
-		this.tray.on("click", () => {
-			if (this.window)
-				this.window.isVisible() ? this.window.hide() : this.window.show();
-		});
-
 		// Start periodic update check
 		if (!config.noselfupdate) {
 			startUpdateCheck((config.branch || "master").toLowerCase(), () => {
@@ -419,6 +424,21 @@ class TeraProxyGUI {
 					this.window.webContents.send("update available");
 			});
 		}
+
+		powerMonitor.on('suspend', () => {
+			if (this.window) {
+				if (!proxy || !proxyRunning)
+					return;
+
+				console.log(mui.get("loader-gui/proxy-stopping"));
+				
+				StopProxy().then(() => {
+					this.window.webContents.send("proxy running", false);
+					console.log(mui.get("loader-gui/proxy-stopped"));
+				});
+
+			}
+		});
 	}
 
 	hide() {

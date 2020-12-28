@@ -2,7 +2,7 @@
 
 body {
 	margin: 0px;
-	background: #2f3136;
+	background: #1d2125;
 	font-family: Ubuntu, sans serif;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -18,11 +18,22 @@ body {
 }
 
 .ui>img {
-	height: 196px;
-	width: 196px;
+	height: 200px;
+	width: 200px;
 }
 
 .ui>div {
-	color: white;
-	font-size: 14px;
+	color: darkgray;
+	font-size: 13px;
 }
+
+.snowflake {
+	position: fixed;
+	background-color: #CCC;
+	user-select: none;
+	z-index: 1000;
+	pointer-events: none;
+	border-radius: 50%;
+	width: 10px;
+	height: 10px;
+  }

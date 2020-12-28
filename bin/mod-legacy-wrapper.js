@@ -47,7 +47,6 @@ function ClientModWrapper(info, implementation) {
                             DeprecationWarning(mod, prop);
                             switch (mod.publisher) {
                                 case 'gf': return 'eu';
-                                case 'eme': return 'na';
                                 case 'nx': return 'kr';
                                 case 'pm': return 'jp';
                                 case 'm5': return 'tw';

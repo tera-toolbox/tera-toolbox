@@ -2,11 +2,15 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" id="theme" href="">
-	<script>window.$ = window.jQuery = require('./js/jquery-3.5.0.slim.min.js');</script>
+	<script>window.$ = window.jQuery = require('./js/jquery-3.5.1.slim.min.js');</script>
 	<script src="js/main.js"></script>
+	<script src="js/snowflakes.js"></script>
 </head>
 
 <body>
+	<div id="snowflakeContainer">
+		<span class="snowflake"></span>
+	</div>
 	<!-- Modal Box -->
 	<div id="modalbox" class="modalbox">
 		<div class="modalbox-content">
@@ -57,7 +61,7 @@
 			<span class="mdi mdi-cog-outline"></span>
 			<span mui="gui/main/static/tabs/settings/title"></span>
 		</label>
-		<button id="startproxy-btn">
+		<button id="startproxy-btn" tabindex="-1">
 			<span id="startproxyicon" class="mdi mdi-play-pause"></span>
 			<span id="startproxy"></span>
 		</button>
@@ -67,6 +71,9 @@
 	<div class="tab tab--active" data-tab="1">
 		<div class="floating-elem" id="clear-logs">
 			<i class="mdi mdi-close"></i>
+		</div>
+		<div class="floating-elem-two" id="save-logs">
+			<i class="mdi mdi-content-save-outline"></i>
 		</div>
 		<div class="flex-column log-contents scroller" id="log-contents">
 		</div>
@@ -113,6 +120,9 @@
 	<!-- Settings -->
 	<div class="tab" data-tab="4">
 		<div class="flex-column">
+			<div class="setting-transparent noselect">
+				<div mui="gui/main/static/tabs/settings/toolbox"></div>
+			</div>
 			<div class="setting noselect">
 				<div mui="gui/main/static/tabs/settings/content/uilanguage"></div>
 				<div>
@@ -144,6 +154,12 @@
 				</div>
 			</div>
 			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/cleanstart"></div>
+				<div>
+					<input id="cleanstart" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
 				<div mui="gui/main/static/tabs/settings/content/noupdate"></div>
 				<div>
 					<input id="noupdate" type="checkbox">
@@ -156,9 +172,24 @@
 				</div>
 			</div>
 			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/minimizetotray"></div>
+				<div>
+					<input id="minimizetotray" type="checkbox">
+				</div>
+			</div>
+			<div class="setting-transparent noselect">
+				<div mui="gui/main/static/tabs/settings/groupclient"></div>
+			</div>
+			<div class="setting noselect">
 				<div mui="gui/main/static/tabs/settings/content/noslstags"></div>
 				<div>
 					<input id="noslstags" type="checkbox">
+				</div>
+			</div>
+			<div class="setting noselect">
+				<div mui="gui/main/static/tabs/settings/content/removecounters"></div>
+				<div>
+					<input id="removecounters" type="checkbox">
 				</div>
 			</div>
 			<div class="setting noselect">
@@ -167,12 +198,7 @@
 					<input id="noserverautojoin" type="checkbox">
 				</div>
 			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/minimizetotray"></div>
-				<div>
-					<input id="minimizetotray" type="checkbox">
-				</div>
-			</div>
+
 		</div>
 	</div>
 </body>
