@@ -161,6 +161,8 @@ function ToolboxMigration() {
     tryUninstallMod('tera-game-state-helper');
     tryUninstallMod('tcc-stub');
     tryUninstallMod('tcc-chat-link');
+    tryUninstallMod('caalistatetracker');
+    tryUninstallMod('caalilogger');
 }
 
 module.exports = { ToolboxMigration };
