@@ -3,10 +3,11 @@ const { Connection, RealClient } = require('tera-network-proxy');
 
 function onConnectionError(err) {
     switch (err.code) {
+        case 'ECONNREFUSED':
         case 'ETIMEDOUT':
-            console.error(mui.get('connection-manager/error-ETIMEDOUT-1', { address: err.address, port: err.port }));
-            console.error(mui.get('connection-manager/error-ETIMEDOUT-2'));
-            console.error(mui.get('connection-manager/error-ETIMEDOUT-3'));
+            console.error(mui.get('connection-manager/error-ECONNREFUSED-ETIMEDOUT-1', { address: err.address, port: err.port, code: err.code }));
+            console.error(mui.get('connection-manager/error-ECONNREFUSED-ETIMEDOUT-2'));
+            console.error(mui.get('connection-manager/error-ECONNREFUSED-ETIMEDOUT-3'));
             break;
         case 'ECONNABORTED':
         case 'ECONNRESET':

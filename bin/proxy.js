@@ -10,7 +10,7 @@ function PublisherFromLanguage(language) {
         case 'RUS':
             return 'GF';
         case 'KOR':
-            return 'NX';
+            return 'BH';
         case 'JPN':
             return 'PM';
         case 'TW':
@@ -210,7 +210,7 @@ class TeraProxy {
                                 id: server.id,
                                 category: server.category,
                                 name: server.name,
-                                ip: server.ip,
+                                address: server.address || server.ip,
                                 port: server.port
                             };
                         });
@@ -238,9 +238,11 @@ class TeraProxy {
                                 }
                             };
 
-                            const redirected_server = this.redirect(server.name, server.ip, server.port, redirected_server_metadata, client);
+                            const redirected_server = this.redirect(server.name, server.address || server.ip, server.port, redirected_server_metadata, client);
                             patched_server.ip = redirected_server.ip;
                             patched_server.port = redirected_server.port;
+                            if (server.address)
+                                delete patched_server.address;
                             return patched_server;
                         });
                         
@@ -249,11 +251,11 @@ class TeraProxy {
 
                         data.servers = !this.config.noslstags ? [...proxy_servers, ...data.servers] : proxy_servers;
 
-                        if (this.config.removecounters)
-                            for(let server in Object.keys(data.servers)) {
+                        if (this.config.removecounters) {
+                            for (let server in Object.keys(data.servers)) {
                                 data.servers[server].title = data.servers[server].title.replace(/\s+\(\d+\)/g, "");
                             }
-
+                        }
                     }
 
                     client.send("sls", data);
