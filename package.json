@@ -6,6 +6,9 @@
     "type": "git",
     "url": "git+https://github.com/tera-toolbox/tera-toolbox.git"
   },
+  "scripts": {
+    "manifest": "node ./.manifest.js"
+  },
   "author": "Caali",
   "contributors": [
     "Pinkie Pie",
