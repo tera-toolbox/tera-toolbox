@@ -1,0 +1,24 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Set up Node.Js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 15
+    - name: Generate manifest
+      run: npm run manifest
+    - name: Commit changes
+      run: |
+          [[ `git status --porcelain` ]] || exit
+          git config --global core.autocrlf false
+          git config --global user.name 'SaltyMonkey'
+          git config --global user.email 'SaltyMonkey@users.noreply.github.com'
+          git commit -am "[Auto] Created manifest"
+          git push
