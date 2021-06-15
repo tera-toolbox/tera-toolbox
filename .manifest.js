@@ -26,14 +26,17 @@ Object.keys(manifest.files).forEach(entry => {
 //recursive file gather
 function findInDirRelative(dir, fileList = []) {
 	const files = fs.readdirSync(dir);
-	files.forEach((file) => {
+	if(!dir.includes("/mods")) {
+		files.forEach((file) => {
 		const filePath = path.join(dir, file);
 		const fileStat = fs.lstatSync(filePath);
 		if (!IGNORED_FILES.includes(file) && !IGNORED_START_SYMBOL.includes(file[0])) {
 			if (fileStat.isDirectory()) findInDirRelative(filePath, fileList);
 			else fileList.push(path.relative(__dirname, filePath));
 		}
-	});
+		});
+	}
+	 
 	return fileList;
 }
 
