@@ -1,1 +1,1 @@
-Custom opcode mapping (`*.map`) files go here.
+Custom opcode mapping (`<protocolversion>.map`) files go here.
