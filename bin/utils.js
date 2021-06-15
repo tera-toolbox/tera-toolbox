@@ -1,3 +1,8 @@
+const os = require('os');
+const { exec } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
 function checkRuntimeCompatibility() {
     if (process.versions.electron === undefined) {
         // We're on Node.JS
@@ -28,18 +33,15 @@ async function initGlobalSettings(DevMode = false) {
 }
 
 function setHighestProcessPriority() {
-    const os = require('os');
     os.setPriority(os.constants.priority.PRIORITY_ABOVE_NORMAL);
 }
 
 function setNormalProcessPriority() {
-    const os = require('os');
     os.setPriority(os.constants.priority.PRIORITY_NORMAL);
 }
 
 // See https://github.com/sindresorhus/is-admin
 function isAdmin() {
-    const { exec } = require('child_process');
     return new Promise((resolve, reject) => {
         exec('fsutil dirty query %systemdrive%', (err, so, se) => {
             if (!err) {
@@ -60,8 +62,6 @@ function isAdmin() {
  * @see https://stackoverflow.com/a/42505874/3027390
  */
 function rimraf(dir_path) {
-    const fs = require('fs');
-    const path = require('path'); 
     try {
         fs.readdirSync(dir_path).forEach(entry => {
             const entry_path = path.join(dir_path, entry);
