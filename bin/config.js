@@ -2,6 +2,16 @@ const path = require('path');
 const fs = require('fs');
 const ConfigFilePath = path.join(__dirname, '..', 'config.json');
 
+const bigIntSerializator = (key, value) => {
+    typeof value === "bigint" ? `BIGINT:${value}` : value;
+};
+
+const bigIntDeserializator = (key, value) => {
+    if (typeof value === "string" && value.startsWith("BIGINT:")) {
+        return BigInt(value.substr(7));
+    }
+};
+
 function loadConfig() {
     let result = null;
     try {
@@ -19,11 +29,11 @@ function loadConfig() {
         };
     }
 
-    return JSON.parse(result);
+    return JSON.parse(result, bigIntDeserializator);
 }
 
 function saveConfig(newConfig) {
-    fs.writeFileSync(ConfigFilePath, JSON.stringify(newConfig, null, 4));
+    fs.writeFileSync(ConfigFilePath, JSON.stringify(newConfig, bigIntSerializator, 4));
 }
 
 module.exports = { loadConfig, saveConfig };
