@@ -103,7 +103,7 @@ try {
         noselfupdate = !!config.noselfupdate;
     }
 } catch (_) {
-    console.warn('warn:[update] WARNING: An error occurred while trying to read the config file! Falling back to default values.');
+    console.warn('[update] WARNING: An error occurred while trying to read the config file! Falling back to default values.');
 }
 
 // Boot
