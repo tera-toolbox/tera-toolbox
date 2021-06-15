@@ -167,6 +167,7 @@ class ClientModInterface extends ModInterfaceBase {
     get language() { return this.clientInterface.info.language; }
     get majorPatchVersion() { return this.clientInterface.info.majorPatchVersion; }
     get minorPatchVersion() { return this.clientInterface.info.minorPatchVersion; }
+    get clientFolder() { return mod.clientInterface.info.path; }
 
     // Global & network mod instances
     get globalMod() { return this.parent.getGlobalInstance().instance; }
@@ -265,6 +266,8 @@ class NetworkModInterface extends ModInterfaceBase {
     get connection() { return this.dispatch.connection; }
     get serverId() { return this.dispatch.connection.metadata.serverId; }
     get serverList() { return this.dispatch.connection.metadata.serverList; }
+    get serverIp() { return  mod.dispatch.connection.serverConnection.remoteAddress }
+    get clientFolder() { return mod.clientInterface.info.path; }
 
     // Core mod instances
     get command() {
