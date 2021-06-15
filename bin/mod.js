@@ -3,6 +3,16 @@ const path = require('path');
 const fs = require('fs');
 const ModLegacyWrapper = require('./mod-legacy-wrapper');
 
+const bigIntSerializator = (key, value) => {
+    typeof value === "bigint" ? `BIGINT:${value}` : value;
+};
+
+const bigIntDeserializator = (key, value) => {
+    if (typeof value === "string" && value.startsWith("BIGINT:")) {
+        return BigInt(value.substr(7));
+    }
+};
+
 class ModInterfaceBase {
     constructor(parent) {
         this.parent = parent;
@@ -676,7 +686,7 @@ class Mod {
         }
 
         try {
-            data = JSON.parse(data);
+            data = JSON.parse(data, bigIntDeserializator);
         } catch (e) {
             if (e.toString().includes('at position 0')) {
                 console.error(mui.get('mod/settings-load-error-corrupted-1'));
@@ -712,7 +722,7 @@ class Mod {
 
         let data = null;
         try {
-            data = JSON.stringify({ 'version': this.settingsVersion, 'data': this.settings }, null, 4);
+            data = JSON.stringify({ 'version': this.settingsVersion, 'data': this.settings }, bigIntSerializator, 4);
 
             try {
                 fs.writeFileSync(this.settingsFile, data);
