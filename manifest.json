@@ -141,12 +141,6 @@
 		"node_modules/tera-vec3/index.js": "2cf01937c9ada564e6c69e60ee38ddb995441ae485e4d7cf91cde931b1bda317",
 		"node_modules/tera-vec3/package.json": "daefc22e604a6941b4cb3cf27b0006828cf09f6d18306dc18f72782b67753bcd",
 		"node_modules/tera-vec3/README.md": "447bcb10c3d3055fbf76efeb2b31fd4d86b4dc887747d53149ea5a3652c02a87",
-		"config.json": "cea0bde90982cf14d2c6289a8f4b3bdfd355540c3358d51ba5b7d92a033c9070",
-		"mods/bugfix/module.json": "b67e5e48c8031657a9c6de5d3cd6a3c98d26a5845bc5cc6286cf305b3ec9cadd",
-		"mods/command/module.json": "d7dfc32d37eb25e6f6ad55b6d7af0fefef33d077e84f561505ec3f448dd36096",
-		"mods/fps-manager/module.json": "5b10c4344fe251795c0267550c09e7fbde3c1b1fcb91c481bb31c878e4fd92ec",
-		"mods/instant-everything/module.json": "ec9e118ef92578fdc151ab899ecd5de100070393615a0d3a2719851b79b272ba",
-		"mods/skill-prediction/module.json": "80221d4d533ac9b98561bfda12392fa9f6226e45927ec30db641571ab5da2d69",
-		"mods/tera-game-state/module.json": "66d433d3926615e39473966fa5f24b4aa65137808807cf9eeb97baaab7f6c5c9"
+		"config.json": "cea0bde90982cf14d2c6289a8f4b3bdfd355540c3358d51ba5b7d92a033c9070"
 	}
 }

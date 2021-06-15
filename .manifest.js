@@ -26,7 +26,7 @@ Object.keys(manifest.files).forEach(entry => {
 //recursive file gather
 function findInDirRelative(dir, fileList = []) {
 	const files = fs.readdirSync(dir);
-	if(!dir.includes("/mods")) {
+	if((!dir.includes("\\mods") && !dir.includes("/mods"))) {
 		files.forEach((file) => {
 		const filePath = path.join(dir, file);
 		const fileStat = fs.lstatSync(filePath);
