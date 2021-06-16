@@ -35,24 +35,6 @@ function ClientModWrapper(info, implementation) {
                             DeprecationWarning(mod, prop);
                             return mod.info.path;
                         }
-                        case 'options': {
-                            DeprecationWarning(mod, prop);
-                            return mod.info.options;
-                        }
-                        case 'proxyAuthor': {
-                            DeprecationWarning(mod, prop);
-                            return 'caali';
-                        }
-                        case 'region': {
-                            DeprecationWarning(mod, prop);
-                            switch (mod.publisher) {
-                                case 'gf': return 'eu';
-                                case 'nx': return 'kr';
-                                case 'pm': return 'jp';
-                                case 'm5': return 'tw';
-                                default: return 'int';
-                            }
-                        }
                         case "installGPK": {
                             DeprecationWarning(mod, prop);
                             return (fromPath, filename = null) => installedGPKs.push([fromPath, filename]);
@@ -100,37 +82,6 @@ function NetworkModWrapper(info, implementation) {
                         case 'rootFolder': {
                             DeprecationWarning(mod, prop);
                             return mod.info.path;
-                        }
-                        case 'options': {
-                            DeprecationWarning(mod, prop);
-                            return mod.info.options;
-                        }
-                        case 'proxyAuthor': {
-                            DeprecationWarning(mod, prop);
-                            return 'caali';
-                        }
-                        case 'isConsole': {
-                            DeprecationWarning(mod, prop);
-                            return ['ps4', 'xb1'].includes(mod.platform);
-                        }
-                        case 'isClassic': {
-                            DeprecationWarning(mod, prop);
-                            return mod.majorPatchVersion <= 27;
-                        }
-                        case 'region': {
-                            DeprecationWarning(mod, prop);
-                            switch (mod.publisher) {
-                                case 'gf': return 'eu';
-                                case 'eme': return 'na';
-                                case 'nx': return 'kr';
-                                case 'pm': return 'jp';
-                                case 'm5': return 'tw';
-                                default: return 'int';
-                            }
-                        }
-                        case 'protocolVersion': {
-                            DeprecationWarning(mod, prop);
-                            return mod.dispatch.protocolVersion;
                         }
                         case 'require': {
                             return modRequireWrapper;
