@@ -1,12 +1,12 @@
 const EventEmitter = require('events');
 const { IPCChannel } = require('./global.js');
+const events = require("./enums.js");
 
 class Renderer extends EventEmitter {
     constructor() {
         super();
 
         this.ipc = require('electron').ipcRenderer;
-        this.remote = require('electron').remote;
 
         this._handleEvent = this._handleEvent.bind(this);
         this.ipc.on(IPCChannel, this._handleEvent);
@@ -15,7 +15,6 @@ class Renderer extends EventEmitter {
     destructor() {
         this.ipc.removeListener(IPCChannel, this._handleEvent);
         this.ipc = null;
-        this.remote = null;
     }
 
     _handleEvent(event, name, ...args) {
@@ -27,30 +26,15 @@ class Renderer extends EventEmitter {
     }
 
     minimize() {
-        return this.remote.getCurrentWindow().minimize();
+        return this.send(events.MINIMIZE_EVENT);
     }
 
     maximize() {
-        return this.remote.getCurrentWindow().maximize();
-    }
-
-    unmaximize() {
-        return this.remote.getCurrentWindow().unmaximize();
-    }
-
-    isMaximized() {
-        return this.remote.getCurrentWindow().isMaximized();
-    }
-
-    toggleMaximized() {
-        if (this.isMaximized())
-            return this.unmaximize();
-        else
-            return this.maximize();
+        return this.send(events.MAXIMIZE_EVENT);
     }
 
     close() {
-        return this.remote.getCurrentWindow().close();
+        return this.send(events.CLOSE_EVENT);
     }
 }
 
