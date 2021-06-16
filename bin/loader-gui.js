@@ -292,6 +292,22 @@ ipcMain.on("open in notepad", (event, str) => {
 	exec(`notepad "${str}"`)
 });
 
+ipcMain.on("hide window", (event) => {
+	if(gui) gui.hide();
+});
+
+ipcMain.on("minimize window", (event) => {
+	if(gui) gui.minimize();
+});
+
+ipcMain.on("close toolbox", (event) => {
+	if(gui) gui.close();
+});
+
+ipcMain.on("open discord", (event) => {
+	shell.openExternal(global.TeraProxy.supportUrl)
+});
+
 // GUI
 class TeraProxyGUI {
 	constructor() {
@@ -444,6 +460,11 @@ class TeraProxyGUI {
 	hide() {
 		if (this.window !== null)
 			this.window.hide();
+	}
+
+	minimize() {
+		if (this.window !== null)
+			this.window.minimize();
 	}
 
 	close() {

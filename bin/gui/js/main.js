@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable default-case */
-const { remote, ipcRenderer, shell} = require("electron");
+const { ipcRenderer, shell} = require("electron");
 const { TeraToolboxMUI, LanguageNames } = require("tera-toolbox-mui");
 const Themes = ["black", "grey", "white", "pink", "classic-black", "classic-white", "classic-pink"];
-const fs = require("fs");
 
 let mui = null;
 
@@ -49,13 +48,13 @@ jQuery(($) => {
 	// --------------------------------------------------------------------
 	$("#minimize-btn").click(() => {
 		if (Settings.gui.minimizetotray)
-			remote.getCurrentWindow().hide();
+			ipcRenderer.send("hide window");
 		else
-			remote.getCurrentWindow().minimize();
+			ipcRenderer.send("minimize window");
 	});
 
 	$("#close-btn").click(() => {
-		remote.getCurrentWindow().close();
+		ipcRenderer.send("close toolbox");
 	});
 
 	$("#info-btn").click(() => {
@@ -63,7 +62,7 @@ jQuery(($) => {
 	});
 
 	$("#discord-btn").click(() => {
-		shell.openExternal(remote.getGlobal("TeraProxy").SupportUrl);
+		ipcRenderer.send("open discord");
 	});
 
 	$("#mods-btn").click(() => {
@@ -299,31 +298,6 @@ jQuery(($) => {
 
 	$("#clear-logs").click(() => {
 		$("#log-contents").empty();
-	});
-
-	$("#save-logs").click(() => {
-		remote.dialog.showSaveDialog({ 
-			"title": "Select the File Path to save", 
-			// defaultPath: path.join(__dirname, '../assets/'), 
-			"buttonLabel": "Save File", 
-			// Restricting the user to only Text Files. 
-			"filters": [ 
-				{ 
-					"name": "Text Files", 
-					"extensions": ["log"] 
-				}, ], 
-			"properties": [] 
-		}).then(file => { 
-			if (!file.canceled) { 
-				// Creating and Writing to the sample.txt file 
-				fs.writeFile(file.filePath.toString(),  
-					$("#log-contents").text(), function (err) { 
-						if (err) throw err; 
-					}); 
-			} 
-		}).catch(err => { 
-			console.log(err); 
-		}); 
 	});
 
 	ipcRenderer.on("log", (_, data, type) => {
