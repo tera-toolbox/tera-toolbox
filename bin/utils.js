@@ -6,11 +6,11 @@ const path = require('path');
 function checkRuntimeCompatibility() {
     if (process.versions.electron === undefined) {
         // We're on Node.JS
-        if (process.versions.modules < 85)
+        if (process.versions.modules < 93)
             throw new Error('NodeTooOld');
     } else {
         // We're on Electron
-        if (process.versions.modules < 83)
+        if (process.versions.modules < 89)
             throw new Error('NodeTooOld');
     }
 
