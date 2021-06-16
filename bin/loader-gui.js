@@ -292,6 +292,7 @@ ipcMain.on("open in notepad", (event, str) => {
 	exec(`notepad "${str}"`)
 });
 
+// TODO: rewrite differently 
 ipcMain.on("hide window", (event) => {
 	if(gui) gui.hide();
 });
