@@ -1,4 +1,4 @@
-const RequiredVersion = '11.4.8';
+const RequiredVersion = '13.1.2';
 
 const fs = require('fs');
 const path = require('path');
