@@ -72,8 +72,7 @@
 		"node_modules/tera-client-interface/tera-client-interface-64.dll": "a40a753107a88297a07ebad1307e176dc59f7eb591e3a1c881b6044cfe56f421",
 		"node_modules/tera-client-interface/third party licenses": "198998ed77107633cedcc0a272939ef7979bbc1b701b9eeff804036a8cbd5676",
 		"node_modules/tera-client-interface/scanner/index.js": "bfa4f7902e11a9adb852f940c24295abfe42295dcbdd6d6ddf5b149b86e985c0",
-		"node_modules/tera-client-interface/scanner/scanner_85.node": "c29c8d75e50d55c92c674853ab0ff80ac31eef82d70b5db2d8a72a6e5d3977fa",
-		"node_modules/tera-client-interface/scanner/scanner_88.node": "d6661ee4e37b7defbba3bfe9172612d0da001ff9c226ce1130992dcb22d5a5a9",
+		"node_modules/tera-client-interface/scanner/scanner_85.node": "ce78d34f8c4dfc9881df43130b5e9349dae5e0fbe9447a705030db56bdd9e0a3",
 		"node_modules/tera-data-parser/package.json": "ebd3b30759d1e37ca05962119dc162714aeee8b563b0556a72f31eabb545281e",
 		"node_modules/tera-data-parser/README.md": "7de0f5933147e77e511159bdbac4b9f83d0edb54f1d3bafad01dd655159302bf",
 		"node_modules/tera-data-parser/lib/index.js": "94d6b6190f96e02ba3e26365846468bc95485f2d7140829e28948b627fe195a0",
@@ -110,8 +109,7 @@
 		"node_modules/tera-network-crypto/LICENSE": "9c1d8fd3abccd9353fd03eb06826f0184139e86d985e83319f0ca28eedeaad5b",
 		"node_modules/tera-network-crypto/package.json": "20be9292cd958837c8efc7de2e9d7a0efc9d29540fc0f86d09d218be75956d7d",
 		"node_modules/tera-network-crypto/README.md": "c7833ca7c9e4d5247fef229663820472ba783081f74abce98a9e95ed84553412",
-		"node_modules/tera-network-crypto/bin/tera_network_crypto_85.node": "15d347f44f41129dffe17929f409addf34a7a195bcbda87c1187394928598a3f",
-		"node_modules/tera-network-crypto/bin/tera_network_crypto_88.node": "4c1a88ec3cdceb21cf90f9b0710cce11d77dff7ba58e7a6e341d1f8774b2b697",
+		"node_modules/tera-network-crypto/bin/tera_network_crypto_85.node": "dda550cc3e1b0be06b7a1069678ab5af88c8d06a14a23bf0abd24939d280ad36",
 		"node_modules/tera-network-proxy/LICENSE": "53927bd0b739d38c87a0a82236fd9b070c2dfff11c0c119be50372005d5047ad",
 		"node_modules/tera-network-proxy/package.json": "c077582d15a79f1d2fefcd1baa592bf563c8286c0b23ac0b13c02b81936b4759",
 		"node_modules/tera-network-proxy/README.md": "39f99b3114ab9850b715a090758d73032e03a259993c195445a0943641436a47",
@@ -140,6 +138,8 @@
 		"node_modules/tera-vec3/index.js": "2cf01937c9ada564e6c69e60ee38ddb995441ae485e4d7cf91cde931b1bda317",
 		"node_modules/tera-vec3/package.json": "daefc22e604a6941b4cb3cf27b0006828cf09f6d18306dc18f72782b67753bcd",
 		"node_modules/tera-vec3/README.md": "447bcb10c3d3055fbf76efeb2b31fd4d86b4dc887747d53149ea5a3652c02a87",
-		"config.json": "cea0bde90982cf14d2c6289a8f4b3bdfd355540c3358d51ba5b7d92a033c9070"
+		"config.json": "cea0bde90982cf14d2c6289a8f4b3bdfd355540c3358d51ba5b7d92a033c9070",
+		"node_modules/tera-client-interface/scanner/scanner_93.node": "f5b4950a3aea0b924a038d92e891b1c0fdf448f53469ff44023ce8a09623c7ec",
+		"node_modules/tera-network-crypto/bin/tera_network_crypto_93.node": "807a6838048b71b9cba9cd13b177cc1704d99c2c15f7ae9d4faae55691422feb"
 	}
 }
