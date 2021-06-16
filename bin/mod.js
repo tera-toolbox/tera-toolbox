@@ -22,6 +22,7 @@ class ModInterfaceBase {
 
         // Timers
         this._timeouts = new Set();
+        this._immediates = new Set();
         this._intervals = new Set();
     }
 
@@ -35,6 +36,7 @@ class ModInterfaceBase {
 
         this.clearAllTimeouts();
         this.clearAllIntervals();
+        this.clearAllImmediates();
     }
 
     // Data accessors
@@ -83,6 +85,24 @@ class ModInterfaceBase {
     clearAllIntervals() {
         this._intervals.forEach(clearInterval);
         this._intervals.clear();
+    }
+
+    setImmediate(callback, ...args) {
+        const id = setImmediate(() => { callback(...args); });
+
+        this._immediates.add(id);
+        return id;
+    }
+
+    clearImmediate(id) {
+        if (!this._immediates.delete(id))
+            return false;
+        return clearImmediate(id);
+    }
+
+    clearAllImmediates() {
+        this._immediates.forEach(clearImmediate);
+        this._immediates.clear();
     }
 
     get activeIntervals() { return this._intervals; }
