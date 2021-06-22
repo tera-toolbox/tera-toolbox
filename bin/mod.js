@@ -13,6 +13,16 @@ const bigIntDeserializator = (key, value) => {
     }
 };
 
+const MAX_HANDLED_DURATION = 2147483647n;
+
+const setDuration = (delay) => {
+    let wrappedValue = typeof delay === "bigint" ? delay : BigInt(Math.round(delay));
+
+    if (wrappedValue > MAX_HANDLED_DURATION) throw new RangeError("Delay value is out of range");
+    
+    return Number(value);
+}
+
 class ModInterfaceBase {
     constructor(parent) {
         this.parent = parent;
@@ -50,7 +60,7 @@ class ModInterfaceBase {
         const id = setTimeout(() => {
             callback(...args);
             this._timeouts.delete(id);
-        }, delay);
+        }, setDuration(delay));
 
         this._timeouts.add(id);
         return id;
@@ -71,7 +81,7 @@ class ModInterfaceBase {
 
 
     setInterval(callback, delay, ...args) {
-        const id = setInterval(callback, delay, ...args);
+        const id = setInterval(callback, setDuration(delay), ...args);
         this._intervals.add(id);
         return id;
     }
