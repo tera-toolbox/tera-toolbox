@@ -19,7 +19,7 @@ function loadConfig() {
         result = fs.readFileSync(ConfigFilePath, 'utf8');
     } catch (_) {
         return {
-            branch: 'master',
+            branch: 'beta',
             uilanguage: 'en',
             updatelog: false,
             devmode: false,
