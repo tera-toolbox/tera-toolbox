@@ -26,13 +26,13 @@ function showSplashScreen() {
         const { BrowserWindow } = require('electron');
         SplashScreen = new BrowserWindow({
             title: 'TERA Toolbox',
-            width: 880,
-            height: 500,
-            minWidth: 880,
-            minHeight: 500,
+            width: 550,
+            height: 400,
+            minWidth: 550,
+            minHeight: 400,
             icon: guiIcon,
             frame: false,
-            backgroundColor: '#292F33',
+            backgroundColor: '#1e1e1e',
             resizable: false,
             show: false,
             webPreferences: {

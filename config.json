@@ -8,7 +8,7 @@
     "noslstags": false,
     "removecounters": false,
     "gui": {
-        "theme": "black",
+        "theme": "dark",
         "autostart": false,
         "logtimes": true,
         "cleanstart": false

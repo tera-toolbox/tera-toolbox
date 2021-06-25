@@ -353,7 +353,7 @@ class TeraProxyGUI {
 				SaveConfiguration(config);
 			}
 
-			global.TeraProxy.GUITheme = config.gui.theme || "black";
+			global.TeraProxy.GUITheme = config.gui.theme || "dark";
 		}
 
 		// Initialize main window

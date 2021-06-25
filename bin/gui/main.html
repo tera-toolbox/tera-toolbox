@@ -1,202 +1,25 @@
-﻿<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" id="theme" href="">
-	<script>window.$ = window.jQuery = require('./js/jquery-3.5.1.slim.min.js');</script>
-	<script src="js/main.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<script>const { ipcRenderer } = require("electron");
+		window.renderer = ipcRenderer;</script>
+	<script>const { TeraToolboxMUI, LanguageNames } = require("tera-toolbox-mui");
+		window.languageNames = LanguageNames;
+		window.TeraToolboxMUI = TeraToolboxMUI;</script>
+	<title>Tera Toolbox UI</title>
+	<link href="./css/app.css" rel="preload" as="style">
+	<link href="./js/app.js" rel="preload" as="script">
+	<link href="./css/app.css" rel="stylesheet">
 </head>
 
-<body>
-	<!--<div id="snowflakeContainer">
-		<span class="snowflake"></span>
-	</div>-->
-	<!-- Modal Box -->
-	<div id="modalbox" class="modalbox">
-		<div class="modalbox-content">
-			<div id="modalbox-text" class="modalbox-text"></div>
-		</div>
-	</div>
-	<!-- Header -->
-	<div class="header-base noselect">
-		<div class="header-icon" id="icon"></div>
-		<div class="header-text" id="title" mui="gui/main/title"></div>
-		<div class="admin-badge admin-badge-disabled" id="admin-badge">
-			<i class="mdi mdi-security"></i>
-		</div>
-		<div class="header-status" id="title-status"></div>
-		<div class="header-button" id="discord-btn">
-			<i class="mdi mdi-forum-outline"></i>
-		</div>
-		<div class="header-button" id="info-btn">
-			<i class="mdi mdi-information-variant"></i>
-		</div>
-		<div class="header-button" id="minimize-btn">
-			<i class="mdi mdi-window-minimize"></i>
-		</div>
-		<div class="header-button" id="close-btn">
-			<i class="mdi mdi-close"></i>
-		</div>
-	</div>
-	<!-- Controls -->
-	<div class="tabs-base noselect">
-		<div></div>
-		<input type="radio" name="tabs" id="tabone" checked data-tab="1">
-		<label for="tabone">
-			<span class="mdi mdi-console"></span>
-			<span mui="gui/main/static/tabs/log/title"></span>
-		</label>
-		<input type="radio" name="tabs" id="tabtwo" data-tab="2">
-		<label for="tabtwo">
-			<span class="mdi mdi-archive-outline"></span>
-			<span mui="gui/main/static/tabs/mods/title"></span>
-		</label>
-		<input type="radio" name="tabs" id="tabthree" data-tab="3">
-		<label for="tabthree">
-			<span class="mdi mdi-archive-arrow-down-outline"></span>
-			<span mui="gui/main/static/tabs/newmods/title"></span>
-		</label>
-		<input type="radio" name="tabs" id="tabfour" data-tab="4">
-		<label for="tabfour">
-			<span class="mdi mdi-cog-outline"></span>
-			<span mui="gui/main/static/tabs/settings/title"></span>
-		</label>
-		<button id="startproxy-btn" tabindex="-1">
-			<span id="startproxyicon" class="mdi mdi-play-pause"></span>
-			<span id="startproxy"></span>
-		</button>
-	</div>
-
-	<!-- Logs -->
-	<div class="tab tab--active" data-tab="1">
-		<div class="floating-elem" id="clear-logs">
-			<i class="mdi mdi-close"></i>
-		</div>
-		<div class="flex-column log-contents scroller" id="log-contents">
-		</div>
-	</div>
-
-	<!-- Installed Modules -->
-	<div class="tab" data-tab="2">
-		<div class="flex-column">
-			<!-- Secondary functions -->
-			<div class="control-secondary">
-				<label class="secondary-button" id="mods-btn">
-					<span class="mdi mdi-folder-table-outline"></span>
-					<span mui="gui/main/static/tabs/modsfolder/title"></span>
-				</label>
-				<div class="spacer"></div>
-			</div>
-			<div class="flex-column scroller-small" id="modulesList"></div>
-		</div>
-
-	</div>
-
-	<!-- Modules for install -->
-	<div class="tab" data-tab="3">
-		<div class="flex-column">
-			<!-- Search bar -->
-			<div class="control-secondary">
-				<label><span mui="gui/main/static/tabs/newmods/content/filter"></span><input type="text"
-						id="installableModulesFilterString" /></label>
-				<label><input type="checkbox" id="installableModulesFilterNetwork" checked /><span
-						mui="gui/main/static/tabs/newmods/content/filter/network"></span></label>
-				<label><input type="checkbox" id="installableModulesFilterClient" checked /><span
-						mui="gui/main/static/tabs/newmods/content/filter/client"></span></label>
-			</div>
-			<!-- Loading -->
-			<div id="loading" class="scroller-small">
-				<img src="assets/tb.gif" />
-				<div mui="gui/main/static/tabs/newmods/loading"></div>
-			</div>
-			<!-- Modules for install content -->
-			<div class="flex-column scroller-small" id="installableModulesList"></div>
-		</div>
-	</div>
-
-	<!-- Settings -->
-	<div class="tab" data-tab="4">
-		<div class="flex-column">
-			<div class="setting-transparent noselect">
-				<div mui="gui/main/static/tabs/settings/toolbox"></div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/uilanguage"></div>
-				<div>
-					<select id="uilanguage"></select>
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/theme"></div>
-				<div>
-					<select id="uithemes"></select>
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/autostart"></div>
-				<div>
-					<input id="autostart" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/updatelog"></div>
-				<div>
-					<input id="updatelog" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/logtimes"></div>
-				<div>
-					<input id="logtimes" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/cleanstart"></div>
-				<div>
-					<input id="cleanstart" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/noupdate"></div>
-				<div>
-					<input id="noupdate" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/noselfupdate"></div>
-				<div>
-					<input id="noselfupdate" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/minimizetotray"></div>
-				<div>
-					<input id="minimizetotray" type="checkbox">
-				</div>
-			</div>
-			<div class="setting-transparent noselect">
-				<div mui="gui/main/static/tabs/settings/groupclient"></div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/noslstags"></div>
-				<div>
-					<input id="noslstags" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/removecounters"></div>
-				<div>
-					<input id="removecounters" type="checkbox">
-				</div>
-			</div>
-			<div class="setting noselect">
-				<div mui="gui/main/static/tabs/settings/content/noserverautojoin"></div>
-				<div>
-					<input id="noserverautojoin" type="checkbox">
-				</div>
-			</div>
-
-		</div>
-	</div>
+<body><noscript><strong>We're sorry but Tera Toolbox UI doesn't work properly without JavaScript enabled. Please enable
+			it to continue.</strong></noscript>
+	<div id="app"></div>
+	<script src="./js/app.js"></script>
 </body>
 
 </html>

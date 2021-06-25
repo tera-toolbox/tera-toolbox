@@ -1,11 +1,15 @@
 const { ipcRenderer } = require("electron");
 
-jQuery(($) => {
+document.addEventListener("DOMContentLoaded", () => {
 	// --------------------------------------------------------------------
 	// ----------------------------- MAIN ---------------------------------
 	// --------------------------------------------------------------------
 	// Disable mouse wheel clicks
-	$(document).on("auxclick", "a", (e) => {
+
+	const captionElem = document.getElementById("caption");
+	const infoElem = document.getElementById("info");
+
+	document.addEventListener("auxclick", (e) => {
 		if (e.which !== 2)
 			return true;
 
@@ -17,9 +21,9 @@ jQuery(($) => {
 
 	// Status display
 	ipcRenderer.on("caption", (_, caption) => {
-		$("#caption").text(caption);
+		captionElem.textContent = caption;
 	});
 	ipcRenderer.on("info", (_, info) => {
-		$("#info").text(info);
+		infoElem.textContent = info;
 	});
 });
