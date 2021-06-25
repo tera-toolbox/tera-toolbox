@@ -11,6 +11,7 @@ const bigIntDeserializator = (key, value) => {
     if (typeof value === "string" && value.startsWith("BIGINT:")) {
         return BigInt(value.substr(7));
     }
+    return value;
 };
 
 const MAX_HANDLED_DURATION = 2147483647n;
