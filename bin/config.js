@@ -10,6 +10,7 @@ const bigIntDeserializator = (key, value) => {
     if (typeof value === "string" && value.startsWith("BIGINT:")) {
         return BigInt(value.substr(7));
     }
+    return value;
 };
 
 function loadConfig() {
