@@ -253,7 +253,7 @@ class TeraProxy {
 
                         if (this.config.removecounters) {
                             for (let server in Object.keys(data.servers)) {
-                                data.servers[server].title = data.servers[server].title.replace(/\s+\(\d+\)/g, "");
+                                if (data.servers[server].title) data.servers[server].title = data.servers[server].title.replace(/\s+\(\d+\)/g, "");
                             }
                         }
                     }
