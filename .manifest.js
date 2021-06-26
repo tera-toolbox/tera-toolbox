@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
-const IGNORED_FILES = ["build_manifest.py", "manifest.json", "manifest-generator.js", "manifest-generator.bat", "manifest-generator.exe", "node.exe"];
+const IGNORED_FILES = ["config.json", "build_manifest.py", "manifest.json", "manifest-generator.js", "manifest-generator.bat", "manifest-generator.exe", "node.exe"];
 const IGNORED_START_SYMBOL = [".", "_"];
 
 //load predefined manifest
