@@ -138,6 +138,17 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, "regions.js"));
     tryUnlink(path.join(__dirname, "update-electron-helper.js"));
     tryUnlink(path.join(__dirname, "gui", "index.html"));
+    tryUnlink(path.join(__dirname, "gui", "fonts", "ubuntu-mono-v9-regular-full.woff2"));
+    tryUnlink(path.join(__dirname, "gui", "fonts", "ubuntu-v14-regular-full.woff2"));
+    tryUnlink(path.join(__dirname, "gui", "fonts", "materialdesignicons-webfont.woff2"));
+    tryUnlink(path.join(__dirname, "gui", "css", "microtip.css"));
+    tryUnlink(path.join(__dirname, "gui", "css", "materialdesignicons.min.css"));
+    tryUnlink(path.join(__dirname, "gui", "css", "main.css"));
+    tryUnlink(path.join(__dirname, "gui", "css", "ubuntu-mono-regular.css"));
+    tryUnlink(path.join(__dirname, "gui", "css", "ubuntu-regular.css"));
+    tryUnlink(path.join(__dirname, "gui", "js", "main.js"));
+    tryUnlink(path.join(__dirname, "gui", "js", "jquery-3.5.1.slim.min.js"));
+    tryUnlink(path.join(__dirname, "gui", "js", "snowflakes.js"));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-data-parser', 'lib', 'protocol', 'stream.js'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'injector.exe'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-client-interface', 'process-listener.js'));
@@ -156,6 +167,7 @@ function ToolboxMigration() {
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_75.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_76.node'));
     tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-network-crypto', 'bin', 'tera_network_crypto_79.node'));
+    tryUnlink(path.join(__dirname, '..', 'node_modules', 'tera-mod-ui', 'settings_ui', 'jquery-3.5.1.slim.min.js'));
 
     // Delete no longer used mods
     tryUninstallMod('tera-game-state-helper');
