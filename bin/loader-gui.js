@@ -309,6 +309,12 @@ ipcMain.on("open discord", (event) => {
 	shell.openExternal(global.TeraProxy.supportUrl)
 });
 
+ipcMain.on("open link", (event, lnk) => {
+	try { 
+		shell.openExternal(lnk)
+	} catch(ex) {}
+});
+
 // GUI
 class TeraProxyGUI {
 	constructor() {
