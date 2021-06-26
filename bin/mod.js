@@ -21,7 +21,7 @@ const setDuration = (delay) => {
 
     if (wrappedValue > MAX_HANDLED_DURATION) throw new RangeError("Delay value is out of range");
     
-    return Number(value);
+    return Number(wrappedValue);
 }
 
 class ModInterfaceBase {
