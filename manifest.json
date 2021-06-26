@@ -13,7 +13,7 @@
 		"bin/install-electron.js": "17b03f96f54dccb40eaba88b9ab21c14609eac91cb378ff0883b65b0078f105b",
 		"bin/loader-cli.js": "e3eafda1ee33e6eac464ce0ab5d6a8a7a418747c48751e89ba852d68469749d9",
 		"bin/loader-gui.js": "98d4dfc79e3a5cba8714db9a4789d9d46a2db723044dc445fae6e05b2718ae95",
-		"bin/migration.js": "3b7fc0186638b05718322bbfee5c88ce9ad545db2d4b4b12ed81e975b46410a1",
+		"bin/migration.js": "423feca4622ea82d2091e8ca17dcf70d72b895004219a1694d9e51e6d99e3164",
 		"bin/mod-legacy-wrapper.js": "9f11f3c2ec55cc2cdcab631d150b336c0b1c66c977c03a8758e70377449d1597",
 		"bin/mod-manager.js": "025c11a33186f6ff56f77b3bc700c7cdf4064c745b63aeae4d5dcbbb36efb95c",
 		"bin/mod.js": "6c3009cbc1f02cde8048bb18fcb3885d623229a2252ebe913d4ed653fcaf5fba",
@@ -124,7 +124,7 @@
 		"node_modules/tera-client-interface/scanner/scanner_89.node": "3c11c5bacd5cdb90f6d368a413b916ece27c6bde159fe72741adb5188388ddec",
 		"node_modules/tera-mod-ui/enums.js": "f972b8aa6dba5178f894d5cfb412e7d41601887214251ad9fcd2dcd135204693",
 		"node_modules/tera-network-crypto/bin/tera_network_crypto_89.node": "1fd8747e8bc3f5d5b966171cf8b2087e3c7009a6585ef76f82eb73e7cfd411ef",
-		"bin/gui/css/app.css": "2ab1df8f97706602805a355e859c1e45acfd832bb9f58bd20a5f77c8ef22e7ca",
+		"bin/gui/css/app.css": "20d19e5cfbeb686ff2d08598545eb604e4650aac4b7a061b658722d800a99ab9",
 		"bin/gui/fonts/roboto-all-400-normal.woff": "55110586d3719c3e8bdaa21f06e4cc1c0a7451abbae662344cbd4411536b585f",
 		"bin/gui/fonts/roboto-cyrillic-400-normal.woff2": "8dd3b91ca60e6a0486326c5c275590dd1d753240c2efa9f94730815813997fee",
 		"bin/gui/fonts/roboto-cyrillic-ext-400-normal.woff2": "78f525ec955ba00ab4b23d3f5dcaeca9504e47c408664ba012f12ac29e9c915f",
@@ -138,6 +138,6 @@
 		"bin/gui/fonts/roboto-mono-latin-400-normal.woff2": "e1fd013ac18aebac28e366bf82aace3b2fb6900fecc4793303ed93aeadd31910",
 		"bin/gui/fonts/roboto-mono-latin-ext-400-normal.woff2": "f80216c74a43f0137f371a0c6454adb2e5badedac9945f9fe62a1013f97ce65d",
 		"bin/gui/fonts/roboto-vietnamese-400-normal.woff2": "fb56f0e08adb026eb4e4b28c2fc33b35ce3ddf30a075f9906ec14caff095fa3c",
-		"bin/gui/js/app.js": "d5b0be4ae29f01834e38aa1992e619fce5c0fa3b3e2dd54fa0b3ffc22460f6a2"
+		"bin/gui/js/app.js": "b5ffc216922ec13190fd7c243238936ddf10714e19bfcd76198df5e0427c542d"
 	}
 }
