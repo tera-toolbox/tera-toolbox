@@ -423,18 +423,18 @@ class TeraProxyGUI {
 
 		const old_stdout = process.stdout.write;
 		process.stdout.write = function (msg, ...args) {
-			old_stdout(msg, ...args);
 			log(msg, "log");
+			old_stdout(msg, ...args);
 		};
 		const old_stderr = process.stderr.write;
 		process.stderr.write = function (msg, ...args) {
-			old_stderr(msg, ...args);
 			if(msg.startsWith("warn:"))
 				log(msg.replace("warn:", ""), "warn");
 			else 
-				log(msg, "error");
+				log(msg, "error");	
+			old_stderr(msg, ...args);
 		};
-
+		
 		// Start periodic update check
 		if (!config.noselfupdate) {
 			startUpdateCheck((config.branch || "master").toLowerCase(), () => {

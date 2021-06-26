@@ -3,7 +3,7 @@ const fs = require('fs');
 const ConfigFilePath = path.join(__dirname, '..', 'config.json');
 
 const bigIntSerializator = (key, value) => {
-    typeof value === "bigint" ? `BIGINT:${value}` : value;
+    return typeof value === "bigint" ? `BIGINT:${value}` : value;
 };
 
 const bigIntDeserializator = (key, value) => {

@@ -4,7 +4,7 @@ const fs = require('fs');
 const ModLegacyWrapper = require('./mod-legacy-wrapper');
 
 const bigIntSerializator = (key, value) => {
-    typeof value === "bigint" ? `BIGINT:${value}` : value;
+    return typeof value === "bigint" ? `BIGINT:${value}` : value;
 };
 
 const bigIntDeserializator = (key, value) => {
