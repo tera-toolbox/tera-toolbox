@@ -18,7 +18,7 @@
 		"bin/mod-manager.js": "025c11a33186f6ff56f77b3bc700c7cdf4064c745b63aeae4d5dcbbb36efb95c",
 		"bin/mod.js": "78aeb58b83d1279acd09b9c3c7d2da05adffc430563b03cc481b59022f4274c2",
 		"bin/proxy.js": "0a07a1544725f086a44b06168debc3c22c7595752f69124e4dbefa34337752ab",
-		"bin/update-electron.js": "873f85e33b39bfe5d8ab27cdd21939b433c153e5886bfb3534755e51b8020634",
+		"bin/update-electron.js": "0f7466067855d6b6b7313940d1fc120712c343e6ccae14e3aa1de088b197bfd5",
 		"bin/update-self.js": "3f288b18e8d8331bdbed4285f0f7f063b85da34a8108327bddba0212c17e65be",
 		"bin/update.js": "3533798c0134f0572fe5aab97ea2cafbeabc9d5888debc461aa8a9b63ced2014",
 		"bin/utils.js": "fb6c0fd5961cb6acf1c6673215dd0e68049f1e87798d2e213f3f69c8fe464d1e",
