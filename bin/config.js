@@ -13,24 +13,25 @@ const bigIntDeserializator = (key, value) => {
     return value;
 };
 
+const defaultSettings = {
+    branch: 'beta',
+    uilanguage: 'en',
+    updatelog: false,
+    devmode: false,
+    noselfupdate: false,
+    noupdate: false,
+    noslstags: false,
+    noserverautojoin: false
+};
+
 function loadConfig() {
     let result = null;
     try {
         result = fs.readFileSync(ConfigFilePath, 'utf8');
+        return [JSON.parse(result, bigIntDeserializator), 0];
     } catch (_) {
-        return {
-            branch: 'beta',
-            uilanguage: 'en',
-            updatelog: false,
-            devmode: false,
-            noselfupdate: false,
-            noupdate: false,
-            noslstags: false,
-            noserverautojoin: false
-        };
+        return [defaultSettings, 1];
     }
-
-    return JSON.parse(result, bigIntDeserializator);
 }
 
 function saveConfig(newConfig) {

@@ -94,17 +94,12 @@ process.on('uncaughtException', (e) => {
 let branch = 'master';
 let updatelog = false;
 let noselfupdate = false;
-try {
-    const config = require('./config').loadConfig();
-    if (config) {
-        if (config.branch)
-            branch = config.branch.toLowerCase();
-        updatelog = !!config.updatelog;
-        noselfupdate = !!config.noselfupdate;
-    }
-} catch (_) {
-    console.warn('[update] WARNING: An error occurred while trying to read the config file! Falling back to default values.');
-}
+
+const config = require('./config').loadConfig();
+if( config[1] > 0) console.warn('[update] WARNING: An error occurred while trying to read the config file! Falling back to default values.');
+if (config[0].branch) branch = config.branch.toLowerCase();
+updatelog = !!config[0].updatelog;
+noselfupdate = !!config[0].noselfupdate;
 
 // Boot
 main();

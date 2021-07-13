@@ -33,13 +33,8 @@ function NodeVersionCheck() {
 
 // Load and validate configuration
 function LoadConfiguration() {
-    try {
-        return require('./config').loadConfig();
-    } catch (e) {
-        console.error(mui.get('loader-cli/error-config-corrupt-1'));
-        console.error(mui.get('loader-cli/error-config-corrupt-2', { supportUrl: global.TeraProxy.SupportUrl }));
-        return null;
-    }
+    const res = require('./config').loadConfig();
+    return res[0];
 }
 
 // Migration

@@ -12,21 +12,10 @@ function InitializeMUI(language) {
 	InitializeDefaultInstance(language);
 }
 
-// Configuration
+// Load and validate configuration
 function LoadConfiguration() {
-	try {
-		return require("./config").loadConfig();
-	} catch (_) {
-		const { dialog } = require("electron");
-
-		dialog.showMessageBoxSync({
-			"type": "error",
-			"title": mui.get("loader-gui/error-config-file-corrupt/title"),
-			"message": mui.get("loader-gui/error-config-file-corrupt/message", { "supportUrl": global.TeraProxy.SupportUrl })
-		});
-
-		app.exit();
-	}
+    const res = require('./config').loadConfig();
+    return res[0];
 }
 
 function SaveConfiguration(newConfig) {
