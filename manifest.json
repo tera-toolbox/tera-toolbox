@@ -123,7 +123,7 @@
 		"node_modules/tera-client-interface/scanner/scanner_89.node": "3c11c5bacd5cdb90f6d368a413b916ece27c6bde159fe72741adb5188388ddec",
 		"node_modules/tera-mod-ui/enums.js": "f972b8aa6dba5178f894d5cfb412e7d41601887214251ad9fcd2dcd135204693",
 		"node_modules/tera-network-crypto/bin/tera_network_crypto_89.node": "1d75db6116a2344f5e1bfc73e6823cd77f866561482f6758e91c2f2fc6f68c3e",
-		"bin/gui/css/app.css": "f9250d5487a0a2676777d27b98a8210be8984c8be508107d5eefb4fab3472216",
+		"bin/gui/css/app.css": "09105c871ce6133a12c3fbc3b323bb8c79e93b1b56ea02cb2e6b9c23c16aac6c",
 		"bin/gui/fonts/roboto-all-400-normal.woff": "55110586d3719c3e8bdaa21f06e4cc1c0a7451abbae662344cbd4411536b585f",
 		"bin/gui/fonts/roboto-cyrillic-400-normal.woff2": "8dd3b91ca60e6a0486326c5c275590dd1d753240c2efa9f94730815813997fee",
 		"bin/gui/fonts/roboto-cyrillic-ext-400-normal.woff2": "78f525ec955ba00ab4b23d3f5dcaeca9504e47c408664ba012f12ac29e9c915f",
@@ -137,6 +137,6 @@
 		"bin/gui/fonts/roboto-mono-latin-400-normal.woff2": "e1fd013ac18aebac28e366bf82aace3b2fb6900fecc4793303ed93aeadd31910",
 		"bin/gui/fonts/roboto-mono-latin-ext-400-normal.woff2": "f80216c74a43f0137f371a0c6454adb2e5badedac9945f9fe62a1013f97ce65d",
 		"bin/gui/fonts/roboto-vietnamese-400-normal.woff2": "fb56f0e08adb026eb4e4b28c2fc33b35ce3ddf30a075f9906ec14caff095fa3c",
-		"bin/gui/js/app.js": "198ee75cc2d324530de5070ddc7c4d8227072f535635cde9fc4f98dec20232c4"
+		"bin/gui/js/app.js": "aeb2957f3e3ebf4387b9bfd5eb59c75bb31893377a7e1fc5934264dc8ec8f466"
 	}
 }
