@@ -12,10 +12,20 @@ function InitializeMUI(language) {
 	InitializeDefaultInstance(language);
 }
 
-// Load and validate configuration
+// Configuration
 function LoadConfiguration() {
-    const res = require('./config').loadConfig();
-    return res[0];
+	const resultArray = require('./config').loadConfig();
+    if(resultArray[1] > 0) {
+		const { dialog } = require("electron");
+
+		dialog.showMessageBoxSync({
+			"type": "warning",
+			"title": mui.get("loader-gui/error-config-file-corrupt/title"),
+			"message": mui.get('loader-cli/warning-config-restore')
+		});
+	}
+    
+	return resultArray[0];
 }
 
 function SaveConfiguration(newConfig) {

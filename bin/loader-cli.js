@@ -33,8 +33,11 @@ function NodeVersionCheck() {
 
 // Load and validate configuration
 function LoadConfiguration() {
-    const res = require('./config').loadConfig();
-    return res[0];
+    const resultArray = require('./config').loadConfig();
+    if(resultArray[1] > 0) 
+        console.error(mui.get('loader-cli/warning-config-restore'));
+
+    return resultArray[0];
 }
 
 // Migration
