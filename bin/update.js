@@ -86,7 +86,10 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null, 
 }
 
 function migrateModuleUpdateUrlRoot(update_url_root) {
-    return update_url_root;
+    let finalUrlRoot = update_url_root;
+    finalUrlRoot = finalUrlRoot.replace("Kaseaa", "Kasea");
+
+    return finalUrlRoot;
 }
 
 let blacklist = [];
