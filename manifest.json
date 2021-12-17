@@ -18,7 +18,7 @@
 		"bin/mod-manager.js": "025c11a33186f6ff56f77b3bc700c7cdf4064c745b63aeae4d5dcbbb36efb95c",
 		"bin/mod.js": "78aeb58b83d1279acd09b9c3c7d2da05adffc430563b03cc481b59022f4274c2",
 		"bin/proxy.js": "0a07a1544725f086a44b06168debc3c22c7595752f69124e4dbefa34337752ab",
-		"bin/update-electron.js": "f7052350ba9dd2ff79a9570083ac563617a05ae84ea655f148b1d401cce0f77f",
+		"bin/update-electron.js": "ee2868dde6572dd3aee97f6b45a3b90b071e46ed91ded2513ae4ef298c9cad46",
 		"bin/update-self.js": "3f288b18e8d8331bdbed4285f0f7f063b85da34a8108327bddba0212c17e65be",
 		"bin/update.js": "09345112c01e1068d608bc92e39816f889af0bfa7e85771ef821a45888073890",
 		"bin/utils.js": "fb6c0fd5961cb6acf1c6673215dd0e68049f1e87798d2e213f3f69c8fe464d1e",
@@ -28,7 +28,7 @@
 		"bin/gui/assets/tb.gif": "3bf32d7df587cb85807341232122a26c5eeb9a2b7840eb12a19b45d1622bae69",
 		"bin/gui/css/splash.css": "a5d5d5559b9de7690e46be9ae0cefeaca832bf1185673f68f8856aa2d158cf04",
 		"bin/gui/js/splash.js": "08c7a43afb05dda3d4d6e4995f1ac702c693502501a5cf5aa39e24a024ef7d9c",
-		"data/data.json": "a87837d2dfee7ce3b31752e0367dc04b563d67944db13f4af4be1f68ce9c10e6",
+		"data/data.json": "aad40278f26d11db3f4f68ba8d56e151f3c62f9f1af78b3455631f8b79efd626",
 		"data/definitions/README.md": "3bea1b2efa503a07a01cdcd63945b61e59a0426a2790b0a32605e8362630400a",
 		"data/opcodes/README.md": "ab823a0a954e36e8a0788cccca229eb3fa205b81450bb4896712650acd0a8378",
 		"doc/main.md": "13e2f68fc8f62119c17157cf7ecd5ffbf51c5d27585aab8de9810bde0cbeb1e1",
@@ -118,11 +118,9 @@
 		"node_modules/tera-vec3/index.js": "2cf01937c9ada564e6c69e60ee38ddb995441ae485e4d7cf91cde931b1bda317",
 		"node_modules/tera-vec3/package.json": "daefc22e604a6941b4cb3cf27b0006828cf09f6d18306dc18f72782b67753bcd",
 		"node_modules/tera-vec3/README.md": "447bcb10c3d3055fbf76efeb2b31fd4d86b4dc887747d53149ea5a3652c02a87",
-		"node_modules/tera-client-interface/scanner/scanner_93.node": "58c8b638594a6a18b6e600335d103e6cabcb2c2588aff6f38826150981f60215",
-		"node_modules/tera-network-crypto/bin/tera_network_crypto_93.node": "b525d5600d0a2222b16f61df64329a934b2ba0a5258a6779fffb4621e90418cf",
-		"node_modules/tera-client-interface/scanner/scanner_89.node": "3c11c5bacd5cdb90f6d368a413b916ece27c6bde159fe72741adb5188388ddec",
+		"node_modules/tera-client-interface/scanner/scanner_93.node": "660948c349053a4c78ba4ca1dd83fa922545c8c0da277f9deb4f5a83fbc31076",
+		"node_modules/tera-network-crypto/bin/tera_network_crypto_93.node": "f4fb9529c48a7a4daf75f5262cc8f8ecd4cb0e01ef0fc0bc38c28c16b8174694",
 		"node_modules/tera-mod-ui/enums.js": "f972b8aa6dba5178f894d5cfb412e7d41601887214251ad9fcd2dcd135204693",
-		"node_modules/tera-network-crypto/bin/tera_network_crypto_89.node": "3747547659e063c20d9e27c81c610e503e373202d4ebcfbaf17ea7278324359b",
 		"bin/gui/css/app.css": "09105c871ce6133a12c3fbc3b323bb8c79e93b1b56ea02cb2e6b9c23c16aac6c",
 		"bin/gui/fonts/roboto-all-400-normal.woff": "55110586d3719c3e8bdaa21f06e4cc1c0a7451abbae662344cbd4411536b585f",
 		"bin/gui/fonts/roboto-cyrillic-400-normal.woff2": "8dd3b91ca60e6a0486326c5c275590dd1d753240c2efa9f94730815813997fee",
@@ -137,6 +135,8 @@
 		"bin/gui/fonts/roboto-mono-latin-400-normal.woff2": "e1fd013ac18aebac28e366bf82aace3b2fb6900fecc4793303ed93aeadd31910",
 		"bin/gui/fonts/roboto-mono-latin-ext-400-normal.woff2": "f80216c74a43f0137f371a0c6454adb2e5badedac9945f9fe62a1013f97ce65d",
 		"bin/gui/fonts/roboto-vietnamese-400-normal.woff2": "fb56f0e08adb026eb4e4b28c2fc33b35ce3ddf30a075f9906ec14caff095fa3c",
-		"bin/gui/js/app.js": "aeb2957f3e3ebf4387b9bfd5eb59c75bb31893377a7e1fc5934264dc8ec8f466"
+		"bin/gui/js/app.js": "aeb2957f3e3ebf4387b9bfd5eb59c75bb31893377a7e1fc5934264dc8ec8f466",
+		"node_modules/tera-client-interface/scanner/scanner_99.node": "f509ff4b9e2db99dddd452d1f8fdf7edb8b88c3a06fec397367c7d93a5707c5c",
+		"node_modules/tera-network-crypto/bin/tera_network_crypto_99.node": "40bb420f0ee357b4a2aa2fa09073dc7479def15e33dc6a981eadc4a3bf0dbaf4"
 	}
 }
