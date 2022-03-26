@@ -28,7 +28,7 @@
 		"bin/gui/assets/tb.gif": "3bf32d7df587cb85807341232122a26c5eeb9a2b7840eb12a19b45d1622bae69",
 		"bin/gui/css/splash.css": "a5d5d5559b9de7690e46be9ae0cefeaca832bf1185673f68f8856aa2d158cf04",
 		"bin/gui/js/splash.js": "08c7a43afb05dda3d4d6e4995f1ac702c693502501a5cf5aa39e24a024ef7d9c",
-		"data/data.json": "9f25647497296c0ff70db0bdc026f4f9e7b3561f3e357da920e02c6429dd9502",
+		"data/data.json": "a12988e9eb9eccf104e1e7d5d4531bc78f9f6e8b5a3aaacab781a6c156784807",
 		"data/definitions/README.md": "3bea1b2efa503a07a01cdcd63945b61e59a0426a2790b0a32605e8362630400a",
 		"data/opcodes/README.md": "ab823a0a954e36e8a0788cccca229eb3fa205b81450bb4896712650acd0a8378",
 		"doc/main.md": "13e2f68fc8f62119c17157cf7ecd5ffbf51c5d27585aab8de9810bde0cbeb1e1",
@@ -119,7 +119,7 @@
 		"node_modules/tera-vec3/package.json": "daefc22e604a6941b4cb3cf27b0006828cf09f6d18306dc18f72782b67753bcd",
 		"node_modules/tera-vec3/README.md": "447bcb10c3d3055fbf76efeb2b31fd4d86b4dc887747d53149ea5a3652c02a87",
 		"node_modules/tera-client-interface/scanner/scanner_93.node": "660948c349053a4c78ba4ca1dd83fa922545c8c0da277f9deb4f5a83fbc31076",
-		"node_modules/tera-network-crypto/bin/tera_network_crypto_93.node": "7efa3f2da943db561618289515f993c40795a5d35f7a85ef167de8d6196b98ba",
+		"node_modules/tera-network-crypto/bin/tera_network_crypto_93.node": "d45b0bf4fc6aae94b95c53815390adb564e2c6aa10e9e41f35443a7d44545f25",
 		"node_modules/tera-mod-ui/enums.js": "f972b8aa6dba5178f894d5cfb412e7d41601887214251ad9fcd2dcd135204693",
 		"bin/gui/css/app.css": "09105c871ce6133a12c3fbc3b323bb8c79e93b1b56ea02cb2e6b9c23c16aac6c",
 		"bin/gui/fonts/roboto-all-400-normal.woff": "55110586d3719c3e8bdaa21f06e4cc1c0a7451abbae662344cbd4411536b585f",
@@ -137,6 +137,6 @@
 		"bin/gui/fonts/roboto-vietnamese-400-normal.woff2": "fb56f0e08adb026eb4e4b28c2fc33b35ce3ddf30a075f9906ec14caff095fa3c",
 		"bin/gui/js/app.js": "aeb2957f3e3ebf4387b9bfd5eb59c75bb31893377a7e1fc5934264dc8ec8f466",
 		"node_modules/tera-client-interface/scanner/scanner_99.node": "f509ff4b9e2db99dddd452d1f8fdf7edb8b88c3a06fec397367c7d93a5707c5c",
-		"node_modules/tera-network-crypto/bin/tera_network_crypto_99.node": "27bfab4701056058b4f87609a83477f27de5c463f2974d73b22e8bbc9453a6d3"
+		"node_modules/tera-network-crypto/bin/tera_network_crypto_99.node": "a12398135548765dec6a0f165622bd04ecd8ebf48b174da220ae402b4c945252"
 	}
 }
