@@ -63,7 +63,7 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null, 
             throw `ERROR: ${ url }\nCan't download file from update server (${ requestPayload.status } - ${requestPayload.statusText})! Possible causes:\n   + Incorrect manifest specified by developer\n   + Server is not available anymore\n   + Access denied\n   + Internal server error`;
 
         let updatedFile = await requestPayload.buffer();
-        
+
         if (receiveAs === "json") {
             try {
                 JSON.parse(updatedFile);
@@ -71,7 +71,7 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null, 
                 throw `ERROR: ${ url }\nMalformed JSON file!\n${e}`;
             }
         }
-        
+
         if (expectedHash && expectedHash !== hash(updatedFile))
             throw "ERROR: " + url + "\nDownloaded file doesn't match hash specified in patch manifest! Possible causes:\n   + Incorrect manifest specified by developer\n   + NoPing (if you're using it) has a bug that can fuck up the download";
 
@@ -79,8 +79,8 @@ async function autoUpdateFile(file, filepath, url, drmKey, expectedHash = null, 
         fs.writeFileSync(filepath, updatedFile);
         return [file, true, ""];
     } catch (e) {
-        let err = e;
-        if (drmKey && err.message) err.message = err.message.split(`drmkey=${drmKey}`).join("drmkey=[censored]")
+        let err = e;//why not make catch (e) catch (err)?
+        if (drmKey && err.message) err.message = err.message.split(`drmkey=`)[0] + "drmkey=[censored]"
         return [file, false, err];
     }
 }
